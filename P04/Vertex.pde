@@ -2,7 +2,6 @@ public class Vertex{
  PVector pos;
  int id;
  boolean editStart = true;
- Vertex rubberBand = new Vertex();
  public ArrayList<Integer> corners = new ArrayList<Integer>();
 
   public Vertex(){
@@ -56,14 +55,14 @@ public class Vertex{
     if (this.isDragged()) {
       //drag in new vert/edge
       if(editMode){
-        if(editStart){
+        /*if(editStart){
           vertexHandler.AddVertex((int)pos.x, (int)pos.y, id);
           rubberBand = GetVertexFromID(masterVs.size()-1);
           editStart = false;
         } else {
           rubberBand.DrawInformation();
           rubberBand.Drag();
-        }
+        }*/
       } else {
         this.DrawInformation();
         this.Drag();

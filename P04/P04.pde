@@ -23,6 +23,8 @@ ArrayList<Integer> masterFs = new ArrayList<Integer>();
 
 VertexHandler vertexHandler = new VertexHandler();
 
+Vertex rubberBand = new Vertex();
+
 boolean mouseDragged, editMode;
 PVector mouseDragStart;
 
