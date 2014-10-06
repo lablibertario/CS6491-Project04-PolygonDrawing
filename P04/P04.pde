@@ -39,12 +39,14 @@ void setup() {               // executed once at the begining
   
   
   //hard coded points! for testing
-  vertexHandler.AddVertex(50, 50, -1);
-  vertexHandler.AddVertex(250, 250, 0);
-  masterFs.add(GetVertexFromID(0).corners.get(0));
-  vertexHandler.AddVertex(300, 400, 1);
-  vertexHandler.AddVertex(400, 250, 2);
-  vertexHandler.AddVertex(100, 250, 1);
+  vertexHandler.AddVertex(100, 100, -1);
+  vertexHandler.AddVertex(100, 300, 0);
+  vertexHandler.AddVertex(300, 300, 1);
+  vertexHandler.AddVertex(300, 100, 2);
+  vertexHandler.AddVertex(102, 102, 3);
+  vertexHandler.AddVertex(102, 102, 2);
+  
+  
   // vertexHandler.AddVertex(55, 55, 1);
   
   //PVector temp = new PVector(-1,0);
