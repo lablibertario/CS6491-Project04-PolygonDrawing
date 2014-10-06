@@ -143,9 +143,9 @@ public class Vertex{
   }
 
   public void Draw() {
-    stroke(black);
+    stroke(vertexColor);
     noFill();
 
-    showDisk(pos.x, pos.y, 10);
+    showDisk(pos.x, pos.y, vertexRadius);
   }
 }

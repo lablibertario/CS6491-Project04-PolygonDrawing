@@ -204,11 +204,12 @@ public class Corner{
   }
 
   public void Draw() {
-    fill(red);
-    stroke(red);
+    fill(cornerColor);
+    stroke(cornerColor);
+
     Corner tmp = masterCs.get(id);
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
-  //  println("stored next " + next + "stored prev: " + prev);
+    // println("stored next " + next + "stored prev: " + prev);
     PVector pos = GetDisplayPosition();
     showDisk(pos.x, pos.y, 2); 
   }
@@ -414,10 +415,10 @@ public class Vertex{
   }
 
   public void Draw() {
-    stroke(black);
+    stroke(vertexColor);
     noFill();
 
-    showDisk(pos.x, pos.y, 10);
+    showDisk(pos.x, pos.y, vertexRadius);
   }
 }
 public class VertexHandler {
@@ -686,6 +687,23 @@ public class VertexHandler {
 int black=0xff000000, white=0xffFFFFFF, // set more colors using Menu >  Tools > Color Selector
 red=0xffFF0000, green=0xff00FF01, blue=0xff0300FF, yellow=0xffFEFF00, cyan=0xff00FDFF, magenta=0xffFF00FB;
 
+int edgeThickness = 2;
+int edgeColor = blue;
+PVector edgeTextOffset = new PVector(7, -15);
+//int edgePointRadius = 4;
+
+int sidewalkThickness = 1;
+int sidewalkColor = green;
+PVector sidewalkTextOffset;
+
+int vertexRadius = 10;
+int vertexColor = black;
+PVector vertexTextOffset = new PVector(7, -15);
+
+int cornerRadius = 3;
+int cornerColor = red;
+PVector cornerTextOffset = new PVector(7, -15);
+
 // ************************************************************************ GRAPHICS 
 public void pen(int c, float w) {
   stroke(c); 
@@ -785,7 +803,7 @@ public void displayVertices() {
     if (mouseIsWithinCircle(v.pos, 10)) {
       fill(black);
       textSize(20);
-      text(v.id, mouseX+7, mouseY-15);
+      text(v.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
     }
     v.Draw();
   }
@@ -795,23 +813,28 @@ public void displayVertices() {
 public void displayCorners() {
   for (int i = 0; i < masterCs.size(); i++) {
     Corner c = masterCs.get(i);
-    if (mouseIsWithinCircle(c.GetDisplayPosition(), 4)) {
-      fill(red);
-      textSize(20);
-      text(c.id, mouseX+7, mouseY-15);
-    }
     c.Draw();
+
+    if (mouseIsWithinCircle(c.GetDisplayPosition(), cornerRadius)) {
+      fill(cornerColor);
+      textSize(20);
+      text(c.id, mouseX + cornerTextOffset.x, mouseY + cornerTextOffset.y);
+    }
   }
   textSize(12);
 }
 
 public void displayEdges() {
   for (int i = 0; i < masterCs.size(); i++) {
-    Corner c = masterCs.get(i);
-    Vertex startV = GetVertexFromCornerID(c.id);
-    Vertex endV = GetVertexFromCornerID(c.next);
-    DrawLine(startV.pos, endV.pos, 2, blue);
-    DrawSidewalk(GetCornerFromID(c.id), GetCornerFromID(c.next));
+    Corner startC = masterCs.get(i);
+    Corner endC = GetCornerFromID(startC.next);
+
+    DrawSidewalk(startC, endC);
+
+    Vertex startV = GetVertexFromCornerID(startC.id);
+    Vertex endV = GetVertexFromCornerID(endC.id);
+
+    DrawEdge(startV, endV);
   }
 }
 
@@ -838,7 +861,23 @@ public void DrawSidewalk(Corner startC, Corner endC) {
   PVector start = startC.GetDisplayPosition();
   PVector end = endC.GetDisplayPosition();
 
-  DrawLine(start, end, 1, green);
+  DrawLine(start, end, sidewalkThickness, green);
+}
+
+public void DrawEdge(Vertex startV, Vertex endV) {
+  PVector start = startV.pos;
+  PVector end = endV.pos;
+
+  DrawLine(start, end, edgeThickness, edgeColor);
+
+  if (mouseIsWithinRectangle(startV.pos, endV.pos, edgeThickness*2)) {
+    // Handle mouse hovering over edge
+    fill(edgeColor);
+    textSize(20);
+    PVector closestPoint = GetClosestPointOnEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos);
+    showDisk(closestPoint.x, closestPoint.y, edgeThickness*2);
+    //text(GetDistanceFromEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos), mouseX + edgeTextOffset.x, mouseY + edgeTextOffset.y);
+  }
 }
 
 public boolean mouseIsWithinCircle(PVector pos, float radius) {
@@ -846,6 +885,60 @@ public boolean mouseIsWithinCircle(PVector pos, float radius) {
   return (mousePos.dist(pos) <= radius);
 }
 
+public boolean mouseIsWithinRectangle(PVector start, PVector end, int thickness) {
+  PVector mousePos = new PVector(mouseX, mouseY);
+  float distance = abs(GetDistanceFromEdge(mousePos, start, end));
+  return (distance <= thickness);
+}
+
+public float GetSlopeOfEdge(PVector start, PVector end) {
+  return (end.y-start.y) / (end.x-start.x);
+}
+
+public float sqr(float x) { return x * x; }
+
+// c = point, ab = edge
+public float GetDistanceFromEdge(PVector _c, PVector _a, PVector _b) {
+  float result;
+  PVector a = new PVector(_a.x, _a.y);
+  PVector b = new PVector(_b.x, _b.y);
+  PVector c = new PVector(_c.x, _c.y);
+
+  // exclude part of line segment that overlaps with vertex radius
+  PVector atob = new PVector(b.x - a.x, b.y - a.y);
+  atob.normalize();
+  atob.mult(vertexRadius * 2f);
+  a.add(atob);
+  b.sub(atob);
+
+  PVector ab = new PVector(_b.x - _a.x, _b.y - _a.y);
+  PVector bc = new PVector(_c.x - _b.x, _c.y - _b.y);
+  PVector ba = new PVector(_a.x - _b.x, _a.y - _b.y);
+  PVector ac = new PVector(_c.x - _a.x, _c.y - _a.y);
+
+  if (ab.dot(bc) > -0.1f) {
+    result = b.dist(c);
+  } else if (ba.dot(ac) > -0.1f) {
+    result = a.dist(c);
+  } else {
+    result = (ab.x * ac.y - ab.y * ac.x) / a.dist(b);
+  }
+
+  return result;
+}
+
+public PVector GetClosestPointOnEdge(PVector c, PVector a, PVector b) {
+  PVector v = new PVector(b.y - a.y, a.x - b.x);
+  v.normalize();
+
+  float d = GetDistanceFromEdge(c, a, b);
+  v.mult(d);
+
+  PVector result = new PVector(c.x, c.y);
+  result.add(v);
+
+  return result;
+}
 
 //************************ capturing frames for a movie ************************
 boolean filming=false;  // when true frames are captured in FRAMES for a movie
