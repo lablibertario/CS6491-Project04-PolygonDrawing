@@ -214,6 +214,10 @@ public class Corner{
     showDisk(pos.x, pos.y, 2); 
   }
 
+  public boolean MouseOver() {
+    return mouseIsWithinCircle(this.GetDisplayPosition(), cornerRadius);
+  }
+
   public Corner FindUnswing(){
     Corner currCorner = this;
     while(currCorner.swing != id){
@@ -412,6 +416,10 @@ public class Vertex{
  
   public void AddCorner(int cornerID) {
     corners.add(cornerID);
+  }
+
+  public boolean MouseOver() {
+    return mouseIsWithinCircle(this.pos, vertexRadius);
   }
 
   public void Draw() {
@@ -800,7 +808,7 @@ public void displayFooter() { // Displays help text at the bottom
 public void displayVertices() {
   for (int i = 0; i < masterVs.size(); i++) {
     Vertex v = masterVs.get(i);
-    if (mouseIsWithinCircle(v.pos, 10)) {
+    if (v.MouseOver()) {
       fill(black);
       textSize(20);
       text(v.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
@@ -815,7 +823,7 @@ public void displayCorners() {
     Corner c = masterCs.get(i);
     c.Draw();
 
-    if (mouseIsWithinCircle(c.GetDisplayPosition(), cornerRadius)) {
+    if (c.MouseOver()) {
       fill(cornerColor);
       textSize(20);
       text(c.id, mouseX + cornerTextOffset.x, mouseY + cornerTextOffset.y);
@@ -828,7 +836,7 @@ public void displayEdges() {
   for (int i = 0; i < masterCs.size(); i++) {
     Corner startC = masterCs.get(i);
     Corner endC = GetCornerFromID(startC.next);
-
+    
     DrawSidewalk(startC, endC);
 
     Vertex startV = GetVertexFromCornerID(startC.id);
@@ -907,18 +915,18 @@ public float GetDistanceFromEdge(PVector _c, PVector _a, PVector _b) {
   // exclude part of line segment that overlaps with vertex radius
   PVector atob = new PVector(b.x - a.x, b.y - a.y);
   atob.normalize();
-  atob.mult(vertexRadius * 2f);
+  atob.mult(vertexRadius * 3f);
   a.add(atob);
   b.sub(atob);
 
-  PVector ab = new PVector(_b.x - _a.x, _b.y - _a.y);
-  PVector bc = new PVector(_c.x - _b.x, _c.y - _b.y);
-  PVector ba = new PVector(_a.x - _b.x, _a.y - _b.y);
-  PVector ac = new PVector(_c.x - _a.x, _c.y - _a.y);
+  PVector ab = new PVector(b.x - a.x, b.y - a.y);
+  PVector bc = new PVector(c.x - b.x, c.y - b.y);
+  PVector ba = new PVector(a.x - b.x, a.y - b.y);
+  PVector ac = new PVector(c.x - a.x, c.y - a.y);
 
-  if (ab.dot(bc) > -0.1f) {
+  if (ab.dot(bc) > 0) {
     result = b.dist(c);
-  } else if (ba.dot(ac) > -0.1f) {
+  } else if (ba.dot(ac) > 0) {
     result = a.dist(c);
   } else {
     result = (ab.x * ac.y - ab.y * ac.x) / a.dist(b);

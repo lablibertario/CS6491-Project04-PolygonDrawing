@@ -119,7 +119,7 @@ void displayFooter() { // Displays help text at the bottom
 void displayVertices() {
   for (int i = 0; i < masterVs.size(); i++) {
     Vertex v = masterVs.get(i);
-    if (mouseIsWithinCircle(v.pos, 10)) {
+    if (v.MouseOver()) {
       fill(black);
       textSize(20);
       text(v.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
@@ -134,7 +134,7 @@ void displayCorners() {
     Corner c = masterCs.get(i);
     c.Draw();
 
-    if (mouseIsWithinCircle(c.GetDisplayPosition(), cornerRadius)) {
+    if (c.MouseOver()) {
       fill(cornerColor);
       textSize(20);
       text(c.id, mouseX + cornerTextOffset.x, mouseY + cornerTextOffset.y);
@@ -147,7 +147,7 @@ void displayEdges() {
   for (int i = 0; i < masterCs.size(); i++) {
     Corner startC = masterCs.get(i);
     Corner endC = GetCornerFromID(startC.next);
-
+    
     DrawSidewalk(startC, endC);
 
     Vertex startV = GetVertexFromCornerID(startC.id);

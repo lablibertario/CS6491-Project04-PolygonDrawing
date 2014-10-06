@@ -74,6 +74,10 @@ public class Corner{
     showDisk(pos.x, pos.y, 2); 
   }
 
+  public boolean MouseOver() {
+    return mouseIsWithinCircle(this.GetDisplayPosition(), cornerRadius);
+  }
+
   public Corner FindUnswing(){
     Corner currCorner = this;
     while(currCorner.swing != id){

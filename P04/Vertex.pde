@@ -142,6 +142,10 @@ public class Vertex{
     corners.add(cornerID);
   }
 
+  public boolean MouseOver() {
+    return mouseIsWithinCircle(this.pos, vertexRadius);
+  }
+
   public void Draw() {
     stroke(vertexColor);
     noFill();
