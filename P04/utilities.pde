@@ -68,7 +68,6 @@ public float GetPosAngle(PVector a) {
 // ************************************************************************ IMAGES & VIDEO 
 int pictureCounter=0;
 PImage myFace, myFace2; // picture of author's face, should be: data/pic.jpg in sketch folder
-PImage power;
 void snapPicture() {
   saveFrame("PICTURES/P"+nf(pictureCounter++, 3)+".jpg");
 }

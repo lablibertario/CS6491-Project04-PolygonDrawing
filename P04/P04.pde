@@ -23,7 +23,7 @@ ArrayList<Integer> masterFs = new ArrayList<Integer>();
 
 VertexHandler vertexHandler = new VertexHandler();
 
-boolean mouseDragged;
+boolean mouseDragged, editMode;
 PVector mouseDragStart;
 
 int selectedVertexID = -1;
@@ -35,8 +35,7 @@ void setup() {               // executed once at the begining
   smooth();                  // turn on antialiasing
   myFace = loadImage("data/pic.jpg");  // loads image from file pic.jpg in folder data, replace it with a clear pic of your face
   myFace2 = loadImage("data/pic2.jpg");
-  power = loadImage("data/power.png"); // loads power image
-  
+  editMode = false;
   
   //hard coded points! for testing
   vertexHandler.AddVertex(100, 100, -1);
@@ -112,6 +111,8 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
   if (key=='a') animating=true;  // quit application
   if (key=='Q') exit();  // quit application
   change=true;
+
+  if (key == 'q') editMode = true;
 }
 
 void keyReleased() { // executed each time a key is released
@@ -120,6 +121,8 @@ void keyReleased() { // executed each time a key is released
   }
   if (key=='a') animating=false;  // quit application
   change=true;
+
+  if (key == 'q') editMode = false;
 }
 
 void mouseDragged() { // executed when mouse is pressed and moved
