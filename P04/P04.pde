@@ -46,7 +46,7 @@ void setup() {               // executed once at the begining
   vertexHandler.AddVertex(102, 102, 3);
   vertexHandler.AddVertex(102, 102, 2);
   
-  
+  CheckForFaces();  
   // vertexHandler.AddVertex(55, 55, 1);
   
   //PVector temp = new PVector(-1,0);
@@ -155,4 +155,15 @@ public Vertex GetVertexFromCornerID(int cornerID) {
 
 public Vertex GetVertexFromID(int vertexID) {
   return masterVs.get(vertexID);
+}
+
+public void CheckForFaces() {
+  ArrayList<Corner> unvisitedCorners = new ArrayList<Corner>();
+  ArrayList<Integer> unvisitedCornerIDs = new ArrayList<Integer>();
+
+  while (unvisitedCornerIDs.size() < masterCs.size()) {
+    unvisitedCornerIDs.add(masterCs.get(unvisitedCornerIDs.size()).id);
+  }
+
+  
 }
