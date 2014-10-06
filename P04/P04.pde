@@ -23,6 +23,9 @@ IntList masterFs = new IntList();
 
 VertexHandler vertexHandler = new VertexHandler();
 
+boolean mouseClick, mouseDrag;
+PVector mouseDragStart;
+
 //**************************** initialization ****************************
 void setup() {               // executed once at the begining 
   size(600, 600);            // window size
@@ -37,8 +40,9 @@ void setup() {               // executed once at the begining
   vertexHandler.AddVertex(50, 50, -1);
   vertexHandler.AddVertex(250, 250, 0);
   vertexHandler.AddVertex(300, 400, 1);
-  vertexHandler.AddVertex(400, 250, 2);
-  vertexHandler.AddVertex(100, 250, 1);
+  vertexHandler.AddVertex(400, 150, 0);
+  vertexHandler.AddVertex(300, 400, 0);
+  //vertexHandler.AddVertex(100, 250, 1);
  // vertexHandler.AddVertex(55, 55, 1);
 
   //PVector temp = new PVector(-1,0);
@@ -94,6 +98,7 @@ void keyReleased() { // executed each time a key is released
 
 void mouseDragged() { // executed when mouse is pressed and moved
   change=true;
+  mouseDrag = true;
 }
 
 void mouseMoved() { // when mouse is moved
@@ -101,11 +106,14 @@ void mouseMoved() { // when mouse is moved
 }
 
 void mousePressed(MouseEvent e) { // when mouse key is pressed 
-
+  mouseClick = true;
+  mouseDragStart = new PVector(mouseX, mouseY);
 }
 
 void mouseReleased(MouseEvent e) { // when mouse key is released 
-
+  mouseClick = false;
+  mouseDragStart = new PVector();
+  mouseDrag = false;
 }
 
 public Corner GetCornerFromID(int cornerID) {

@@ -64,13 +64,18 @@ public class Corner{
   }
 
   public void Draw() {
-    fill(red);
-    stroke(red);
+    fill(cornerColor);
+    stroke(cornerColor);
+
     Corner tmp = masterCs.get(id);
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
-  //  println("stored next " + next + "stored prev: " + prev);
+    // println("stored next " + next + "stored prev: " + prev);
     PVector pos = GetDisplayPosition();
     showDisk(pos.x, pos.y, 2); 
+  }
+
+  public boolean MouseOver() {
+    return mouseIsWithinCircle(this.GetDisplayPosition(), cornerRadius);
   }
 
   public Corner FindUnswing(){
