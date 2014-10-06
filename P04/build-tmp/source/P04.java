@@ -39,6 +39,9 @@ IntList masterFs = new IntList();
 
 VertexHandler vertexHandler = new VertexHandler();
 
+boolean mouseClick, mouseDrag;
+PVector mouseDragStart;
+
 //**************************** initialization ****************************
 public void setup() {               // executed once at the begining 
   size(600, 600);            // window size
@@ -53,8 +56,9 @@ public void setup() {               // executed once at the begining
   vertexHandler.AddVertex(50, 50, -1);
   vertexHandler.AddVertex(250, 250, 0);
   vertexHandler.AddVertex(300, 400, 1);
-  vertexHandler.AddVertex(400, 250, 2);
-  vertexHandler.AddVertex(100, 250, 1);
+  vertexHandler.AddVertex(400, 150, 0);
+  vertexHandler.AddVertex(300, 400, 0);
+  //vertexHandler.AddVertex(100, 250, 1);
  // vertexHandler.AddVertex(55, 55, 1);
 
   //PVector temp = new PVector(-1,0);
@@ -110,6 +114,7 @@ public void keyReleased() { // executed each time a key is released
 
 public void mouseDragged() { // executed when mouse is pressed and moved
   change=true;
+  mouseDrag = true;
 }
 
 public void mouseMoved() { // when mouse is moved
@@ -117,11 +122,14 @@ public void mouseMoved() { // when mouse is moved
 }
 
 public void mousePressed(MouseEvent e) { // when mouse key is pressed 
-
+  mouseClick = true;
+  mouseDragStart = new PVector(mouseX, mouseY);
 }
 
 public void mouseReleased(MouseEvent e) { // when mouse key is released 
-
+  mouseClick = false;
+  mouseDragStart = new PVector();
+  mouseDrag = false;
 }
 
 public Corner GetCornerFromID(int cornerID) {
@@ -204,13 +212,18 @@ public class Corner{
   }
 
   public void Draw() {
-    fill(red);
-    stroke(red);
+    fill(cornerColor);
+    stroke(cornerColor);
+
     Corner tmp = masterCs.get(id);
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
-  //  println("stored next " + next + "stored prev: " + prev);
+    // println("stored next " + next + "stored prev: " + prev);
     PVector pos = GetDisplayPosition();
     showDisk(pos.x, pos.y, 2); 
+  }
+
+  public boolean MouseOver() {
+    return mouseIsWithinCircle(this.GetDisplayPosition(), cornerRadius);
   }
 
   public Corner FindUnswing(){
@@ -273,132 +286,6 @@ public class Vertex{
  PVector pos;
  int id;
  public ArrayList<Integer> corners = new ArrayList<Integer>();
- 
-//  public Vertex(int _x, int _y, int connectIndex){
-//    Vertex connectTo = null;
-//    if(connectIndex != -1) {
-//      println("we're connected");
-//      connectTo = masterVs.get(connectIndex);
-//    }
-//    pos = new PVector(_x, _y);
-//    Vertex prevV = null;
-//    if(masterVs.size() >= 1){
-//       Corner thisNew = new Corner();
-//       Corner prevNew = new Corner();
-//       if(connectTo != null) {
-//         prevNew.vertex = connectIndex;
-//       } else {
-//         prevNew.vertex = 0;
-//       }
-//       thisNew.vertex = masterVs.size();
-      
-      
-//      //special case of second vertex
-//      if(masterVs.size() == 1){
-//         prevV = masterVs.get(0);
-//         prevNew.next = 1;
-//         thisNew.next = 0;
-//         prevNew.prev = 1;
-//         thisNew.prev = 0;
-//         //THIS LINE IS TEMP
-//         //REMOVE THIS LINE
-//         //thisNew.swing = 2;
-//         //THAT ONE
-        
-//         masterCs.add(prevNew);
-//         masterCs.add(thisNew);
-        
-//         prevV.corners.append((masterCs.size()-2));
-//         corners.append((masterCs.size()-1));
-        
-//      } //adding additional vertices
-//      else if ( masterVs.size() > 1 ){        
-//        prevV = GetVertex(masterVs.size()-1);        
-//        //if this is getting added between two lines, do det product with new line and all existing
-//        //  lines out of this point until it's to the right of one and the other is to the right of it
-//        //  (it's between the lines)
-//        //  then consider the starting corner of the one to the right of this as our new prev and reassign
-//        //if there's only one edge other than this one coming out of this point(only one previously existing
-//        //  corner) we're replacing the previously existing guy. IF the new line is to the right of the existing
-//        //  one, then we're replacing the end corner, otherwise, these just get tacked on to the cycle
-       
-// //TEMPTEMPTEMTP
-//        //our new vector
-//        PVector newLine = new PVector(pos.x - connectTo.pos.x, pos.y - connectTo.pos.y);
-//        //for every corner(/line) that extends from the vertex we're connecting to
-//        for(int i = 0; i < connectTo.corners.size(); i++){
-//          //grab all the line ends
-//          int cornerEndIndex = connectTo.corners.get(i);
-//          Corner cNext = masterCs.get((masterCs.get(cornerEndIndex)).next);
-//          int cEVID = cNext.vertex;
-//          Vertex cornerEnd = masterVs.get(cEVID);
-//          int cornerSwingIndex = connectTo.corners.get(i);
-//          println("grabbing " + cornerSwingIndex);
-//          int swingCheck = (masterCs.get(cornerSwingIndex)).swing;
-//          PVector lineCheck = new PVector(cornerEnd.pos.x - connectTo.pos.x, cornerEnd.pos.y - connectTo.pos.y);
-//          if(swingCheck != -1) {
-//            //if a swing exists, there's more than one line and we should check if our new line is between them
-//            int nextCornerIndex = connectTo.corners.get(i);
-//            int nCESwingID = (masterCs.get(nextCornerIndex)).swing;
-//            Corner swingCorner = (masterCs.get(nCESwingID));
-//            Vertex nextCornerEnd = masterVs.get(swingCorner.vertex);
-//            PVector lineCheck2 = new PVector(nextCornerEnd.pos.x - connectTo.pos.x, nextCornerEnd.pos.y - connectTo.pos.y);
-           
-//            float check1 = det(lineCheck, newLine);
-//            float check2 = det(lineCheck2, newLine);
-//            //see if our new edge is between these previous two
-//            if( check1 > 0 != check2 > 0 ){
-//              //we're between these lines!
-//              int cornerSplittingIndex = connectTo.corners.get(i);
-//              Corner cornerSplitting = masterCs.get(cornerSplittingIndex);
-//              cornerSplitting.split(cornerSplittingIndex, thisNew);
-//            }
-//          } else {
-//            //if no swing, we need to know if new line is to the L or R of current line
-//            println("this is not the swing you're looking for");
-//            float lOrR = det(lineCheck, newLine);
-//            Corner thisCorner = GetCorner(connectTo.corners.get(0));
-//            int prevCornerID = thisCorner.prev;
-//            int nextCornerID = connectTo.corners.get(0);
-//            Corner nextCorner = masterCs.get(nextCornerID);
-//            Corner prevCorner = masterCs.get(prevCornerID);
-
-//            if( lOrR > 0 ) {
-//              //to the right of our line
-//              prevCorner.next = masterCs.size();
-//              nextCorner.prev =  masterCs.size()+1;
-//              thisNew.next = nextCornerID;
-//              thisNew.prev = masterCs.size();
-//              prevNew.prev = prevCornerID;
-//              prevNew.next = masterCs.size()+1;
-
-//            } else {
-//              //to the left of our line
-//              prevCorner.prev = masterCs.size();
-//              nextCorner.next = masterCs.size()+1;
-//              thisNew.next = masterCs.size();
-//              thisNew.prev = nextCornerID;
-//              prevNew.prev = masterCs.size()+1;
-//              prevNew.next = prevCornerID;
-//            }
-//            println("new corner " + masterCs.size() + " between " + thisNew.prev + " and " + thisNew.next);
-//          }
-         
-         
-//        }
-       
-//        prevNew.next = masterCs.size()+1;
-      
-//        masterCs.add(prevNew);
-//        masterCs.add(thisNew);
-       
-//        prevV.corners.append(masterCs.size()-2); //determine previous vert
-//        corners.append(masterCs.size()-1);
-//      }
-//    }
-//    masterVs.add(this);
-     
-//  }
 
   public Vertex(int _x, int _y) {
     pos = new PVector(_x, _y);
@@ -413,51 +300,70 @@ public class Vertex{
     corners.add(cornerID);
   }
 
+  public boolean MouseOver() {
+    return mouseIsWithinCircle(this.pos, vertexRadius);
+  }
+
+  public boolean MouseClicked() {
+    return (this.MouseOver() && mouseClick);
+  }
+
+  public boolean MouseDragging() {
+    boolean result = (this.MouseClicked() && mouseDrag); 
+    if (result) {
+      this.pos = new PVector(mouseX, mouseY);
+    }
+    return result;
+  }
+
   public void Draw() {
-    stroke(black);
+    stroke(vertexColor);
     noFill();
 
-    showDisk(pos.x, pos.y, 10);
+    showDisk(pos.x, pos.y, vertexRadius);
   }
 }
 public class VertexHandler {
 	private Vertex newVertex;
 	private boolean closestToPrevEdge;
 	private float distToConnect = 6.0f;
+	private Vertex connectVertex;
 
 	public void AddVertex(int _x, int _y, int connectIndex) {
 		PVector insertionEdge, comparisonEdge;
 		newVertex = new Vertex(_x, _y, masterVs.size());
-		println(masterVs.size());
-		Vertex connectVertex;
+		//println(masterVs.size());
 
 		//check to see if we're connecting two existing vertices
 		int idOfExistingConnection = -1;
-		/*for(int i = 0; i < masterVs.size(); i++){
+		for(int i = 0; i < masterVs.size(); i++){
 			PVector existingVertPos = new PVector(GetVertexFromID(i).pos.x, GetVertexFromID(i).pos.y);
-                        PVector tmpNewVert = new PVector(newVertex.pos.x, newVertex.pos.y);
+            PVector tmpNewVert = new PVector(newVertex.pos.x, newVertex.pos.y);
 			existingVertPos.sub(tmpNewVert);
-                        println("x dist: " + existingVertPos.x + "ydist: " + existingVertPos.y);
 			if((abs(existingVertPos.x) < distToConnect) && (abs(existingVertPos.y) < distToConnect)) {
 				idOfExistingConnection = i;
 				break;
 			} 
-		}*/
+		}
 
 		if(idOfExistingConnection != -1){
-			println("connecting two existing verts");
+			//connecting two existing verts
+			connectVertex = GetVertexFromID(connectIndex);
 			ConnectExistingVerts(idOfExistingConnection);
 		} else {
 			if (masterVs.size() == 0) {
 				
 			} else if (NumCorners(connectIndex) < 1) {
+				//println("insert second vert");
 				InsertSecondVertex(_x, _y);
 			} else if (NumCorners(connectIndex) == 1) {
+				//println("adding to end of vert");
 				connectVertex = GetVertexFromID(connectIndex);
 				AppendToEndOfVertex(connectVertex);
 
 			} else {
 				//adding edge between two existing edges
+				//println("squeezing between verts");
 				connectVertex = GetVertexFromID(connectIndex);
 				Corner splitCorner = FindEdgesBetween(connectVertex);
 				CornerSplit(splitCorner);
@@ -466,11 +372,72 @@ public class VertexHandler {
 			}
 		}
 
-		AddToMaster(newVertex);
+		if(idOfExistingConnection == -1) AddToMaster(newVertex);
 	}
 
 	private void ConnectExistingVerts(int IDToConnectTo){
-		
+		//CONNECTING VERTICES:
+		//connectVertex already gloabally created/set
+		Vertex farConnection = GetVertexFromID(IDToConnectTo);
+
+		//SPLITTING CORNERS:
+		//determine if we need to split corners for both verts
+		boolean  connectSplit = false;
+		boolean  farSplit = false;
+		if(connectVertex.corners.size() > 1) connectSplit = true;
+		if(farConnection.corners.size() > 1) farSplit = true;
+		//holders for corners we may need
+		Corner connectSplitCorner = new Corner();
+		Corner farSplitCorner = new Corner();
+
+		if(connectSplit){
+			connectSplitCorner = FindEdgesBetween(connectVertex);
+			println("split at connection " + connectSplitCorner.id + "for connection");
+		}
+
+		if(farSplit){
+			farSplitCorner = FindEdgesBetween(farConnection);
+			println("split at far corner " + farSplitCorner.id + "for far");
+		}
+
+		Corner addedCorner = new Corner(masterCs.size() , connectVertex.id);
+		Corner newCorner = new Corner(masterCs.size()+1, farConnection.id);
+		//grab existing corners to handle connections from
+		Corner originCorner = new Corner();
+		Corner farCorner = new Corner();
+
+		if(!connectSplit && !farSplit) {
+			originCorner = GetCornerFromID(connectVertex.corners.get(0));
+			farCorner = GetCornerFromID(farConnection.corners.get(0));
+		} else{
+			if(connectSplit) {
+				originCorner = connectSplitCorner;
+			} else {
+				originCorner = GetCornerFromID(connectVertex.corners.get(0));
+			}
+			if(farSplit) {
+				farCorner = farSplitCorner;
+			} else{
+				farCorner = GetCornerFromID(farConnection.corners.get(0));
+			}
+		}
+		Corner originsNextC = GetCornerFromID(originCorner.next);
+		Corner farsPrevC = GetCornerFromID(farCorner.prev);
+
+		originCorner.next = farCorner.id;
+		farCorner.prev = originCorner.id;
+		addedCorner.next = originsNextC.id;
+		addedCorner.prev = newCorner.id;
+		newCorner.next = addedCorner.id;
+		newCorner.prev = farsPrevC.id;
+		originsNextC.prev = addedCorner.id;
+		farsPrevC.next = newCorner.id;
+
+        AddToMaster(addedCorner);
+        AddToMaster(newCorner);
+
+        connectVertex.AddCorner(addedCorner.id);
+        farConnection.AddCorner(newCorner.id);
 	}
 
 	private void AppendToEndOfVertex(Vertex connectVertex){
@@ -479,11 +446,14 @@ public class VertexHandler {
 		Corner addedCorner = new Corner(masterCs.size(), connectVertex.id);
 		Corner connectCorner = GetCornerFromID(connectVertex.corners.get(0));
 		Corner connectPrevCorner =  GetCornerFromID(connectCorner.prev);
+		Corner connectNextCorner = GetCornerFromID(connectCorner.next);
 
 		connectCorner.next = newCorner.id;
 		newCorner.prev = connectCorner.id;
 		newCorner.next = addedCorner.id;
 		addedCorner.prev = newCorner.id;
+		addedCorner.next = connectNextCorner.id;
+		connectNextCorner.prev = addedCorner.id;
 
 		if(connectPrevCorner.swing != -1) {
 			addedCorner.next = connectPrevCorner.swing;
@@ -526,16 +496,6 @@ public class VertexHandler {
 				splitCorner = c;
 				break;
 			}
-			//boolean check1 = isToRightOf(prevEdge, newEdge);
-			//boolean check2 = isToRightOf(newEdge, nextEdge);
-           // println("check1: "+ check1 + " check2: " + check2);
-            //see if our new edge is between these previous two
-            // if( check1 == check2 ){
-            // 	//we're between the lines!
-            // 	println("between the lines!");
-            // 	splitCorner = c;
-            // 	break;
-            // }
         }
 
         return splitCorner;
@@ -639,16 +599,12 @@ public class VertexHandler {
 		float newNewRot = GetPosAngle(newE1);
 		float newNextRot = GetPosAngle(nextE1);
 
-		// println("oldPrev " + oldPrevRot + " oldNew " + oldNewRot + " oldNext " + oldNextRot);
-		// println("newPrev " + newPrevRot + " newNew " + newNewRot + " newNext " + newNextRot);
-		// println("new " + newNewRot);
-		// println("new-next " + (newNewRot-newNextRot) + ", 2PI - new " + (2*PI-newNewRot));
 		closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
 		return (newNewRot - newPrevRot > 0) && (newNextRot - newNewRot < 0);
 	}
 
 	public int NumCorners(int vertexID) {
-		if (vertexID > 0 && vertexID < masterVs.size()) {
+		if (vertexID >= 0 && vertexID < masterVs.size()) {
 			return GetVertexFromID(vertexID).corners.size();
 		} else {
 			return 0;
@@ -685,6 +641,23 @@ public class VertexHandler {
 // ************************************************************************ COLORS 
 int black=0xff000000, white=0xffFFFFFF, // set more colors using Menu >  Tools > Color Selector
 red=0xffFF0000, green=0xff00FF01, blue=0xff0300FF, yellow=0xffFEFF00, cyan=0xff00FDFF, magenta=0xffFF00FB;
+
+int edgeThickness = 2;
+int edgeColor = blue;
+PVector edgeTextOffset = new PVector(7, -15);
+//int edgePointRadius = 4;
+
+int sidewalkThickness = 1;
+int sidewalkColor = green;
+PVector sidewalkTextOffset;
+
+int vertexRadius = 10;
+int vertexColor = black;
+PVector vertexTextOffset = new PVector(7, -15);
+
+int cornerRadius = 3;
+int cornerColor = red;
+PVector cornerTextOffset = new PVector(7, -15);
 
 // ************************************************************************ GRAPHICS 
 public void pen(int c, float w) {
@@ -782,10 +755,12 @@ public void displayFooter() { // Displays help text at the bottom
 public void displayVertices() {
   for (int i = 0; i < masterVs.size(); i++) {
     Vertex v = masterVs.get(i);
-    if (mouseIsWithinCircle(v.pos, 10)) {
+    if (v.MouseOver()) {
       fill(black);
       textSize(20);
-      text(v.id, mouseX+7, mouseY-15);
+      text(v.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
+      
+      v.MouseDragging();
     }
     v.Draw();
   }
@@ -795,23 +770,28 @@ public void displayVertices() {
 public void displayCorners() {
   for (int i = 0; i < masterCs.size(); i++) {
     Corner c = masterCs.get(i);
-    if (mouseIsWithinCircle(c.GetDisplayPosition(), 4)) {
-      fill(red);
-      textSize(20);
-      text(c.id, mouseX+7, mouseY-15);
-    }
     c.Draw();
+
+    if (c.MouseOver()) {
+      fill(cornerColor);
+      textSize(20);
+      text(c.id, mouseX + cornerTextOffset.x, mouseY + cornerTextOffset.y);
+    }
   }
   textSize(12);
 }
 
 public void displayEdges() {
   for (int i = 0; i < masterCs.size(); i++) {
-    Corner c = masterCs.get(i);
-    Vertex startV = GetVertexFromCornerID(c.id);
-    Vertex endV = GetVertexFromCornerID(c.next);
-    DrawLine(startV.pos, endV.pos, 2, blue);
-    DrawSidewalk(GetCornerFromID(c.id), GetCornerFromID(c.next));
+    Corner startC = masterCs.get(i);
+    Corner endC = GetCornerFromID(startC.next);
+
+    DrawSidewalk(startC, endC);
+
+    Vertex startV = GetVertexFromCornerID(startC.id);
+    Vertex endV = GetVertexFromCornerID(endC.id);
+
+    DrawEdge(startV, endV);
   }
 }
 
@@ -838,7 +818,23 @@ public void DrawSidewalk(Corner startC, Corner endC) {
   PVector start = startC.GetDisplayPosition();
   PVector end = endC.GetDisplayPosition();
 
-  DrawLine(start, end, 1, green);
+  DrawLine(start, end, sidewalkThickness, green);
+}
+
+public void DrawEdge(Vertex startV, Vertex endV) {
+  PVector start = startV.pos;
+  PVector end = endV.pos;
+
+  DrawLine(start, end, edgeThickness, edgeColor);
+
+  if (mouseIsWithinRectangle(startV.pos, endV.pos, edgeThickness*2)) {
+    // Handle mouse hovering over edge
+    fill(edgeColor);
+    textSize(20);
+    PVector closestPoint = GetClosestPointOnEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos);
+    showDisk(closestPoint.x, closestPoint.y, edgeThickness*2);
+    //text(GetDistanceFromEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos), mouseX + edgeTextOffset.x, mouseY + edgeTextOffset.y);
+  }
 }
 
 public boolean mouseIsWithinCircle(PVector pos, float radius) {
@@ -846,6 +842,60 @@ public boolean mouseIsWithinCircle(PVector pos, float radius) {
   return (mousePos.dist(pos) <= radius);
 }
 
+public boolean mouseIsWithinRectangle(PVector start, PVector end, int thickness) {
+  PVector mousePos = new PVector(mouseX, mouseY);
+  float distance = abs(GetDistanceFromEdge(mousePos, start, end));
+  return (distance <= thickness);
+}
+
+public float GetSlopeOfEdge(PVector start, PVector end) {
+  return (end.y-start.y) / (end.x-start.x);
+}
+
+public float sqr(float x) { return x * x; }
+
+// c = point, ab = edge
+public float GetDistanceFromEdge(PVector _c, PVector _a, PVector _b) {
+  float result;
+  PVector a = new PVector(_a.x, _a.y);
+  PVector b = new PVector(_b.x, _b.y);
+  PVector c = new PVector(_c.x, _c.y);
+
+  // exclude part of line segment that overlaps with vertex radius
+  PVector atob = new PVector(b.x - a.x, b.y - a.y);
+  atob.normalize();
+  atob.mult(vertexRadius * 3f);
+  a.add(atob);
+  b.sub(atob);
+
+  PVector ab = new PVector(b.x - a.x, b.y - a.y);
+  PVector bc = new PVector(c.x - b.x, c.y - b.y);
+  PVector ba = new PVector(a.x - b.x, a.y - b.y);
+  PVector ac = new PVector(c.x - a.x, c.y - a.y);
+
+  if (ab.dot(bc) > 0) {
+    result = b.dist(c);
+  } else if (ba.dot(ac) > 0) {
+    result = a.dist(c);
+  } else {
+    result = (ab.x * ac.y - ab.y * ac.x) / a.dist(b);
+  }
+
+  return result;
+}
+
+public PVector GetClosestPointOnEdge(PVector c, PVector a, PVector b) {
+  PVector v = new PVector(b.y - a.y, a.x - b.x);
+  v.normalize();
+
+  float d = GetDistanceFromEdge(c, a, b);
+  v.mult(d);
+
+  PVector result = new PVector(c.x, c.y);
+  result.add(v);
+
+  return result;
+}
 
 //************************ capturing frames for a movie ************************
 boolean filming=false;  // when true frames are captured in FRAMES for a movie
