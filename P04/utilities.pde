@@ -123,6 +123,8 @@ void displayVertices() {
       fill(black);
       textSize(20);
       text(v.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
+      
+      v.MouseDragging();
     }
     v.Draw();
   }
@@ -147,7 +149,7 @@ void displayEdges() {
   for (int i = 0; i < masterCs.size(); i++) {
     Corner startC = masterCs.get(i);
     Corner endC = GetCornerFromID(startC.next);
-    
+
     DrawSidewalk(startC, endC);
 
     Vertex startV = GetVertexFromCornerID(startC.id);

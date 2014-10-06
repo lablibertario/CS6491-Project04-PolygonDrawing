@@ -39,6 +39,9 @@ IntList masterFs = new IntList();
 
 VertexHandler vertexHandler = new VertexHandler();
 
+boolean mouseClick, mouseDrag;
+PVector mouseDragStart;
+
 //**************************** initialization ****************************
 public void setup() {               // executed once at the begining 
   size(600, 600);            // window size
@@ -110,6 +113,7 @@ public void keyReleased() { // executed each time a key is released
 
 public void mouseDragged() { // executed when mouse is pressed and moved
   change=true;
+  mouseDrag = true;
 }
 
 public void mouseMoved() { // when mouse is moved
@@ -117,11 +121,14 @@ public void mouseMoved() { // when mouse is moved
 }
 
 public void mousePressed(MouseEvent e) { // when mouse key is pressed 
-
+  mouseClick = true;
+  mouseDragStart = new PVector(mouseX, mouseY);
 }
 
 public void mouseReleased(MouseEvent e) { // when mouse key is released 
-
+  mouseClick = false;
+  mouseDragStart = new PVector();
+  mouseDrag = false;
 }
 
 public Corner GetCornerFromID(int cornerID) {
@@ -420,6 +427,18 @@ public class Vertex{
 
   public boolean MouseOver() {
     return mouseIsWithinCircle(this.pos, vertexRadius);
+  }
+
+  public boolean MouseClicked() {
+    return (this.MouseOver() && mouseClick);
+  }
+
+  public boolean MouseDragging() {
+    boolean result = (this.MouseClicked() && mouseDrag); 
+    if (result) {
+      this.pos = new PVector(mouseX, mouseY);
+    }
+    return result;
   }
 
   public void Draw() {
@@ -812,6 +831,8 @@ public void displayVertices() {
       fill(black);
       textSize(20);
       text(v.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
+      
+      v.MouseDragging();
     }
     v.Draw();
   }
@@ -836,7 +857,7 @@ public void displayEdges() {
   for (int i = 0; i < masterCs.size(); i++) {
     Corner startC = masterCs.get(i);
     Corner endC = GetCornerFromID(startC.next);
-    
+
     DrawSidewalk(startC, endC);
 
     Vertex startV = GetVertexFromCornerID(startC.id);

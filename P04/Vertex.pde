@@ -146,6 +146,18 @@ public class Vertex{
     return mouseIsWithinCircle(this.pos, vertexRadius);
   }
 
+  public boolean MouseClicked() {
+    return (this.MouseOver() && mouseClick);
+  }
+
+  public boolean MouseDragging() {
+    boolean result = (this.MouseClicked() && mouseDrag); 
+    if (result) {
+      this.pos = new PVector(mouseX, mouseY);
+    }
+    return result;
+  }
+
   public void Draw() {
     stroke(vertexColor);
     noFill();
