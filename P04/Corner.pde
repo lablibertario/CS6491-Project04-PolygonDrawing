@@ -6,18 +6,24 @@ public class Corner{
   public Corner(){
     id = -1;
     visited = false;
+    next = -1;
+    prev = -1;
     swing = -1;
   }
 
   public Corner(int cornerID) {
     id = cornerID;
     visited = false;
+    next = -1;
+    prev = -1;
     swing = -1;
   }
 
   public Corner(int cornerID, int vertexID) {
     id = cornerID;
     visited = false;
+    next = -1;
+    prev = -1;
     swing = -1;
     vertex = vertexID;
   }

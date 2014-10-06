@@ -137,13 +137,29 @@ void displayEdges() {
     Corner startC = masterCs.get(i);
     Corner endC = GetCornerFromID(startC.next);
 
-    DrawSidewalk(startC, endC);
+    //DrawSidewalk(startC, endC);
 
     Vertex startV = GetVertexFromCornerID(startC.id);
     Vertex endV = GetVertexFromCornerID(endC.id);
 
     DrawEdge(startV, endV);
   }
+}
+
+void displayFaceSidewalks() {
+  for (int i = 0; i < masterFs.size(); i++) {
+    DrawFaceSidewalks(masterFs.get(i));
+  }
+}
+
+void DrawFaceSidewalks(int faceID) {
+  Corner startC = GetCornerFromFaceID(faceID);
+  Corner currentC = startC;
+  do {
+      Corner nextC = GetCornerFromID(currentC.next);
+      DrawSidewalk(currentC, nextC);
+      currentC = nextC;
+  } while (currentC.id != startC.id && currentC.next != -1);
 }
 
 void DrawLine(PVector start, PVector end, float thickness, color rgb) {
@@ -169,7 +185,7 @@ void DrawSidewalk(Corner startC, Corner endC) {
   PVector start = startC.GetDisplayPosition();
   PVector end = endC.GetDisplayPosition();
 
-  DrawLine(start, end, sidewalkThickness, green);
+  DrawLine(start, end, sidewalkThickness, sidewalkColor);
 }
 
 void DrawEdge(Vertex startV, Vertex endV) {

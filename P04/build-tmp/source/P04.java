@@ -35,7 +35,7 @@ guide="Press&drag mouse to move dot. 'x', 'y' restrict motion"; // help info
 
 ArrayList<Corner> masterCs = new ArrayList<Corner>();
 ArrayList<Vertex> masterVs = new ArrayList<Vertex>();
-IntList masterFs = new IntList();
+ArrayList<Integer> masterFs = new ArrayList<Integer>();
 
 VertexHandler vertexHandler = new VertexHandler();
 
@@ -57,11 +57,12 @@ public void setup() {               // executed once at the begining
   //hard coded points! for testing
   vertexHandler.AddVertex(50, 50, -1);
   vertexHandler.AddVertex(250, 250, 0);
+  masterFs.add(GetVertexFromID(0).corners.get(0));
   vertexHandler.AddVertex(300, 400, 1);
   vertexHandler.AddVertex(400, 250, 2);
   vertexHandler.AddVertex(100, 250, 1);
- // vertexHandler.AddVertex(55, 55, 1);
-
+  // vertexHandler.AddVertex(55, 55, 1);
+  
   //PVector temp = new PVector(-1,0);
   //println("/////////" + temp.heading());
 }
@@ -75,7 +76,6 @@ public void draw() {      // executed at each frame
     fill(black); 
     text(key, mouseX-2, mouseY);
   } // writes the character of key if still pressed
-  if (!mousePressed && !keyPressed) scribeMouseCoordinates(); // writes current mouse coordinates if nothing pressed
 
   if (filming && (animating || change)) saveFrame("FRAMES/"+nf(frameCounter++, 4)+".tif");  
   change=false; // to avoid capturing frames when nothing happens
@@ -84,16 +84,20 @@ public void draw() {      // executed at each frame
   displayEdges();
   displayVertices();
   displayCorners();
+  displayFaceSidewalks();
 
   displayHeader();
-  if (scribeText && !filming) displayFooter(); // shows title, menu, and my face & name 
+  if (!mousePressed && !keyPressed)
+    scribeMouseCoordinates(); // writes current mouse coordinates if nothing pressed
+  if (scribeText && !filming)
+    displayFooter(); // shows title, menu, and my face & name 
 
   // MOUSE INTERACTION STUFF
   if (selectedVertexID != -1) {
     // vertex has been selected already
     Vertex v = GetVertexFromID(selectedVertexID);
     v.isInteracted();
-  } else { 
+  } else {
     // vertex has not been selected yet
     for (int i = 0; i < masterVs.size(); i++) {
       Vertex v = GetVertexFromID(i);
@@ -154,6 +158,10 @@ public void mouseReleased(MouseEvent e) { // when mouse key is released
 public Corner GetCornerFromID(int cornerID) {
   return masterCs.get(cornerID);
 }
+
+public Corner GetCornerFromFaceID(int faceID) {
+  return GetCornerFromID(masterFs.get(faceID));
+}
  
 public Vertex GetVertexFromCornerID(int cornerID) {
   return masterVs.get(masterCs.get(cornerID).vertex);
@@ -170,18 +178,24 @@ public class Corner{
   public Corner(){
     id = -1;
     visited = false;
+    next = -1;
+    prev = -1;
     swing = -1;
   }
 
   public Corner(int cornerID) {
     id = cornerID;
     visited = false;
+    next = -1;
+    prev = -1;
     swing = -1;
   }
 
   public Corner(int cornerID, int vertexID) {
     id = cornerID;
     visited = false;
+    next = -1;
+    prev = -1;
     swing = -1;
     vertex = vertexID;
   }
@@ -909,13 +923,29 @@ public void displayEdges() {
     Corner startC = masterCs.get(i);
     Corner endC = GetCornerFromID(startC.next);
 
-    DrawSidewalk(startC, endC);
+    //DrawSidewalk(startC, endC);
 
     Vertex startV = GetVertexFromCornerID(startC.id);
     Vertex endV = GetVertexFromCornerID(endC.id);
 
     DrawEdge(startV, endV);
   }
+}
+
+public void displayFaceSidewalks() {
+  for (int i = 0; i < masterFs.size(); i++) {
+    DrawFaceSidewalks(masterFs.get(i));
+  }
+}
+
+public void DrawFaceSidewalks(int faceID) {
+  Corner startC = GetCornerFromFaceID(faceID);
+  Corner currentC = startC;
+  do {
+      Corner nextC = GetCornerFromID(currentC.next);
+      DrawSidewalk(currentC, nextC);
+      currentC = nextC;
+  } while (currentC.id != startC.id && currentC.next != -1);
 }
 
 public void DrawLine(PVector start, PVector end, float thickness, int rgb) {
@@ -941,7 +971,7 @@ public void DrawSidewalk(Corner startC, Corner endC) {
   PVector start = startC.GetDisplayPosition();
   PVector end = endC.GetDisplayPosition();
 
-  DrawLine(start, end, sidewalkThickness, green);
+  DrawLine(start, end, sidewalkThickness, sidewalkColor);
 }
 
 public void DrawEdge(Vertex startV, Vertex endV) {
