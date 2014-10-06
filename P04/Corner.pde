@@ -63,6 +63,26 @@ public class Corner{
     return result;
   }
 
+  public Corner FindUnswing(){
+    Corner currCorner = this;
+    while(currCorner.swing != id){
+      currCorner = GetCornerFromID(currCorner.swing);
+    }
+
+    return currCorner;
+  }
+
+  public boolean isHovered() {
+    boolean result = mouseIsWithinCircle(this.GetDisplayPosition(), cornerRadius);
+    return result;
+  }
+
+  public void isInteracted() {
+    if (this.isHovered()) {
+      this.DrawInformation();
+    }
+  }
+
   public void Draw() {
     fill(cornerColor);
     stroke(cornerColor);
@@ -74,17 +94,10 @@ public class Corner{
     showDisk(pos.x, pos.y, 2); 
   }
 
-  public boolean MouseOver() {
-    return mouseIsWithinCircle(this.GetDisplayPosition(), cornerRadius);
+  public void DrawInformation() {
+    // draw vertex information
+    fill(cornerColor);
+    textSize(20);
+    text(this.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
   }
-
-  public Corner FindUnswing(){
-    Corner currCorner = this;
-    while(currCorner.swing != id){
-      currCorner = GetCornerFromID(currCorner.swing);
-    }
-
-    return currCorner;
-  }
-
 }

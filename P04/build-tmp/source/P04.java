@@ -39,8 +39,10 @@ IntList masterFs = new IntList();
 
 VertexHandler vertexHandler = new VertexHandler();
 
-boolean mouseClick, mouseDrag;
+boolean mouseDragged;
 PVector mouseDragStart;
+
+int selectedVertexID = -1;
 
 //**************************** initialization ****************************
 public void setup() {               // executed once at the begining 
@@ -75,8 +77,6 @@ public void draw() {      // executed at each frame
   } // writes the character of key if still pressed
   if (!mousePressed && !keyPressed) scribeMouseCoordinates(); // writes current mouse coordinates if nothing pressed
 
-  displayHeader();
-  if (scribeText && !filming) displayFooter(); // shows title, menu, and my face & name 
   if (filming && (animating || change)) saveFrame("FRAMES/"+nf(frameCounter++, 4)+".tif");  
   change=false; // to avoid capturing frames when nothing happens
   // make sure that animating is set to true at the beginning of an animation and to false at the end
@@ -84,6 +84,27 @@ public void draw() {      // executed at each frame
   displayEdges();
   displayVertices();
   displayCorners();
+
+  displayHeader();
+  if (scribeText && !filming) displayFooter(); // shows title, menu, and my face & name 
+
+  // MOUSE INTERACTION STUFF
+  if (selectedVertexID != -1) {
+    // vertex has been selected already
+    Vertex v = GetVertexFromID(selectedVertexID);
+    v.isInteracted();
+  } else { 
+    // vertex has not been selected yet
+    for (int i = 0; i < masterVs.size(); i++) {
+      Vertex v = GetVertexFromID(i);
+      v.isInteracted();
+    }
+
+    for (int i = 0; i < masterCs.size(); i++) {
+      Corner c = GetCornerFromID(i);
+      c.isInteracted();
+    }
+  }
   
 }  // end of draw()
 
@@ -113,7 +134,7 @@ public void keyReleased() { // executed each time a key is released
 
 public void mouseDragged() { // executed when mouse is pressed and moved
   change=true;
-  mouseDrag = true;
+  mouseDragged = true;
 }
 
 public void mouseMoved() { // when mouse is moved
@@ -121,14 +142,13 @@ public void mouseMoved() { // when mouse is moved
 }
 
 public void mousePressed(MouseEvent e) { // when mouse key is pressed 
-  mouseClick = true;
   mouseDragStart = new PVector(mouseX, mouseY);
 }
 
 public void mouseReleased(MouseEvent e) { // when mouse key is released 
-  mouseClick = false;
   mouseDragStart = new PVector();
-  mouseDrag = false;
+  mouseDragged = false;
+  selectedVertexID = -1;
 }
 
 public Corner GetCornerFromID(int cornerID) {
@@ -142,9 +162,6 @@ public Vertex GetVertexFromCornerID(int cornerID) {
 public Vertex GetVertexFromID(int vertexID) {
   return masterVs.get(vertexID);
 }
-
-
-
 public class Corner{
   int id;
   int next, prev, swing, vertex;
@@ -210,6 +227,26 @@ public class Corner{
     return result;
   }
 
+  public Corner FindUnswing(){
+    Corner currCorner = this;
+    while(currCorner.swing != id){
+      currCorner = GetCornerFromID(currCorner.swing);
+    }
+
+    return currCorner;
+  }
+
+  public boolean isHovered() {
+    boolean result = mouseIsWithinCircle(this.GetDisplayPosition(), cornerRadius);
+    return result;
+  }
+
+  public void isInteracted() {
+    if (this.isHovered()) {
+      this.DrawInformation();
+    }
+  }
+
   public void Draw() {
     fill(cornerColor);
     stroke(cornerColor);
@@ -221,19 +258,12 @@ public class Corner{
     showDisk(pos.x, pos.y, 2); 
   }
 
-  public boolean MouseOver() {
-    return mouseIsWithinCircle(this.GetDisplayPosition(), cornerRadius);
+  public void DrawInformation() {
+    // draw vertex information
+    fill(cornerColor);
+    textSize(20);
+    text(this.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
   }
-
-  public Corner FindUnswing(){
-    Corner currCorner = this;
-    while(currCorner.swing != id){
-      currCorner = GetCornerFromID(currCorner.swing);
-    }
-
-    return currCorner;
-  }
-
 }
 /* TO DOs for a project
 Fill in file header on the main tab (Project??) with your name, project number, title, and date.
@@ -425,27 +455,61 @@ public class Vertex{
     corners.add(cornerID);
   }
 
-  public boolean MouseOver() {
-    return mouseIsWithinCircle(this.pos, vertexRadius);
-  }
-
-  public boolean MouseClicked() {
-    return (this.MouseOver() && mouseClick);
-  }
-
-  public boolean MouseDragging() {
-    boolean result = (this.MouseClicked() && mouseDrag); 
-    if (result) {
-      this.pos = new PVector(mouseX, mouseY);
-    }
+  public boolean isHovered() {
+    boolean result = mouseIsWithinCircle(this.pos, vertexRadius);
     return result;
   }
 
+  public boolean isClicked() {
+    boolean result = (this.isHovered() && mousePressed);
+    return result;
+  }
+
+  public boolean isDragged() {
+    boolean result = (this.isSelected() && mouseDragged); 
+    return result;
+  }
+
+  public boolean isSelected() {
+    boolean result = (selectedVertexID == this.id);
+    return result;
+  }
+
+  public void isInteracted() {
+    if (this.isHovered()) {
+      this.DrawInformation();
+    }
+
+    if (this.isClicked()) {
+      this.DrawInformation();
+      selectedVertexID = this.id;
+    }
+
+    if (this.isDragged()) {
+      this.DrawInformation();
+      this.Drag();
+    }
+  }
+
+  public void Drag() {
+    // move vertex with mouse
+    this.pos = new PVector(mouseX, mouseY);
+    selectedVertexID = this.id;
+  }
+
   public void Draw() {
+    // draw the vertex itself
     stroke(vertexColor);
     noFill();
 
     showDisk(pos.x, pos.y, vertexRadius);
+  }
+
+  public void DrawInformation() {
+    // draw vertex information
+    fill(vertexColor);
+    textSize(20);
+    text(this.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
   }
 }
 public class VertexHandler {
@@ -827,13 +891,6 @@ public void displayFooter() { // Displays help text at the bottom
 public void displayVertices() {
   for (int i = 0; i < masterVs.size(); i++) {
     Vertex v = masterVs.get(i);
-    if (v.MouseOver()) {
-      fill(black);
-      textSize(20);
-      text(v.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
-      
-      v.MouseDragging();
-    }
     v.Draw();
   }
   textSize(12);
@@ -843,12 +900,6 @@ public void displayCorners() {
   for (int i = 0; i < masterCs.size(); i++) {
     Corner c = masterCs.get(i);
     c.Draw();
-
-    if (c.MouseOver()) {
-      fill(cornerColor);
-      textSize(20);
-      text(c.id, mouseX + cornerTextOffset.x, mouseY + cornerTextOffset.y);
-    }
   }
   textSize(12);
 }

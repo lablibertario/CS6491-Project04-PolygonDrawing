@@ -142,26 +142,60 @@ public class Vertex{
     corners.add(cornerID);
   }
 
-  public boolean MouseOver() {
-    return mouseIsWithinCircle(this.pos, vertexRadius);
-  }
-
-  public boolean MouseClicked() {
-    return (this.MouseOver() && mouseClick);
-  }
-
-  public boolean MouseDragging() {
-    boolean result = (this.MouseClicked() && mouseDrag); 
-    if (result) {
-      this.pos = new PVector(mouseX, mouseY);
-    }
+  public boolean isHovered() {
+    boolean result = mouseIsWithinCircle(this.pos, vertexRadius);
     return result;
   }
 
+  public boolean isClicked() {
+    boolean result = (this.isHovered() && mousePressed);
+    return result;
+  }
+
+  public boolean isDragged() {
+    boolean result = (this.isSelected() && mouseDragged); 
+    return result;
+  }
+
+  public boolean isSelected() {
+    boolean result = (selectedVertexID == this.id);
+    return result;
+  }
+
+  public void isInteracted() {
+    if (this.isHovered()) {
+      this.DrawInformation();
+    }
+
+    if (this.isClicked()) {
+      this.DrawInformation();
+      selectedVertexID = this.id;
+    }
+
+    if (this.isDragged()) {
+      this.DrawInformation();
+      this.Drag();
+    }
+  }
+
+  public void Drag() {
+    // move vertex with mouse
+    this.pos = new PVector(mouseX, mouseY);
+    selectedVertexID = this.id;
+  }
+
   public void Draw() {
+    // draw the vertex itself
     stroke(vertexColor);
     noFill();
 
     showDisk(pos.x, pos.y, vertexRadius);
+  }
+
+  public void DrawInformation() {
+    // draw vertex information
+    fill(vertexColor);
+    textSize(20);
+    text(this.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
   }
 }

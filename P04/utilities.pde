@@ -119,13 +119,6 @@ void displayFooter() { // Displays help text at the bottom
 void displayVertices() {
   for (int i = 0; i < masterVs.size(); i++) {
     Vertex v = masterVs.get(i);
-    if (v.MouseOver()) {
-      fill(black);
-      textSize(20);
-      text(v.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
-      
-      v.MouseDragging();
-    }
     v.Draw();
   }
   textSize(12);
@@ -135,12 +128,6 @@ void displayCorners() {
   for (int i = 0; i < masterCs.size(); i++) {
     Corner c = masterCs.get(i);
     c.Draw();
-
-    if (c.MouseOver()) {
-      fill(cornerColor);
-      textSize(20);
-      text(c.id, mouseX + cornerTextOffset.x, mouseY + cornerTextOffset.y);
-    }
   }
   textSize(12);
 }

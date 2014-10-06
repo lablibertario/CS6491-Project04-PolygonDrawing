@@ -23,8 +23,10 @@ IntList masterFs = new IntList();
 
 VertexHandler vertexHandler = new VertexHandler();
 
-boolean mouseClick, mouseDrag;
+boolean mouseDragged;
 PVector mouseDragStart;
+
+int selectedVertexID = -1;
 
 //**************************** initialization ****************************
 void setup() {               // executed once at the begining 
@@ -59,8 +61,6 @@ void draw() {      // executed at each frame
   } // writes the character of key if still pressed
   if (!mousePressed && !keyPressed) scribeMouseCoordinates(); // writes current mouse coordinates if nothing pressed
 
-  displayHeader();
-  if (scribeText && !filming) displayFooter(); // shows title, menu, and my face & name 
   if (filming && (animating || change)) saveFrame("FRAMES/"+nf(frameCounter++, 4)+".tif");  
   change=false; // to avoid capturing frames when nothing happens
   // make sure that animating is set to true at the beginning of an animation and to false at the end
@@ -68,6 +68,27 @@ void draw() {      // executed at each frame
   displayEdges();
   displayVertices();
   displayCorners();
+
+  displayHeader();
+  if (scribeText && !filming) displayFooter(); // shows title, menu, and my face & name 
+
+  // MOUSE INTERACTION STUFF
+  if (selectedVertexID != -1) {
+    // vertex has been selected already
+    Vertex v = GetVertexFromID(selectedVertexID);
+    v.isInteracted();
+  } else { 
+    // vertex has not been selected yet
+    for (int i = 0; i < masterVs.size(); i++) {
+      Vertex v = GetVertexFromID(i);
+      v.isInteracted();
+    }
+
+    for (int i = 0; i < masterCs.size(); i++) {
+      Corner c = GetCornerFromID(i);
+      c.isInteracted();
+    }
+  }
   
 }  // end of draw()
 
@@ -97,7 +118,7 @@ void keyReleased() { // executed each time a key is released
 
 void mouseDragged() { // executed when mouse is pressed and moved
   change=true;
-  mouseDrag = true;
+  mouseDragged = true;
 }
 
 void mouseMoved() { // when mouse is moved
@@ -105,14 +126,13 @@ void mouseMoved() { // when mouse is moved
 }
 
 void mousePressed(MouseEvent e) { // when mouse key is pressed 
-  mouseClick = true;
   mouseDragStart = new PVector(mouseX, mouseY);
 }
 
 void mouseReleased(MouseEvent e) { // when mouse key is released 
-  mouseClick = false;
   mouseDragStart = new PVector();
-  mouseDrag = false;
+  mouseDragged = false;
+  selectedVertexID = -1;
 }
 
 public Corner GetCornerFromID(int cornerID) {
@@ -126,6 +146,3 @@ public Vertex GetVertexFromCornerID(int cornerID) {
 public Vertex GetVertexFromID(int vertexID) {
   return masterVs.get(vertexID);
 }
-
-
-
