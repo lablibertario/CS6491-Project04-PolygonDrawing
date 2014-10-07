@@ -110,6 +110,7 @@ public class VertexHandler {
 				farCorner = GetCornerFromID(farConnection.corners.get(0));
 			}
 		}
+		
 		Corner originsNextC = GetCornerFromID(originCorner.next);
 		Corner farsPrevC = GetCornerFromID(farCorner.prev);
 
@@ -180,7 +181,7 @@ public class VertexHandler {
 		//float smallestAngle = 2*PI; 
 		for(int i = 0; i < _connectVertex.corners.size(); i++){
 			Corner c = GetCornerFromID(_connectVertex.corners.get(i));
-			println("c: " + c.id + "c.next" + c.next + "c.prev: " + c.prev);
+			//println("c: " + c.id + "c.next" + c.next + "c.prev: " + c.prev);
 			Vertex v = GetVertexFromCornerID(c.id); 
 			Vertex vNext = GetVertexFromCornerID(c.next);
 			Vertex vPrev = GetVertexFromCornerID(c.prev);
@@ -188,16 +189,9 @@ public class VertexHandler {
 			PVector prevEdge = new PVector(vPrev.pos.x - v.pos.x, vPrev.pos.y - v.pos.y);
 			PVector nextEdge = new PVector(vNext.pos.x - v.pos.x, vNext.pos.y - v.pos.y);
 			PVector newEdge = new PVector(newVertex.pos.x - v.pos.x, newVertex.pos.y - v.pos.y);
-			// println("prevEdge: "+prevEdge);
-			// println("nextEdge: "+nextEdge);
-			// println("newEdge: "+newEdge);
 
-			//float angleBetween = GetSmallestAngle(prevEdge, newEdge);
-			//println("angle: " + angleBetween);
-			//if(angleBetween < smallestAngle && !isToRightOf(prevEdge, newEdge)) {
 			if (IsBetween(prevEdge, newEdge, nextEdge)) {
 				println("is between yo");
-				//smallestAngle = angleBetween;
 				splitCorner = c;
 				break;
 			}
@@ -300,6 +294,8 @@ public class VertexHandler {
 		float oldPrevRot = GetPosAngle(prevEdge);
 		float oldNewRot = GetPosAngle(newEdge);
 		float oldNextRot = GetPosAngle(nextEdge);
+
+		println("new guy's rotation: " + oldNewRot);
 
 		float rotAmount = 2*PI - oldPrevRot;
 
