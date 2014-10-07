@@ -12,14 +12,17 @@ public class VertexHandler {
 
 		//check to see if we're connecting two existing vertices
 		int idOfExistingConnection = -1;
-		for(int i = 0; i < masterVs.size(); i++){
-			PVector existingVertPos = new PVector(GetVertexFromID(i).pos.x, GetVertexFromID(i).pos.y);
-            PVector tmpNewVert = new PVector(newVertex.pos.x, newVertex.pos.y);
-			existingVertPos.sub(tmpNewVert);
-			if((abs(existingVertPos.x) < distToConnect) && (abs(existingVertPos.y) < distToConnect)) {
-				idOfExistingConnection = i;
-				break;
-			} 
+		if(!editing) {
+			println("checking if vert is on top of another");
+			for(int i = 0; i < masterVs.size(); i++){
+				PVector existingVertPos = new PVector(GetVertexFromID(i).pos.x, GetVertexFromID(i).pos.y);
+	            PVector tmpNewVert = new PVector(newVertex.pos.x, newVertex.pos.y);
+				existingVertPos.sub(tmpNewVert);
+				if((abs(existingVertPos.x) < distToConnect) && (abs(existingVertPos.y) < distToConnect)) {
+					idOfExistingConnection = i;
+					break;
+				} 
+			}
 		}
 
 		if(idOfExistingConnection != -1){
@@ -119,6 +122,21 @@ public class VertexHandler {
 		originsNextC.prev = addedCorner.id;
 		farsPrevC.next = newCorner.id;
 
+		if(originCorner.swing == -1) {
+			addedCorner.swing = originCorner.id;
+		} else {
+			addedCorner.swing = originCorner.swing;
+		}
+		originCorner.swing = addedCorner.id;
+
+		if(farCorner.swing == -1) {
+			farCorner.swing = newCorner.id;
+		} else {
+			Corner farUnSwing = farCorner.FindUnswing();
+			farUnSwing.swing = newCorner.id;
+		}
+		newCorner.swing = farCorner.id;
+
         AddToMaster(addedCorner);
         AddToMaster(newCorner);
 
@@ -162,7 +180,8 @@ public class VertexHandler {
 		//float smallestAngle = 2*PI; 
 		for(int i = 0; i < _connectVertex.corners.size(); i++){
 			Corner c = GetCornerFromID(_connectVertex.corners.get(i));
-			Vertex v = GetVertexFromCornerID(c.id);
+			println("c: " + c.id + "c.next" + c.next + "c.prev: " + c.prev);
+			Vertex v = GetVertexFromCornerID(c.id); 
 			Vertex vNext = GetVertexFromCornerID(c.next);
 			Vertex vPrev = GetVertexFromCornerID(c.prev);
 
@@ -238,6 +257,8 @@ public class VertexHandler {
 		AddToMaster(newCorner);
 		connectVertex.AddCorner(addedCorner.id);
 		newVertex.AddCorner(newCorner.id);
+
+		println("done splitting corner");
 	}
 
 	private Direction VertexDirection(PVector comparison, PVector insertion) {

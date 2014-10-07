@@ -23,6 +23,8 @@ ArrayList<Integer> masterFs = new ArrayList<Integer>();
 
 VertexHandler vertexHandler = new VertexHandler();
 boolean  singlePress = false;
+boolean editStart = true;
+boolean editing = false;
 
 Vertex rubberBand = new Vertex();
 
@@ -116,6 +118,7 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
   change=true;
 
     if (key == 'q') {
+      editing = true;
     if(!singlePress){
       editMode = true;
       singlePress = true;
@@ -131,6 +134,7 @@ void keyReleased() { // executed each time a key is released
   change=true;
 
   if (key == 'q') {
+    editing = false;
     if(singlePress){
       editMode = false;
       singlePress = false;

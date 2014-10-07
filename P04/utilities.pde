@@ -21,6 +21,9 @@ PVector vertexTextOffset = new PVector(7, -15);
 
 int cornerRadius = 3;
 color cornerColor = red;
+color swingColor = color(30, 20, 26);
+color nextColor = color(32, 36, 23);
+color prevColor = color(18, 28, 21);
 PVector cornerTextOffset = new PVector(7, -15);
 
 // ************************************************************************ GRAPHICS 

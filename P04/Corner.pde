@@ -72,6 +72,7 @@ public class Corner{
   public Corner FindUnswing(){
     Corner currCorner = this;
     while(currCorner.swing != id){
+      println("swing id: " + currCorner.swing);
       currCorner = GetCornerFromID(currCorner.swing);
     }
 
@@ -85,7 +86,7 @@ public class Corner{
 
   public void isInteracted() {
     if (this.isHovered()) {
-      this.DrawInformation();
+      this.DrawInformation(cornerColor);
     }
   }
 
@@ -100,10 +101,12 @@ public class Corner{
     showDisk(pos.x, pos.y, 2); 
   }
 
-  public void DrawInformation() {
+  public void DrawInformation(color fillColor) {
     // draw vertex information
-    fill(cornerColor);
+    fill(fillColor);
     textSize(20);
     text(this.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
+
+    GetCornerFromID(swing).DrawInformation(swingColor);
   }
 }

@@ -1,7 +1,6 @@
 public class Vertex{
  PVector pos;
  int id;
- boolean editStart = true;
  public ArrayList<Integer> corners = new ArrayList<Integer>();
 
   public Vertex(){
@@ -63,8 +62,8 @@ public class Vertex{
           if(added){
             println("added a vert");
             editStart = false;
-            selectedVertexID = masterVs.size()-1;
             editMode = false;
+            selectedVertexID = masterVs.size()-1;
           }
         }
       } else {
