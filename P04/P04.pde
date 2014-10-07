@@ -37,9 +37,7 @@ void setup() {               // executed once at the begining
   smooth();                  // turn on antialiasing
   myFace = loadImage("data/pic.jpg");  // loads image from file pic.jpg in folder data, replace it with a clear pic of your face
   myFace2 = loadImage("data/pic2.jpg");
-  power = loadImage("data/power.png"); // loads power image
-  
-  
+
   //hard coded points! for testing
   vertexHandler.AddVertex(100, 100, -1);
   vertexHandler.AddVertex(100, 300, 0);
@@ -69,8 +67,18 @@ void draw() {      // executed at each frame
 
   displayEdges();
   displayVertices();
-  //displayFaceSidewalks();
+
+  int faceToDraw = MouseIsWithinFace();
+  if (faceToDraw != -1) {
+    DrawFaceSidewalks(faceToDraw);
+    DrawAreaOfFace(faceToDraw);
+  } else {
+    DrawFaceSidewalks(outerFace);
+    DrawAreaOfFace(outerFace);
+  }
+
   displayCorners();
+
 
   displayHeader();
   if (!mousePressed && !keyPressed)
@@ -94,15 +102,7 @@ void draw() {      // executed at each frame
       Corner c = GetCornerFromID(i);
       c.isInteracted();
     }
-  }
-
-  int faceToDraw = MouseIsWithinFace();
-  if (faceToDraw != -1) {
-    DrawFaceSidewalks(faceToDraw);
-  } else {
-    DrawFaceSidewalks(outerFace);
-  }
-  
+  }  
 }  // end of draw()
 
 
@@ -274,4 +274,40 @@ public boolean HorizontalIntersectsLineSegment(float y, PVector a, PVector b) {
 
   // print(" // " + (x >= mouseX && y <= max(a.y, b.y) && y >= min(a.y, b.y)) + "\n");
   return (x >= mouseX && y <= max(a.y, b.y) && y >= min(a.y, b.y));
+}
+
+public float DrawAreaOfFace(int faceID) {
+  float area = 0f;
+  PVector center = new PVector(0, 0);
+  int numCorners = 0;
+
+  int startCornerID = masterFs.get(faceID);
+  Corner startCorner = GetCornerFromID(startCornerID);
+  int currentCornerID = startCornerID;
+
+  do {
+    Corner currentCorner = GetCornerFromID(currentCornerID);
+    Vertex currentVertex = GetVertexFromCornerID(currentCornerID);
+    Vertex nextVertex = GetVertexFromCornerID(currentCorner.next);
+
+    PVector start = currentVertex.pos;
+    PVector end = nextVertex.pos;
+
+    numCorners++;
+    center.add(start);
+    area += (end.x + start.x) * (end.y - start.y) / 2;
+
+    currentCornerID = currentCorner.next;
+  } while (currentCornerID != startCornerID);
+
+  center.div(numCorners);
+
+  fill(areaColor);
+  textSize(areaTextSize);
+  textAlign(CENTER);
+
+  String areaText = String.format("%.0f", abs(area));
+  text(areaText, center.x, center.y+10);
+  textAlign(LEFT);
+  return area;
 }

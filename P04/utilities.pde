@@ -23,6 +23,9 @@ int cornerRadius = 3;
 color cornerColor = red;
 PVector cornerTextOffset = new PVector(7, -15);
 
+int areaTextSize = 30;
+color areaColor = yellow;
+
 // ************************************************************************ GRAPHICS 
 void pen(color c, float w) {
   stroke(c); 
