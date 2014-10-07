@@ -302,8 +302,8 @@ public class VertexHandler {
 		float oldNewRot = GetPosAngle(newEdge);
 		float oldNextRot = GetPosAngle(nextEdge);
 
-		println("oldNewRot: " + oldNewRot);
 		println("oldPrevRot: "+oldPrevRot);
+		println("oldNewRot: " + oldNewRot);
 		println("oldNextRot: "+oldNextRot);
 
 		float rotAmount = 2*PI - oldPrevRot;
@@ -320,28 +320,28 @@ public class VertexHandler {
 		newNewRot = round(newNewRot, 2);
 		newNextRot = round(newNextRot, 2);
 
-		println("newNewRot: " + newNewRot);
 		println("newPrevRot: "+newPrevRot);
+		println("newNewRot: " + newNewRot);
 		println("newNextRot: "+newNextRot);
 
 		//closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
 
 		PVector fromPrev = new PVector(-prevEdge.x, -prevEdge.y);
 		PVector toNext = new PVector(nextEdge.x, nextEdge.y);
-		//println("det: " + det(fromPrev, toNext));
-		println((newNextRot - newPrevRot) + " >= " + (newNextRot - newNewRot) + " = " + ((newNextRot - newPrevRot) >= (newNextRot - newNewRot)));
-		return ((newNextRot - newPrevRot) >= (newNextRot - newNewRot));
+		println("det: " + det(fromPrev, toNext));
+		//println((newNextRot - newPrevRot) + " >= " + (newNextRot - newNewRot) + " = " + ((newNextRot - newPrevRot) >= (newNextRot - newNewRot)));
+		//return ((newNextRot - newPrevRot) >= (newNextRot - newNewRot));
 
-		// if (det(fromPrev, toNext) >= 0) {
-		// 	// clockwise
-		// 	println("clockwise: " + (newNextRot - newPrevRot) + " >= " + (newNextRot - newNewRot) + " = " + ((newNextRot - newPrevRot) > (newNextRot - newNewRot)));
-		// 	return ((newNextRot - newPrevRot) >= (newNextRot - newNewRot));
+		if (det(fromPrev, toNext) >= 0) {
+			// clockwise
+			println("clockwise: ");// + " < " + (newNextRot - newNewRot) + " = " + ((newNextRot - newPrevRot) < (newNextRot - newNewRot)));
+			return (newNextRot < newNewRot);
 			
-		// } else {
-		// 	// counter-clockwise
-		// 	println("counter-clockwise: " + (newNextRot - newPrevRot) + " < " + (newNextRot - newNewRot) + " = "  + ((newNextRot - newPrevRot) <= (newNextRot - newNewRot)));
-		// 	return ((newNextRot - newPrevRot) <= (newNextRot - newNewRot));
-		// }
+		} else {
+			// counter-clockwise
+			println("counter-clockwise: ");// + (newNextRot - newPrevRot) + " < " + (newNextRot - newNewRot) + " = "  + ((newNextRot - newPrevRot) <= (newNextRot - newNewRot)));
+			return (newNextRot  < newNewRot);
+		}
 	}
 
 	float round(float val, int dp) {
