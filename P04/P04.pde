@@ -21,6 +21,8 @@ ArrayList<Corner> masterCs = new ArrayList<Corner>();
 ArrayList<Vertex> masterVs = new ArrayList<Vertex>();
 ArrayList<Integer> masterFs = new ArrayList<Integer>();
 
+int outerFace = -1;
+
 VertexHandler vertexHandler = new VertexHandler();
 
 boolean mouseDragged;
@@ -67,7 +69,7 @@ void draw() {      // executed at each frame
 
   displayEdges();
   displayVertices();
-  displayFaceSidewalks();
+  //displayFaceSidewalks();
   displayCorners();
 
   displayHeader();
@@ -93,6 +95,13 @@ void draw() {      // executed at each frame
       c.isInteracted();
     }
   }
+
+  int faceToDraw = MouseIsWithinFace();
+  if (faceToDraw != -1) {
+    DrawFaceSidewalks(faceToDraw);
+  } else {
+    DrawFaceSidewalks(outerFace);
+  }
   
 }  // end of draw()
 
@@ -105,7 +114,7 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
     filming=!filming;
   } // filming on/off capture frames into folder FRAMES
   if (key==' ') {
-
+   // MouseIsWithinFace();
   } // reset the blue ball at the center of the screen
   if (key=='a') animating=true;  // quit application
   if (key=='Q') exit();  // quit application
@@ -179,6 +188,19 @@ public void CheckForFaces() {
       }
     }
 
+    Corner currCorner = GetCornerFromID(currentCornerID);
+    Vertex currVertex = GetVertexFromCornerID(currentCornerID);
+
+    PVector currPos = currVertex.pos;
+    PVector prevPos = GetVertexFromCornerID(currCorner.prev).pos;
+    PVector nextPos = GetVertexFromCornerID(currCorner.next).pos;
+    
+    PVector fromPrev = new PVector(currPos.x - prevPos.x, currPos.y - prevPos.y);
+    PVector toNext = new PVector(nextPos.x - currPos.x, nextPos.y - currPos.y);
+    if (det(fromPrev, toNext) < 0) {
+      // counter-clockwise corner, must be outer face
+      outerFace = masterFs.size();
+    }
     masterFs.add(currentCornerID);
 
     while (!unvisitedCorners.get(currentCornerID).visited) {
@@ -189,4 +211,67 @@ public void CheckForFaces() {
   }
 
   println("FACES: " + masterFs);
+}
+
+public int MouseIsWithinFace() {
+  // return which face the mouse is within
+  for (int i = 0; i < masterFs.size(); i++) {   ///////////////////////////////////////////////////
+    if (i != outerFace) {
+      int intersections = 0;
+      int startCornerID = masterFs.get(i);
+      Corner startCorner = GetCornerFromID(startCornerID);
+      int currentCornerID = startCornerID;
+
+      do {
+        Corner currentCorner = GetCornerFromID(currentCornerID);
+        Vertex currentVertex = GetVertexFromCornerID(currentCornerID);
+        Vertex nextVertex = GetVertexFromCornerID(currentCorner.next);
+
+        PVector start = currentVertex.pos;
+        PVector end = nextVertex.pos;
+
+        if (HorizontalIntersectsLineSegment(mouseY, start, end)) {
+          intersections++;
+        }
+
+        currentCornerID = currentCorner.next;
+      } while (currentCornerID != startCornerID);
+
+      println("face " + i + " intersections: " + intersections);
+
+      if (intersections % 2 != 0) {
+        return i;
+      }
+    }
+  }
+
+  return -1;
+}
+
+public boolean HorizontalIntersectsLineSegment(float y, PVector a, PVector b) {
+  // y : horizontal line y-value
+  // ab : line segment
+  //PVector c = new PVector(min(a.x, b.x)-20, y);
+  //PVector d = new PVector(max(a.x, b.x)+20, y);
+  float m = (b.y - a.y) / (b.x - a.x);
+  float intercept = a.y - m*a.x;
+  float x = (y-intercept)/m;
+
+  if (a.x == b.x) {
+    // if ab is vertical line, return true if y is between a.y and b.y
+    // print(" // " + (y <= max(a.y, b.y) && y >= min(a.y, b.y)) + "\n");
+    // return (y <= max(a.y, b.y) && y >= min(a.y, b.y));
+    x = a.x;
+  }
+
+  // print("a " + a + ", b " + b + ", m " + m + ", int " + intercept + ", x " + x + ", y " + y);
+
+  if (a.y == b.y) {
+    // if ab is a horizontal line, return true if y is equal to a.y
+    // print(" // " + false + "\n");
+    return false;
+  } 
+  
+  // print(" // " + (x >= mouseX && y <= max(a.y, b.y) && y >= min(a.y, b.y)) + "\n");
+  return (x >= mouseX && y <= max(a.y, b.y) && y >= min(a.y, b.y));
 }
