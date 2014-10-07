@@ -58,7 +58,7 @@ public class Vertex{
       //drag in new vert/edge
       if(editMode){
         if(editStart){
-          vertexHandler.AddVertex(mouseX+5, mouseY+5, id);
+          vertexHandler.AddVertex(mouseX+10, mouseY+10, id);
           //rubberBand = GetVertexFromID(masterVs.size()-1);
           editStart = false;
           selectedVertexID = masterVs.size()-1;

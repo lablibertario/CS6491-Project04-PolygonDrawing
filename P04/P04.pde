@@ -22,6 +22,7 @@ ArrayList<Vertex> masterVs = new ArrayList<Vertex>();
 ArrayList<Integer> masterFs = new ArrayList<Integer>();
 
 VertexHandler vertexHandler = new VertexHandler();
+boolean  singlePress = false;
 
 Vertex rubberBand = new Vertex();
 
@@ -114,7 +115,12 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
   if (key=='Q') exit();  // quit application
   change=true;
 
-  if (key == 'q') editMode = true;
+    if (key == 'q') {
+    if(!singlePress){
+      editMode = true;
+      singlePress = true;
+    }
+  }
 }
 
 void keyReleased() { // executed each time a key is released
@@ -124,7 +130,12 @@ void keyReleased() { // executed each time a key is released
   if (key=='a') animating=false;  // quit application
   change=true;
 
-  if (key == 'q') editMode = false;
+  if (key == 'q') {
+    if(singlePress){
+      editMode = false;
+      singlePress = false;
+    }
+  }
 }
 
 void mouseDragged() { // executed when mouse is pressed and moved
