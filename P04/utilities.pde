@@ -20,7 +20,7 @@ color vertexColor = black;
 PVector vertexTextOffset = new PVector(7, -15);
 
 int cornerRadius = 3;
-color cornerColor = color(240, 251, 159);
+color cornerColor = black;
 color swingColor = color(213, 162, 222);
 color nextColor = color(255, 168, 138);
 color prevColor = color(100, 185, 144);
@@ -208,7 +208,7 @@ void DrawEdge(Vertex startV, Vertex endV) {
     showDisk(closestPoint.x, closestPoint.y, edgeThickness*2);
 
     if(removeVert && mouseClicked) {
-      vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id);
+      vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id, endV.id);
     }
     //text(GetDistanceFromEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos), mouseX + edgeTextOffset.x, mouseY + edgeTextOffset.y);
   }

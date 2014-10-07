@@ -5,6 +5,7 @@ public class VertexHandler {
 	private Vertex connectVertex;
 	private boolean successfulCreation = true;
 	private boolean inserting = false;
+	private int insertionFarVert;
 
 	public boolean AddVertex(int _x, int _y, int connectIndex) {
 		PVector insertionEdge, comparisonEdge;
@@ -29,10 +30,12 @@ public class VertexHandler {
 		if((idOfExistingConnection == connectIndex) && masterVs.size() > 0) return false;
 
 		if(inserting) {
+			println("start v: " + connectIndex);
 			connectVertex = GetVertexFromID(connectIndex);
-			ConnectExistingVerts(connectVertex, newVertex.id);
-			ConnectExistingVerts(newVertex, idOfExistingConnection);
-			Corner splitCorner = FindEdgesBetween(connectVertex, newVertex);
+			//Corner splitCorner = FindEdgesBetween(connectVertex, newVertex);
+			//ConnectExistingVerts(connectVertex, newVertex.id);
+			//ConnectExistingVerts(newVertex, idOfExistingConnection);
+			InsertVertOnEdge(connectVertex, insertionFarVert);
 		}
 
 		if(idOfExistingConnection != -1){
@@ -60,15 +63,20 @@ public class VertexHandler {
 			}
 		}
 
-		if(idOfExistingConnection == -1 && successfulCreation) AddToMaster(newVertex);
+		if(idOfExistingConnection == -1 && successfulCreation) {
+			//newVertex.startingCorner = masterCs.size()-2;
+			//println("(newVertex.startingCorner): "+(newVertex.startingCorner));
+			AddToMaster(newVertex);
+		}
 		if (successfulCreation)
 			CheckForFaces();
 		return successfulCreation;
 	}
 
-	public void InsertVerteXInEdge(int _x, int _y, int _startV) {
+	public void InsertVerteXInEdge(int _x, int _y, int _startV, int _endV) {
 		inserting = true;
 		println("inserting");
+		insertionFarVert = _endV;
 		AddVertex(_x, _y, _startV);
 	}
 
@@ -222,6 +230,48 @@ public class VertexHandler {
 
 	}
 
+	private void InsertVertOnEdge(Vertex prev, int nextId){
+		println("inserting with next " + nextId);
+		Vertex next = GetVertexFromID(nextId);
+
+		Corner insert1 = new Corner(masterCs.size(), newVertex.id);
+		Corner insert2 = new Corner(masterCs.size()+1, newVertex.id);
+
+		Corner prevCorner = FindCornerWhenOnEdge(prev, next);
+		Corner nextCorner = GetCornerFromID(prevCorner.next);
+		Corner swingCorner = GetCornerFromID(prevCorner.swing);
+		Corner swingPrev = GetCornerFromID(swingCorner.prev);
+
+		// println("***********insert on edge values********");
+		// println("prevCorner: "+prevCorner.id);
+		// println("nextCorner: "+nextCorner.id);
+		// println("swingCorner: "+swingCorner.id);
+		// println("swingPrev: "+swingPrev.id);
+		// println("***********insert on edge values********");
+
+		
+
+		AddToMaster(insert1);
+		AddToMaster(insert2);
+		newVertex.AddCorner(insert1.id);
+		newVertex.AddCorner(insert2.id);
+	}
+
+	private Corner FindCornerWhenOnEdge(Vertex _prev, Vertex _next) {
+		//for all the corners on prev, if the next corner is on our next vert, thats it!
+		Corner returnCorner = new Corner();
+
+		for(int i = 0; i < _prev.corners.size(); i++){
+			Corner tmp = GetCornerFromID(_prev.corners.get(i));
+			Corner tmpNext = GetCornerFromID(tmp.next);
+			if(tmpNext.vertex == _next.id){
+				returnCorner = tmp;
+			}
+		}
+
+		return returnCorner;
+	}
+
 	private void CornerSplit(Corner splitCorner){
 		println("insert at " + splitCorner.id);
 		if(splitCorner.id == -1) {
@@ -318,9 +368,9 @@ public class VertexHandler {
 		float oldNewRot = GetPosAngle(newEdge);
 		float oldNextRot = GetPosAngle(nextEdge);
 
-		println("oldPrevRot: "+oldPrevRot);
-		println("oldNewRot: " + oldNewRot);
-		println("oldNextRot: "+oldNextRot);
+		// println("oldPrevRot: "+oldPrevRot);
+		// println("oldNewRot: " + oldNewRot);
+		// println("oldNextRot: "+oldNextRot);
 
 		float rotAmount = 2*PI - oldPrevRot;
 
@@ -336,9 +386,9 @@ public class VertexHandler {
 		newNewRot = round(newNewRot, 2);
 		newNextRot = round(newNextRot, 2);
 
-		println("newPrevRot: "+newPrevRot);
-		println("newNewRot: " + newNewRot);
-		println("newNextRot: "+newNextRot);
+		// println("newPrevRot: "+newPrevRot);
+		// println("newNewRot: " + newNewRot);
+		// println("newNextRot: "+newNextRot);
 
 		//closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
 
