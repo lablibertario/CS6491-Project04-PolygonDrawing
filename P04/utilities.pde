@@ -20,7 +20,7 @@ color vertexColor = black;
 PVector vertexTextOffset = new PVector(7, -15);
 
 int cornerRadius = 3;
-color cornerColor = color(240, 251, 159);
+color cornerColor = black;
 color swingColor = color(213, 162, 222);
 color nextColor = color(255, 168, 138);
 color prevColor = color(100, 185, 144);
@@ -125,6 +125,7 @@ void displayVertices() {
   println("draw vertices");
   for (int i = 0; i < masterVs.size(); i++) {
     Vertex v = masterVs.get(i);
+    println("drawing v " + v.id);
     if (v.exists()) {
       v.Draw();
     }
@@ -137,7 +138,7 @@ void displayCorners() {
   for (int i = 0; i < masterCs.size(); i++) {
     Corner c = masterCs.get(i);
     if (c.exists()) {
-      println("draw corner " + c.id);
+      // println("draw corner " + c.id);
       c.Draw(cornerColor);
     }
   }
@@ -202,7 +203,7 @@ void DrawSidewalk(Corner startC, Corner endC) {
   PVector start = startC.GetDisplayPosition();
   PVector end = endC.GetDisplayPosition();
 
-  println("sidewalk: " + startC.id + " -> " + endC.id);
+  //println("sidewalk: " + startC.vertex + " -> " + endC.vertex);
 
   DrawLine(start, end, sidewalkThickness, sidewalkColor);
 }
@@ -219,6 +220,11 @@ void DrawEdge(Vertex startV, Vertex endV) {
     textSize(20);
     PVector closestPoint = GetClosestPointOnEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos);
     showDisk(closestPoint.x, closestPoint.y, edgeThickness*2);
+
+    if(addVert && mouseClicked) {
+      println("add vert");
+      vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id, endV.id);
+    }
     //text(GetDistanceFromEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos), mouseX + edgeTextOffset.x, mouseY + edgeTextOffset.y);
   }
 }

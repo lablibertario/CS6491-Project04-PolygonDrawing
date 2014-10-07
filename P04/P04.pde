@@ -13,7 +13,7 @@
 
 //*************** text drawn on the canvas for name, title and help  *******************
 String title ="CS3451, Fall 2014, Project 04: Graphs!", name ="Miranda Bradley and Sebastian Monroy", // enter project number and your name
-menu="'q' drag new vertex from prev, 'w' connect two existing verts, 'e' delete vert", 
+menu="'q' drag new vertex from prev, 'w' connect two existing verts, 'e' delete vert, 'r' add vert", 
 guide="Press&drag mouse to move dot. 'x', 'y' restrict motion"; // help info
 // velocityDisplay=Float.toString(velocity)
 
@@ -31,6 +31,8 @@ boolean connectingTwoExisting = false;
 boolean connectClick1 = false;
 boolean notDrawn = true;
 boolean removeVert = false;
+boolean mouseClicked = false;
+boolean addVert = true;
 int prevConnect = -1;
 
 int swingRedraw, prevRedraw, nextRedraw;
@@ -56,12 +58,12 @@ void setup() {               // executed once at the begining
   //hard coded points! for testing
   vertexHandler.AddVertex(100, 100, -1);
   vertexHandler.AddVertex(100, 300, 0);
-  // vertexHandler.AddVertex(300, 300, 1);
-  // vertexHandler.AddVertex(300, 100, 2);
-  // vertexHandler.AddVertex(300, 100, 0);
-  // vertexHandler.AddVertex(100, 300, 3);
+  vertexHandler.AddVertex(300, 300, 1);
+  vertexHandler.AddVertex(300, 100, 2);
+  vertexHandler.AddVertex(300, 100, 0);
+  vertexHandler.AddVertex(100, 300, 3);
   // vertexHandler.AddVertex(300, 300, 0);
- // vertexHandler.AddVertex(100, 100, 2);
+  // vertexHandler.AddVertex(100, 100, 2);
   
   //PVector temp = new PVector(-1,0);
   //println("/////////" + temp.heading());
@@ -140,7 +142,7 @@ void draw() {      // executed at each frame
       boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID));
       if(removable) {
         vertexHandler.RemoveVertex(selectedVertexID);
-        selectedVertexID = -1;
+        //selectedVertexID = -1;
       }
     } else {
       v = GetVertexFromID(selectedVertexID);
@@ -199,11 +201,19 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
   if(key == 'e'){
     removeVert = true;
   }
+
+  if(key == 'r') {
+    addVert = true;
+  }
 }
 
 void keyReleased() { // executed each time a key is released
   if (key=='b') {
 
+  }
+
+  if(key == 'r') {
+    addVert = false;
   }
   if (key=='a') animating=false;  // quit application
   change=true;
@@ -237,12 +247,18 @@ void mouseMoved() { // when mouse is moved
 
 void mousePressed(MouseEvent e) { // when mouse key is pressed 
   mouseDragStart = new PVector(mouseX, mouseY);
+  mouseClicked = true;
 }
 
 void mouseReleased(MouseEvent e) { // when mouse key is released 
   mouseDragStart = new PVector();
   mouseDragged = false;
   selectedVertexID = -1;
+  mouseClicked = false;
+}
+
+void mouseClicked(MouseEvent e) {
+  
 }
 
 public Corner GetCornerFromID(int cornerID) {

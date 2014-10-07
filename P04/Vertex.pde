@@ -68,6 +68,13 @@ public class Vertex{
     return result;
   }
 
+//   ***********insert on edge values********
+// prevCorner: 1
+// nextCorner: 3
+// swingCorner: 9
+// swingPrev: 4
+// ***********insert on edge values********
+
   public boolean isDragged() {
     boolean result = (this.isSelected() && mouseDragged); 
     return result;
