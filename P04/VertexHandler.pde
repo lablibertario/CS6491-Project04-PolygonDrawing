@@ -258,6 +258,9 @@ public class VertexHandler {
 		swingCorner.prev = insert2.id;
 		swingPrev.next = insert2.id;
 
+		insert1.swing = insert2.id;
+		insert2.swing = insert1.id;
+
 		AddToMaster(insert1);
 		AddToMaster(insert2);
 		newVertex.AddCorner(insert1.id);
