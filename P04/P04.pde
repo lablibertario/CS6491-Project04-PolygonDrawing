@@ -85,7 +85,7 @@ void draw() {      // executed at each frame
   displayFaceSidewalks();
   if(nextRedraw != -1) {
     GetCornerFromID(nextRedraw).Draw(nextColor);
-    GetCornerFromID(swingRedraw).Draw(swingColor);
+    if(swingRedraw != -1) GetCornerFromID(swingRedraw).Draw(swingColor);
     GetCornerFromID(prevRedraw).Draw(prevColor);
   }
 

@@ -345,6 +345,8 @@ public class VertexHandler {
 		//else first vertex, just need to kill it
 		CleanVertReferencesAt(theVertex.id);
 		masterVs.remove(theVertex);
+
+		println("removed vert before exception");
 		//theVertex.id = -1;
 	}
 
