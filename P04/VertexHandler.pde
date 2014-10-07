@@ -26,7 +26,7 @@ public class VertexHandler {
 			}
 		}
 
-		if(idOfExistingConnection == connectIndex) return false;
+		if((idOfExistingConnection == connectIndex) && masterVs.size() > 0) return false;
 
 		if(inserting) {
 			connectVertex = GetVertexFromID(connectIndex);
@@ -39,7 +39,7 @@ public class VertexHandler {
 			//connecting two existing verts
 			connectVertex = GetVertexFromID(connectIndex);
 			println("connecting two existing");
-			ConnectExistingVerts(newVertex, idOfExistingConnection);
+			ConnectExistingVerts(connectVertex, idOfExistingConnection);
 		} else {
 			if (masterVs.size() == 0) {
 				
