@@ -65,9 +65,9 @@ public float GetAngle(PVector tempa, PVector tempb) {
 }
 
 public float GetPosAngle(PVector a) {
-  float heading = a.heading() + PI;
-  // if (heading < 0)
-  //  heading += 2*PI;
+  float heading = a.heading();// + PI;
+  if (heading < 0)
+   heading += 2*PI;
   return heading;
 }
 

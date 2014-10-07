@@ -44,7 +44,7 @@ public class VertexHandler {
 				//adding edge between two existing edges
 				//println("squeezing between verts");
 				connectVertex = GetVertexFromID(connectIndex);
-				Corner splitCorner = FindEdgesBetween(connectVertex);
+				Corner splitCorner = FindEdgesBetween(connectVertex, newVertex);
 				CornerSplit(splitCorner);
 
 
@@ -72,7 +72,7 @@ public class VertexHandler {
 		Corner farSplitCorner = new Corner();
 
 		if(connectSplit){
-			connectSplitCorner = FindEdgesBetween(connectVertex);
+			connectSplitCorner = FindEdgesBetween(connectVertex, newVertex);
 			if(connectSplitCorner.id == -1) {
 				successfulCreation = false;
 				return;
@@ -81,7 +81,7 @@ public class VertexHandler {
 		}
 
 		if(farSplit){
-			farSplitCorner = FindEdgesBetween(farConnection);
+			farSplitCorner = FindEdgesBetween(farConnection, connectVertex);
 			if(farSplitCorner.id == -1) {
 				successfulCreation = false;
 				return;
@@ -96,15 +96,18 @@ public class VertexHandler {
 		Corner farCorner = new Corner();
 
 		if(!connectSplit && !farSplit) {
+			println("straight forward split: ");
 			originCorner = GetCornerFromID(connectVertex.corners.get(0));
 			farCorner = GetCornerFromID(farConnection.corners.get(0));
 		} else{
 			if(connectSplit) {
+				println("splits at origin");
 				originCorner = connectSplitCorner;
 			} else {
 				originCorner = GetCornerFromID(connectVertex.corners.get(0));
 			}
 			if(farSplit) {
+				println("splits at far corner");
 				farCorner = farSplitCorner;
 			} else{
 				farCorner = GetCornerFromID(farConnection.corners.get(0));
@@ -137,6 +140,7 @@ public class VertexHandler {
 			farUnSwing.swing = newCorner.id;
 		}
 		newCorner.swing = farCorner.id;
+		println("finished splitting corner");
 
         AddToMaster(addedCorner);
         AddToMaster(newCorner);
@@ -176,7 +180,7 @@ public class VertexHandler {
 		newVertex.AddCorner(newCorner.id);
 	}
 
-	private Corner FindEdgesBetween(Vertex _connectVertex){
+	private Corner FindEdgesBetween(Vertex _connectVertex, Vertex _newVertex){
 		Corner splitCorner = new Corner();
 		//float smallestAngle = 2*PI; 
 		for(int i = 0; i < _connectVertex.corners.size(); i++){
@@ -188,8 +192,9 @@ public class VertexHandler {
 
 			PVector prevEdge = new PVector(vPrev.pos.x - v.pos.x, vPrev.pos.y - v.pos.y);
 			PVector nextEdge = new PVector(vNext.pos.x - v.pos.x, vNext.pos.y - v.pos.y);
-			PVector newEdge = new PVector(newVertex.pos.x - v.pos.x, newVertex.pos.y - v.pos.y);
+			PVector newEdge = new PVector(_newVertex.pos.x - v.pos.x, _newVertex.pos.y - v.pos.y);
 
+			println("check if between corner " + c.id);
 			if (IsBetween(prevEdge, newEdge, nextEdge)) {
 				println("is between yo");
 				splitCorner = c;
@@ -224,7 +229,7 @@ public class VertexHandler {
 		PVector nextEdge = new PVector(nextVertex.pos.x - connectVertex.pos.x, nextVertex.pos.y - connectVertex.pos.y);
 		PVector newEdge = new PVector(newVertex.pos.x - connectVertex.pos.x, newVertex.pos.y - connectVertex.pos.y);
 
-		if (closestToPrevEdge) {
+		//if (closestToPrevEdge) {
 			println("closest to prev edge");
 			splitPrevCorner.next = addedCorner.id;
 			addedCorner.prev = splitPrevCorner.prev;
@@ -237,7 +242,7 @@ public class VertexHandler {
 			addedCorner.swing = splitCorner.id;
 			Corner unSwingCorner = splitCorner.FindUnswing();
 			unSwingCorner.swing = addedCorner.id;
-		} else {
+		/*} else {
 			println("closest to next edge");
 			splitCorner.next = newCorner.id;
 			newCorner.prev = splitCorner.id;
@@ -250,7 +255,7 @@ public class VertexHandler {
 			addedCorner.swing = splitCorner.swing;
 			//Corner unSwingCorner = splitCorner.FindUnswing();
 			splitCorner.swing = addedCorner.id;
-		}
+		}*/
 
 		AddToMaster(addedCorner);
 		AddToMaster(newCorner);
@@ -297,7 +302,9 @@ public class VertexHandler {
 		float oldNewRot = GetPosAngle(newEdge);
 		float oldNextRot = GetPosAngle(nextEdge);
 
-		println("new guy's rotation: " + oldNewRot);
+		println("oldNewRot: " + oldNewRot);
+		println("oldPrevRot: "+oldPrevRot);
+		println("oldNextRot: "+oldNextRot);
 
 		float rotAmount = 2*PI - oldPrevRot;
 
@@ -309,21 +316,38 @@ public class VertexHandler {
 		float newNewRot = GetPosAngle(newE1);
 		float newNextRot = GetPosAngle(nextE1);
 
-		println("between lines: " + (newNewRot - newPrevRot) + ", and " + (newNextRot - newNewRot) );
+		newPrevRot = round(newPrevRot, 2);
+		newNewRot = round(newNewRot, 2);
+		newNextRot = round(newNextRot, 2);
 
-		closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
+		println("newNewRot: " + newNewRot);
+		println("newPrevRot: "+newPrevRot);
+		println("newNextRot: "+newNextRot);
+
+		//closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
 
 		PVector fromPrev = new PVector(-prevEdge.x, -prevEdge.y);
 		PVector toNext = new PVector(nextEdge.x, nextEdge.y);
+		//println("det: " + det(fromPrev, toNext));
+		println((newNextRot - newPrevRot) + " >= " + (newNextRot - newNewRot) + " = " + ((newNextRot - newPrevRot) >= (newNextRot - newNewRot)));
+		return ((newNextRot - newPrevRot) >= (newNextRot - newNewRot));
 
-		if (det(fromPrev, toNext) < 0) {
-			// clockwise
-			return ((newNewRot - newPrevRot > 0) && (newNextRot - newNewRot >= 0));
-		} else {
-			// counter-clockwise
-			return ((newNewRot - newPrevRot > 0) && (newNextRot - newNewRot <= 0));
-		}
+		// if (det(fromPrev, toNext) >= 0) {
+		// 	// clockwise
+		// 	println("clockwise: " + (newNextRot - newPrevRot) + " >= " + (newNextRot - newNewRot) + " = " + ((newNextRot - newPrevRot) > (newNextRot - newNewRot)));
+		// 	return ((newNextRot - newPrevRot) >= (newNextRot - newNewRot));
+			
+		// } else {
+		// 	// counter-clockwise
+		// 	println("counter-clockwise: " + (newNextRot - newPrevRot) + " < " + (newNextRot - newNewRot) + " = "  + ((newNextRot - newPrevRot) <= (newNextRot - newNewRot)));
+		// 	return ((newNextRot - newPrevRot) <= (newNextRot - newNewRot));
+		// }
 	}
+
+	float round(float val, int dp) {
+	  return int(val*pow(10,dp))/pow(10,dp);
+	} 
+
 
 	public int NumCorners(int vertexID) {
 		if (vertexID >= 0 && vertexID < masterVs.size()) {
