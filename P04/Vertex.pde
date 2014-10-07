@@ -58,11 +58,14 @@ public class Vertex{
       //drag in new vert/edge
       if(editMode){
         if(editStart){
-          vertexHandler.AddVertex(mouseX+10, mouseY+10, id);
+          boolean added = vertexHandler.AddVertex(mouseX, mouseY, id);
           //rubberBand = GetVertexFromID(masterVs.size()-1);
-          editStart = false;
-          selectedVertexID = masterVs.size()-1;
-          editMode = false;
+          if(added){
+            println("added a vert");
+            editStart = false;
+            selectedVertexID = masterVs.size()-1;
+            editMode = false;
+          }
         }
       } else {
         this.DrawInformation();

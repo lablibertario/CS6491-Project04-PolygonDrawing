@@ -5,7 +5,7 @@ public class VertexHandler {
 	private Vertex connectVertex;
 	private boolean successfulCreation = true;
 
-	public void AddVertex(int _x, int _y, int connectIndex) {
+	public boolean AddVertex(int _x, int _y, int connectIndex) {
 		PVector insertionEdge, comparisonEdge;
 		newVertex = new Vertex(_x, _y, masterVs.size());
 		//println(masterVs.size());
@@ -49,6 +49,8 @@ public class VertexHandler {
 		}
 
 		if(idOfExistingConnection == -1 && successfulCreation) AddToMaster(newVertex);
+
+		return successfulCreation;
 	}
 
 	private void ConnectExistingVerts(int IDToConnectTo){
@@ -68,11 +70,19 @@ public class VertexHandler {
 
 		if(connectSplit){
 			connectSplitCorner = FindEdgesBetween(connectVertex);
+			if(connectSplitCorner.id == -1) {
+				successfulCreation = false;
+				return;
+			}
 			println("split at connection " + connectSplitCorner.id + "for connection");
 		}
 
 		if(farSplit){
 			farSplitCorner = FindEdgesBetween(farConnection);
+			if(farSplitCorner.id == -1) {
+				successfulCreation = false;
+				return;
+			}
 			println("split at far corner " + farSplitCorner.id + "for far");
 		}
 
@@ -159,9 +169,9 @@ public class VertexHandler {
 			PVector prevEdge = new PVector(vPrev.pos.x - v.pos.x, vPrev.pos.y - v.pos.y);
 			PVector nextEdge = new PVector(vNext.pos.x - v.pos.x, vNext.pos.y - v.pos.y);
 			PVector newEdge = new PVector(newVertex.pos.x - v.pos.x, newVertex.pos.y - v.pos.y);
-			println("prevEdge: "+prevEdge);
-			println("nextEdge: "+nextEdge);
-			println("newEdge: "+newEdge);
+			// println("prevEdge: "+prevEdge);
+			// println("nextEdge: "+nextEdge);
+			// println("newEdge: "+newEdge);
 
 			//float angleBetween = GetSmallestAngle(prevEdge, newEdge);
 			//println("angle: " + angleBetween);
@@ -185,6 +195,7 @@ public class VertexHandler {
 			return;
 		}
 
+		println("at corner " + splitCorner.id + " and still adding new corners");
 		Vertex connectVertex = GetVertexFromCornerID(splitCorner.id);
 
 		Corner newCorner = new Corner(masterCs.size()+1, newVertex.id);
