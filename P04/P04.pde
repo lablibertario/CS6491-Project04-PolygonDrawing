@@ -70,7 +70,9 @@ void draw() {      // executed at each frame
   displayEdges();
   displayVertices();
   displayCorners();
-  displayFaceSidewalks();
+  //if (masterCs.size() == 9) {
+    displayFaceSidewalks();
+  //}
 
   displayHeader();
   if (!mousePressed && !keyPressed)
@@ -159,11 +161,36 @@ public Vertex GetVertexFromID(int vertexID) {
 
 public void CheckForFaces() {
   ArrayList<Corner> unvisitedCorners = new ArrayList<Corner>();
+  unvisitedCorners = masterCs;
   ArrayList<Integer> unvisitedCornerIDs = new ArrayList<Integer>();
 
   while (unvisitedCornerIDs.size() < masterCs.size()) {
+    unvisitedCorners.get(unvisitedCornerIDs.size()).visited = false;
     unvisitedCornerIDs.add(masterCs.get(unvisitedCornerIDs.size()).id);
   }
 
-  
+  masterFs.clear();
+
+  int numUnvisitedCorners = 0;
+  int currentCornerID;
+  while (numUnvisitedCorners < unvisitedCorners.size()) {
+    currentCornerID = 0;
+    while (currentCornerID < unvisitedCorners.size()) {
+      if (unvisitedCorners.get(currentCornerID).visited) {
+        currentCornerID++;
+      } else {
+        break;
+      }
+    }
+
+    masterFs.add(currentCornerID);
+
+    while (!unvisitedCorners.get(currentCornerID).visited) {
+      unvisitedCorners.get(currentCornerID).visited = true;
+      currentCornerID = unvisitedCorners.get(currentCornerID).next;
+      numUnvisitedCorners++;
+    }
+  }
+
+  println("FACES: " + masterFs);
 }

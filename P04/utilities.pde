@@ -148,7 +148,7 @@ void displayEdges() {
 
 void displayFaceSidewalks() {
   for (int i = 0; i < masterFs.size(); i++) {
-    DrawFaceSidewalks(masterFs.get(i));
+    DrawFaceSidewalks(i);
   }
 }
 
@@ -269,4 +269,3 @@ boolean filming=false;  // when true frames are captured in FRAMES for a movie
 int frameCounter=0;     // count of frames captured (used for naming the image files)
 boolean change=false;   // true when the user has presed a key or moved the mouse
 boolean animating=false; // must be set by application during animations to force frame capture
-
