@@ -28,6 +28,7 @@ boolean editing = false;
 boolean connectingTwoExisting = false;
 boolean connectClick1 = false;
 boolean notDrawn = true;
+boolean removeVert = false;
 int prevConnect = -1;
 
 int swingRedraw, prevRedraw, nextRedraw;
@@ -112,10 +113,14 @@ void draw() {      // executed at each frame
           notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID);
           notDrawn = !notDrawn;
         }
-      } else {
-        v = GetVertexFromID(selectedVertexID);
-        v.isInteracted();
       }
+    } else if(removeVert) {
+      println("remove the vert");
+      boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID));
+      if(removable) vertexHandler.RemoveVertex(selectedVertexID);
+    } else {
+      v = GetVertexFromID(selectedVertexID);
+      v.isInteracted();
     }
   } else {
     // vertex has not been selected yet
@@ -148,8 +153,8 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
   change=true;
 
   if (key == 'q') {
-      editing = true;
     if(!singlePress){
+      editing = true;
       editMode = true;
       singlePress = true;
     }
@@ -161,6 +166,10 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
       connectClick1 = true;
       singlePress = true;
     }
+  }
+
+  if(key == 'e'){
+    removeVert = true;
   }
 }
 
@@ -182,6 +191,10 @@ void keyReleased() { // executed each time a key is released
   if(key == 'w'){
     singlePress = false;
     connectingTwoExisting = false;
+  }
+
+  if(key == 'e'){
+    removeVert = false;
   }
 }
 

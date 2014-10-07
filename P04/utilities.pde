@@ -121,7 +121,7 @@ void displayFooter() { // Displays help text at the bottom
 void displayVertices() {
   for (int i = 0; i < masterVs.size(); i++) {
     Vertex v = masterVs.get(i);
-    v.Draw();
+    if(v.id != -1) v.Draw();
   }
   textSize(12);
 }
@@ -129,7 +129,7 @@ void displayVertices() {
 void displayCorners() {
   for (int i = 0; i < masterCs.size(); i++) {
     Corner c = masterCs.get(i);
-    c.Draw(cornerColor);
+    if(c.id != -1) c.Draw(cornerColor);
   }
   textSize(12);
 }

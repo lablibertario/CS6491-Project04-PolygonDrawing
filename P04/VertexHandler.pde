@@ -319,7 +319,47 @@ public class VertexHandler {
 	}
 
 	public void RemoveVertex(int vertexID) {
+		Vertex theVertex = GetVertexFromID(vertexID);
+		Corner theCorner = GetCornerFromID(vertexID);
+		if(theVertex.corners.size() == 1){
+			//there's one corner(we're an edge off something)
+			Corner nextCorner = GetCornerFromID(theCorner.next);
+			if(masterVs.size() == 2) {
 
+			} else {
+				Corner prevCorner = GetCornerFromID(theCorner.prev);
+				Corner nextNextCorner = GetCornerFromID(GetCornerFromID(theCorner.next).next);
+				prevCorner.next = nextNextCorner.id;
+				nextNextCorner.prev = prevCorner.id;
+				//remove the corners
+				masterCs.remove(theCorner);
+				CleanReferencesAt(theCorner.id);
+				masterCs.remove(nextCorner);
+				CleanReferencesAt(nextCorner.id);
+				//theCorner.id = -1;
+				//nextCorner.id = -1;
+			}
+		} else if(theVertex.corners.size() == 2) {
+
+		}
+		//else first vertex, just need to kill it
+		masterVs.remove(theVertex);
+		//theVertex.id = -1;
+	}
+
+	public void CleanReferencesAt(int index) {
+		for(int i = 0; i < masterCs.size(); i++) {
+			Corner currCorner = GetCornerFromID(i);
+			if(currCorner.next >= index) currCorner.next = currCorner.next - 1;
+			if(currCorner.prev >= index) currCorner.prev = currCorner.prev - 1;
+			if(currCorner.swing >= index) currCorner.swing = currCorner.swing -1;
+		}
+	}
+
+	public boolean CheckIfRemovable(Vertex _toRemove){
+		if(_toRemove.corners.size() <= 2) return true;
+
+		return false;
 	}
 
 	public void AddToMaster(Vertex _newVertex) {
