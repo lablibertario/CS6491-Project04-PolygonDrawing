@@ -227,11 +227,13 @@ public class VertexHandler {
 		if (closestToPrevEdge) {
 			println("closest to prev edge");
 			splitPrevCorner.next = addedCorner.id;
-			addedCorner.prev = splitPrevCorner.id;
+			addedCorner.prev = splitPrevCorner.prev;
 			addedCorner.next = newCorner.id;
 			newCorner.prev = addedCorner.id;
 			newCorner.next = splitCorner.id;
 			splitCorner.prev = newCorner.id;
+
+
 			addedCorner.swing = splitCorner.id;
 			Corner unSwingCorner = splitCorner.FindUnswing();
 			unSwingCorner.swing = addedCorner.id;
@@ -243,7 +245,10 @@ public class VertexHandler {
 			addedCorner.prev = newCorner.id;
 			addedCorner.next = splitNextCorner.id;
 			splitNextCorner.prev = addedCorner.id;
+
+
 			addedCorner.swing = splitCorner.swing;
+			//Corner unSwingCorner = splitCorner.FindUnswing();
 			splitCorner.swing = addedCorner.id;
 		}
 
@@ -307,7 +312,17 @@ public class VertexHandler {
 		println("between lines: " + (newNewRot - newPrevRot) + ", and " + (newNextRot - newNewRot) );
 
 		closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
-		return ((newNewRot - newPrevRot > 0) && (newNextRot - newNewRot <= 0));
+
+		PVector fromPrev = new PVector(-prevEdge.x, -prevEdge.y);
+		PVector toNext = new PVector(nextEdge.x, nextEdge.y);
+
+		if (det(fromPrev, toNext) < 0) {
+			// clockwise
+			return ((newNewRot - newPrevRot > 0) && (newNextRot - newNewRot >= 0));
+		} else {
+			// counter-clockwise
+			return ((newNewRot - newPrevRot > 0) && (newNextRot - newNewRot <= 0));
+		}
 	}
 
 	public int NumCorners(int vertexID) {

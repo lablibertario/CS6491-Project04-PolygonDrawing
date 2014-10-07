@@ -13,7 +13,7 @@
 
 //*************** text drawn on the canvas for name, title and help  *******************
 String title ="CS3451, Fall 2014, Project 04: Graphs!", name ="Miranda Bradley and Sebastian Monroy", // enter project number and your name
-menu="?:(show/hide) help, !:snap picture, ~:(start/stop) recording frames for movie, Q:quit", 
+menu="'q' drag new vertex from prev, 'w' connect two existing verts, 'e' delete vert", 
 guide="Press&drag mouse to move dot. 'x', 'y' restrict motion"; // help info
 // velocityDisplay=Float.toString(velocity)
 
@@ -60,6 +60,7 @@ void setup() {               // executed once at the begining
   vertexHandler.AddVertex(300, 100, 2);
   
   // vertexHandler.AddVertex(55, 55, 1);
+  //wvertexHandler.AddVertex(300, 300, 0);
   
   //PVector temp = new PVector(-1,0);
   //println("/////////" + temp.heading());
@@ -123,6 +124,10 @@ void draw() {      // executed at each frame
           println("connected to : "+ selectedVertexID );
           v = GetVertexFromID(prevConnect);
           notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID);
+          if(notDrawn == false) {
+            Vertex otherVert = GetVertexFromID(selectedVertexID);
+            notDrawn = vertexHandler.AddVertex((int)otherVert.pos.x, (int)otherVert.pos.y, v.id);
+          }
           notDrawn = !notDrawn;
         }
       }
@@ -176,6 +181,7 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
       connectingTwoExisting = true;
       connectClick1 = true;
       singlePress = true;
+      notDrawn = true;
     }
   }
 
