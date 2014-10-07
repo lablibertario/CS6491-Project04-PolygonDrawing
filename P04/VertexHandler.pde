@@ -249,7 +249,14 @@ public class VertexHandler {
 		// println("swingPrev: "+swingPrev.id);
 		// println("***********insert on edge values********");
 
-		
+		prevCorner.next = insert1.id;
+		nextCorner.prev = insert1.id;
+		insert1.prev = prevCorner.id;
+		insert1.next = nextCorner.id;
+		insert2.prev = swingPrev.id;
+		insert2.next = swingCorner.id;
+		swingCorner.prev = insert2.id;
+		swingPrev.next = insert2.id;
 
 		AddToMaster(insert1);
 		AddToMaster(insert2);
