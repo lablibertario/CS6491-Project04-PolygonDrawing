@@ -328,20 +328,8 @@ public class VertexHandler {
 
 		PVector fromPrev = new PVector(-prevEdge.x, -prevEdge.y);
 		PVector toNext = new PVector(nextEdge.x, nextEdge.y);
-		println("det: " + det(fromPrev, toNext));
-		//println((newNextRot - newPrevRot) + " >= " + (newNextRot - newNewRot) + " = " + ((newNextRot - newPrevRot) >= (newNextRot - newNewRot)));
-		//return ((newNextRot - newPrevRot) >= (newNextRot - newNewRot));
 
-		if (det(fromPrev, toNext) >= 0) {
-			// clockwise
-			println("clockwise: ");// + " < " + (newNextRot - newNewRot) + " = " + ((newNextRot - newPrevRot) < (newNextRot - newNewRot)));
-			return (newNextRot < newNewRot);
-			
-		} else {
-			// counter-clockwise
-			println("counter-clockwise: ");// + (newNextRot - newPrevRot) + " < " + (newNextRot - newNewRot) + " = "  + ((newNextRot - newPrevRot) <= (newNextRot - newNewRot)));
-			return (newNextRot  < newNewRot);
-		}
+		return (newNextRot  < newNewRot);
 	}
 
 	float round(float val, int dp) {

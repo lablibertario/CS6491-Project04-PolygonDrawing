@@ -59,7 +59,8 @@ void setup() {               // executed once at the begining
   vertexHandler.AddVertex(300, 300, 1);
   vertexHandler.AddVertex(300, 100, 2);
   vertexHandler.AddVertex(300, 100, 0);
-  vertexHandler.AddVertex(300, 300, 0);
+  vertexHandler.AddVertex(100, 300, 3);
+  // vertexHandler.AddVertex(300, 300, 0);
  // vertexHandler.AddVertex(100, 100, 2);
   
   //PVector temp = new PVector(-1,0);
