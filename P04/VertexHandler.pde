@@ -332,10 +332,10 @@ public class VertexHandler {
 				prevCorner.next = nextNextCorner.id;
 				nextNextCorner.prev = prevCorner.id;
 				//remove the corners
+				CleanCornerReferencesAt(theCorner.id);
 				masterCs.remove(theCorner);
-				CleanReferencesAt(theCorner.id);
+				CleanCornerReferencesAt(nextCorner.id);
 				masterCs.remove(nextCorner);
-				CleanReferencesAt(nextCorner.id);
 				//theCorner.id = -1;
 				//nextCorner.id = -1;
 			}
@@ -343,16 +343,24 @@ public class VertexHandler {
 
 		}
 		//else first vertex, just need to kill it
+		CleanVertReferencesAt(theVertex.id);
 		masterVs.remove(theVertex);
 		//theVertex.id = -1;
 	}
 
-	public void CleanReferencesAt(int index) {
+	public void CleanCornerReferencesAt(int index) {
 		for(int i = 0; i < masterCs.size(); i++) {
 			Corner currCorner = GetCornerFromID(i);
-			if(currCorner.next >= index) currCorner.next = currCorner.next - 1;
-			if(currCorner.prev >= index) currCorner.prev = currCorner.prev - 1;
-			if(currCorner.swing >= index) currCorner.swing = currCorner.swing -1;
+			if(currCorner.next > index) currCorner.next = currCorner.next - 1;
+			if(currCorner.prev > index) currCorner.prev = currCorner.prev - 1;
+			if(currCorner.swing > index) currCorner.swing = currCorner.swing -1;
+		}
+	}
+
+	public void CleanVertReferencesAt(int index) {
+		for(int i = 0; i < masterCs.size(); i++) {
+			Corner currCorner = GetCornerFromID(i);
+			if(currCorner.vertex > index) currCorner.vertex = currCorner.vertex - 1;
 		}
 	}
 
