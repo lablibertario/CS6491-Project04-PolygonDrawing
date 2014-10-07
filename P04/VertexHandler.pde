@@ -37,30 +37,31 @@ public class VertexHandler {
 			//ConnectExistingVerts(connectVertex, newVertex.id);
 			//ConnectExistingVerts(newVertex, idOfExistingConnection);
 			InsertVertOnEdge(connectVertex, insertionFarVert);
-		}
-
-		if(idOfExistingConnection != -1){
-			//connecting two existing verts
-			connectVertex = GetVertexFromID(connectIndex);
-			println("connecting two existing");
-			ConnectExistingVerts(connectVertex, idOfExistingConnection);
 		} else {
-			if (masterVs.size() == 0) {
-				
-			} else if (NumCorners(connectIndex) < 1) {
-				//println("insert second vert");
-				InsertSecondVertex(_x, _y);
-			} else if (NumCorners(connectIndex) == 1) {
-				//println("adding to end of vert");
-				connectVertex = GetVertexFromID(connectIndex);
-				AppendToEndOfVertex(connectVertex);
 
-			} else {
-				//adding edge between two existing edges
-				//println("squeezing between verts");
+			if(idOfExistingConnection != -1){
+				//connecting two existing verts
 				connectVertex = GetVertexFromID(connectIndex);
-				Corner splitCorner = FindEdgesBetween(connectVertex, newVertex);
-				CornerSplit(splitCorner);
+				println("connecting two existing");
+				ConnectExistingVerts(connectVertex, idOfExistingConnection);
+			} else {
+				if (masterVs.size() == 0) {
+					
+				} else if (NumCorners(connectIndex) < 1) {
+					//println("insert second vert");
+					InsertSecondVertex(_x, _y);
+				} else if (NumCorners(connectIndex) == 1) {
+					//println("adding to end of vert");
+					connectVertex = GetVertexFromID(connectIndex);
+					AppendToEndOfVertex(connectVertex);
+
+				} else {
+					//adding edge between two existing edges
+					//println("squeezing between verts");
+					connectVertex = GetVertexFromID(connectIndex);
+					Corner splitCorner = FindEdgesBetween(connectVertex, newVertex);
+					CornerSplit(splitCorner);
+				}
 			}
 		}
 
