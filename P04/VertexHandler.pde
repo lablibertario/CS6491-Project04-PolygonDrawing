@@ -24,10 +24,11 @@ public class VertexHandler {
 					println("vert is on top of another");
 					break;
 				} 
+
+				//if this vertex is on top of another existing one, don't create it
+				if(existingVertPos == newVertex.pos) return false;
 			}
 		}
-
-		if((idOfExistingConnection == connectIndex) && masterVs.size() > 0) return false;
 
 		if(inserting) {
 			println("start v: " + connectIndex);
