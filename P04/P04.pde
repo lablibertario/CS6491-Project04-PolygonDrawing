@@ -237,7 +237,7 @@ public int MouseIsWithinFace() {
         currentCornerID = currentCorner.next;
       } while (currentCornerID != startCornerID);
 
-      println("face " + i + " intersections: " + intersections);
+      //println("face " + i + " intersections: " + intersections);
 
       if (intersections % 2 != 0) {
         return i;
@@ -271,7 +271,7 @@ public boolean HorizontalIntersectsLineSegment(float y, PVector a, PVector b) {
     // print(" // " + false + "\n");
     return false;
   } 
-  
+
   // print(" // " + (x >= mouseX && y <= max(a.y, b.y) && y >= min(a.y, b.y)) + "\n");
   return (x >= mouseX && y <= max(a.y, b.y) && y >= min(a.y, b.y));
 }
