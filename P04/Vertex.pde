@@ -37,7 +37,6 @@ public class Vertex{
   }
 
   public boolean isSelected() {
-    editStart = true;
     boolean result = (selectedVertexID == this.id);
     return result;
   }
@@ -50,19 +49,21 @@ public class Vertex{
     if (this.isClicked()) {
       this.DrawInformation();
       selectedVertexID = this.id;
+      if(editMode) {
+        editStart = true;
+      }
     }
 
     if (this.isDragged()) {
       //drag in new vert/edge
       if(editMode){
-        /*if(editStart){
-          vertexHandler.AddVertex((int)pos.x, (int)pos.y, id);
-          rubberBand = GetVertexFromID(masterVs.size()-1);
+        if(editStart){
+          vertexHandler.AddVertex(mouseX+5, mouseY+5, id);
+          //rubberBand = GetVertexFromID(masterVs.size()-1);
           editStart = false;
-        } else {
-          rubberBand.DrawInformation();
-          rubberBand.Drag();
-        }*/
+          selectedVertexID = masterVs.size()-1;
+          editMode = false;
+        }
       } else {
         this.DrawInformation();
         this.Drag();
