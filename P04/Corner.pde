@@ -28,10 +28,22 @@ public class Corner{
     vertex = vertexID;
   }
 
-  public void split(int thisID, Corner end){
-    Corner prevC = masterCs.get(prev);
-    prevC.next = masterCs.size();
-    end.next = thisID;
+  public void kill() {
+    if (this.swing != -1) {
+      Corner unswing = FindUnswing();
+      unswing.swing = this.swing;
+    }
+    GetVertexFromID(this.vertex).RemoveCorner(this.id);
+
+    id = -1;
+    next = -1;
+    prev = -1;
+    swing = -1;
+    vertex = -1;
+  }
+
+  public boolean exists() {
+    return (id > -1);
   }
 
   public PVector GetDisplayPosition() {

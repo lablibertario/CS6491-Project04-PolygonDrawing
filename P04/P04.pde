@@ -56,10 +56,10 @@ void setup() {               // executed once at the begining
   //hard coded points! for testing
   vertexHandler.AddVertex(100, 100, -1);
   vertexHandler.AddVertex(100, 300, 0);
-  vertexHandler.AddVertex(300, 300, 1);
-  vertexHandler.AddVertex(300, 100, 2);
-  vertexHandler.AddVertex(300, 100, 0);
-  vertexHandler.AddVertex(100, 300, 3);
+  // vertexHandler.AddVertex(300, 300, 1);
+  // vertexHandler.AddVertex(300, 100, 2);
+  // vertexHandler.AddVertex(300, 100, 0);
+  // vertexHandler.AddVertex(100, 300, 3);
   // vertexHandler.AddVertex(300, 300, 0);
  // vertexHandler.AddVertex(100, 100, 2);
   
@@ -81,6 +81,7 @@ void draw() {      // executed at each frame
   change=false; // to avoid capturing frames when nothing happens
   // make sure that animating is set to true at the beginning of an animation and to false at the end
 
+  println("BEGIN");
   displayEdges();
   displayVertices();
 
@@ -102,6 +103,8 @@ void draw() {      // executed at each frame
     if(swingRedraw != -1) GetCornerFromID(swingRedraw).Draw(swingColor);
     GetCornerFromID(prevRedraw).Draw(prevColor);
   }
+
+  println("display header");
 
   displayHeader();
   if (!mousePressed && !keyPressed)
@@ -132,10 +135,13 @@ void draw() {      // executed at each frame
           notDrawn = !notDrawn;
         }
       }
-    } else if(removeVert) {
+    } else if (removeVert) {
       println("remove the vert");
       boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID));
-      if(removable) vertexHandler.RemoveVertex(selectedVertexID);
+      if(removable) {
+        vertexHandler.RemoveVertex(selectedVertexID);
+        selectedVertexID = -1;
+      }
     } else {
       v = GetVertexFromID(selectedVertexID);
       v.isInteracted();
@@ -144,12 +150,16 @@ void draw() {      // executed at each frame
     // vertex has not been selected yet
     for (int i = 0; i < masterVs.size(); i++) {
       Vertex v = GetVertexFromID(i);
-      v.isInteracted();
+      if (v.exists()) {
+        v.isInteracted();
+      }
     }
 
     for (int i = 0; i < masterCs.size(); i++) {
       Corner c = GetCornerFromID(i);
-      c.isInteracted();
+      if (c.exists()) {
+        c.isInteracted();
+      }
     }
   }  
 }  // end of draw()
@@ -264,15 +274,20 @@ public void CheckForFaces() {
   masterFs.clear();
 
   int numUnvisitedCorners = 0;
-  int currentCornerID;
-  while (numUnvisitedCorners < unvisitedCorners.size()) {
+  int currentCornerID = 0;
+  while (numUnvisitedCorners < unvisitedCorners.size() && currentCornerID < unvisitedCorners.size()) {
     currentCornerID = 0;
     while (currentCornerID < unvisitedCorners.size()) {
-      if (unvisitedCorners.get(currentCornerID).visited) {
+      if (unvisitedCorners.get(currentCornerID).visited || !unvisitedCorners.get(currentCornerID).exists()) {
         currentCornerID++;
       } else {
         break;
       }
+    }
+
+    // THIS IS SUPER DUMB
+    if (currentCornerID >= unvisitedCorners.size()) {
+      break;
     }
 
     Corner currCorner = GetCornerFromID(currentCornerID);
@@ -287,6 +302,7 @@ public void CheckForFaces() {
     if (det(fromPrev, toNext) < 0) {
       // counter-clockwise corner, must be outer face
       outerFace = masterFs.size();
+      println("outer face = " + outerFace);
     }
     masterFs.add(currentCornerID);
 
@@ -308,10 +324,18 @@ public int MouseIsWithinFace() {
       int startCornerID = masterFs.get(i);
       Corner startCorner = GetCornerFromID(startCornerID);
       int currentCornerID = startCornerID;
-
+      //println("mouse in face for");
       do {
+        //println("mouse in face: " + i + " -> " + currentCornerID);
         Corner currentCorner = GetCornerFromID(currentCornerID);
         Vertex currentVertex = GetVertexFromCornerID(currentCornerID);
+
+        if (!currentCorner.exists()) {
+          CheckForFaces();
+          MouseIsWithinFace();
+          break;
+        }
+
         Vertex nextVertex = GetVertexFromCornerID(currentCorner.next);
 
         PVector start = currentVertex.pos;
@@ -328,6 +352,12 @@ public int MouseIsWithinFace() {
 
       if (intersections % 2 != 0) {
         return i;
+      }
+    } else {
+      if (!GetCornerFromID(masterFs.get(outerFace)).exists()) {
+        CheckForFaces();
+        MouseIsWithinFace();
+        break;
       }
     }
   }

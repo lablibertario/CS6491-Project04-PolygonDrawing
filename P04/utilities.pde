@@ -122,32 +122,43 @@ void displayFooter() { // Displays help text at the bottom
 }
 
 void displayVertices() {
+  println("draw vertices");
   for (int i = 0; i < masterVs.size(); i++) {
     Vertex v = masterVs.get(i);
-    if(v.id != -1) v.Draw();
+    if (v.exists()) {
+      v.Draw();
+    }
   }
   textSize(12);
 }
 
 void displayCorners() {
+  println("draw corners");
   for (int i = 0; i < masterCs.size(); i++) {
     Corner c = masterCs.get(i);
-    if(c.id != -1) c.Draw(cornerColor);
+    if (c.exists()) {
+      println("draw corner " + c.id);
+      c.Draw(cornerColor);
+    }
   }
   textSize(12);
 }
 
 void displayEdges() {
+  println("draw edges");
   for (int i = 0; i < masterCs.size(); i++) {
     Corner startC = masterCs.get(i);
-    Corner endC = GetCornerFromID(startC.next);
 
-    //DrawSidewalk(startC, endC);
+    if (startC.next != -1) {
+      Corner endC = GetCornerFromID(startC.next);
 
-    Vertex startV = GetVertexFromCornerID(startC.id);
-    Vertex endV = GetVertexFromCornerID(endC.id);
+      if (startC.exists() && endC.exists()) {
+        Vertex startV = GetVertexFromCornerID(startC.id);
+        Vertex endV = GetVertexFromCornerID(endC.id);
 
-    DrawEdge(startV, endV);
+        DrawEdge(startV, endV);
+      }
+    }
   }
 }
 
@@ -158,7 +169,7 @@ void displayFaceSidewalks() {
 }
 
 void DrawFaceSidewalks(int faceID) {
-  //println(faceID);
+  println("draw face " + faceID + " sidewalks");
   Corner startC = GetCornerFromFaceID(faceID);
   Corner currentC = startC;
   do {
@@ -190,6 +201,8 @@ void DrawLine(PVector start, PVector end, float thickness, color rgb) {
 void DrawSidewalk(Corner startC, Corner endC) {
   PVector start = startC.GetDisplayPosition();
   PVector end = endC.GetDisplayPosition();
+
+  println("sidewalk: " + startC.id + " -> " + endC.id);
 
   DrawLine(start, end, sidewalkThickness, sidewalkColor);
 }

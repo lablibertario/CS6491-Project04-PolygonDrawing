@@ -151,7 +151,6 @@ public class VertexHandler {
 	}
 
 	private void AppendToEndOfVertex(Vertex connectVertex){
-
 		Corner newCorner = new Corner(masterCs.size()+1, newVertex.id);
 		Corner addedCorner = new Corner(masterCs.size(), connectVertex.id);
 		Corner connectCorner = GetCornerFromID(connectVertex.corners.get(0));
@@ -204,7 +203,6 @@ public class VertexHandler {
         }
 
         return splitCorner;
-
 	}
 
 	private void CornerSplit(Corner splitCorner){
@@ -230,7 +228,7 @@ public class VertexHandler {
 		PVector nextEdge = new PVector(nextVertex.pos.x - connectVertex.pos.x, nextVertex.pos.y - connectVertex.pos.y);
 		PVector newEdge = new PVector(newVertex.pos.x - connectVertex.pos.x, newVertex.pos.y - connectVertex.pos.y);
 
-		//if (closestToPrevEdge) {
+		if (closestToPrevEdge) {
 			println("closest to prev edge");
 			splitPrevCorner.next = addedCorner.id;
 			addedCorner.prev = splitPrevCorner.prev;
@@ -243,7 +241,7 @@ public class VertexHandler {
 			addedCorner.swing = splitCorner.id;
 			Corner unSwingCorner = splitCorner.FindUnswing();
 			unSwingCorner.swing = addedCorner.id;
-		/*} else {
+		} else {
 			println("closest to next edge");
 			splitCorner.next = newCorner.id;
 			newCorner.prev = splitCorner.id;
@@ -256,7 +254,7 @@ public class VertexHandler {
 			addedCorner.swing = splitCorner.swing;
 			//Corner unSwingCorner = splitCorner.FindUnswing();
 			splitCorner.swing = addedCorner.id;
-		}*/
+		}
 
 		AddToMaster(addedCorner);
 		AddToMaster(newCorner);
@@ -348,51 +346,60 @@ public class VertexHandler {
 
 	public void RemoveVertex(int vertexID) {
 		Vertex theVertex = GetVertexFromID(vertexID);
-		Corner theCorner = GetCornerFromID(vertexID);
-		if(theVertex.corners.size() == 1){
-			//there's one corner(we're an edge off something)
-			Corner nextCorner = GetCornerFromID(theCorner.next);
-			if(masterVs.size() == 2) {
 
-			} else {
+		if(theVertex.corners.size() == 1){
+			//there's one corner (we're an edge off something)
+			if(masterVs.size() == 2) {
+				// only two vertices
+				Corner theCorner = GetCornerFromID(theVertex.corners.get(0));
 				Corner prevCorner = GetCornerFromID(theCorner.prev);
-				Corner nextNextCorner = GetCornerFromID(GetCornerFromID(theCorner.next).next);
-				prevCorner.next = nextNextCorner.id;
-				nextNextCorner.prev = prevCorner.id;
-				//remove the corners
-				CleanCornerReferencesAt(theCorner.id);
-				masterCs.remove(theCorner);
-				CleanCornerReferencesAt(nextCorner.id);
-				masterCs.remove(nextCorner);
-				//theCorner.id = -1;
-				//nextCorner.id = -1;
+
+				theCorner.kill();
+				prevCorner.kill();
+			} else {
+				// more than two vertices
+				Corner theCorner = GetCornerFromID(theVertex.corners.get(0));
+				Corner prevCorner = GetCornerFromID(theCorner.prev);
+				Corner prevPrevCorner = GetCornerFromID(prevCorner.prev);
+				Corner nextCorner = GetCornerFromID(theCorner.next);
+				Corner nextNextCorner = GetCornerFromID(nextCorner.next);
+
+				Vertex prevVertex = GetVertexFromCornerID(prevCorner.id);
+
+				//prevVertex.RemoveCorner(prevCorner.id);
+
+				prevPrevCorner.next = nextCorner.id;
+				nextCorner.prev = prevPrevCorner.id;
+				println("prevPrev -> next: " + prevPrevCorner.id + " -> " + nextCorner.id);
+
+				theCorner.kill();
+				prevCorner.kill();
 			}
 		} else if(theVertex.corners.size() == 2) {
 
 		}
 		//else first vertex, just need to kill it
-		CleanVertReferencesAt(theVertex.id);
-		masterVs.remove(theVertex);
-
+		theVertex.id = -1;
+		CheckForFaces();
+		swingRedraw = prevRedraw = nextRedraw = -1;
 		println("removed vert before exception");
-		//theVertex.id = -1;
 	}
 
-	public void CleanCornerReferencesAt(int index) {
-		for(int i = 0; i < masterCs.size(); i++) {
-			Corner currCorner = GetCornerFromID(i);
-			if(currCorner.next > index) currCorner.next = currCorner.next - 1;
-			if(currCorner.prev > index) currCorner.prev = currCorner.prev - 1;
-			if(currCorner.swing > index) currCorner.swing = currCorner.swing -1;
-		}
-	}
+	// public void CleanCornerReferencesAt(int index) {
+	// 	for(int i = 0; i < masterCs.size(); i++) {
+	// 		Corner currCorner = GetCornerFromID(i);
+	// 		if(currCorner.next > index) currCorner.next = currCorner.next - 1;
+	// 		if(currCorner.prev > index) currCorner.prev = currCorner.prev - 1;
+	// 		if(currCorner.swing > index) currCorner.swing = currCorner.swing -1;
+	// 	}
+	// }
 
-	public void CleanVertReferencesAt(int index) {
-		for(int i = 0; i < masterCs.size(); i++) {
-			Corner currCorner = GetCornerFromID(i);
-			if(currCorner.vertex > index) currCorner.vertex = currCorner.vertex - 1;
-		}
-	}
+	// public void CleanVertReferencesAt(int index) {
+	// 	for(int i = 0; i < masterCs.size(); i++) {
+	// 		Corner currCorner = GetCornerFromID(i);
+	// 		if(currCorner.vertex > index) currCorner.vertex = currCorner.vertex - 1;
+	// 	}
+	// }
 
 	public boolean CheckIfRemovable(Vertex _toRemove){
 		if(_toRemove.corners.size() <= 2) return true;

@@ -20,6 +20,44 @@ public class Vertex{
     corners.add(cornerID);
   }
 
+  public boolean exists() {
+    return (id > -1);
+  }
+
+  // public void RemoveCorner(int cornerID) {
+  //   Corner startCorner = GetCornerFromID(corners.get(0));
+  //   Corner removedCorner = GetCornerFromID(cornerID);
+  //   Corner currentCorner = startCorner;
+  //   println("corner " + cornerID + " removal from " + corners);
+  //   do {
+  //     println("this -> swing: " + currentCorner.id + " -> " + currentCorner.swing);
+  //     if (currentCorner.swing == cornerID) {
+  //       currentCorner.swing = removedCorner.swing;
+  //       corners.remove(FindCornerIndex(cornerID));
+  //       println("this -> newSwing: " + currentCorner.id + " -> " + currentCorner.swing);
+  //       break;
+  //     }
+  //     currentCorner = GetCornerFromID(currentCorner.swing);
+  //   }
+  //   while (currentCorner != startCorner);
+  // }
+
+  public void RemoveCorner(int cornerID) {
+    int index = FindCornerIndex(cornerID);
+    if (index != -1) {
+      corners.remove(index);
+    }
+  }
+
+  private int FindCornerIndex(int cornerID) {
+    for (int i = 0; i < corners.size(); i++) {
+      if (corners.get(i) == cornerID) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   public boolean isHovered() {
     boolean result = mouseIsWithinCircle(this.pos, vertexRadius);
     return result;
