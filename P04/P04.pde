@@ -25,6 +25,10 @@ VertexHandler vertexHandler = new VertexHandler();
 boolean  singlePress = false;
 boolean editStart = true;
 boolean editing = false;
+boolean connectingTwoExisting = false;
+boolean connectClick1 = false;
+boolean notDrawn = true;
+int prevConnect = -1;
 
 int swingRedraw, prevRedraw, nextRedraw;
 
@@ -50,8 +54,8 @@ void setup() {               // executed once at the begining
   vertexHandler.AddVertex(100, 300, 0);
   vertexHandler.AddVertex(300, 300, 1);
   vertexHandler.AddVertex(300, 100, 2);
-  vertexHandler.AddVertex(102, 102, 3);
-  vertexHandler.AddVertex(102, 102, 2);
+ // vertexHandler.AddVertex(102, 102, 3);
+ // vertexHandler.AddVertex(102, 102, 2);
   
   
   // vertexHandler.AddVertex(55, 55, 1);
@@ -95,6 +99,19 @@ void draw() {      // executed at each frame
     // vertex has been selected already
     Vertex v = GetVertexFromID(selectedVertexID);
     v.isInteracted();
+    if(connectingTwoExisting){
+      if(connectClick1){
+        println("stored prev click " + selectedVertexID);
+        prevConnect = selectedVertexID;
+        connectClick1 = false;
+      } else{
+        if((selectedVertexID != prevConnect) && notDrawn){
+          println("connected to : "+ selectedVertexID );
+          notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, prevConnect);
+          notDrawn = !notDrawn;
+        }
+      }
+    }
   } else {
     // vertex has not been selected yet
     for (int i = 0; i < masterVs.size(); i++) {
@@ -125,10 +142,18 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
   if (key=='Q') exit();  // quit application
   change=true;
 
-    if (key == 'q') {
+  if (key == 'q') {
       editing = true;
     if(!singlePress){
       editMode = true;
+      singlePress = true;
+    }
+  }
+
+  if(key == 'w'){
+    if(!singlePress){
+      connectingTwoExisting = true;
+      connectClick1 = true;
       singlePress = true;
     }
   }
@@ -147,6 +172,11 @@ void keyReleased() { // executed each time a key is released
       editMode = false;
       singlePress = false;
     }
+  }
+
+  if(key == 'w'){
+    singlePress = false;
+    connectingTwoExisting = false;
   }
 }
 
