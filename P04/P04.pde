@@ -13,7 +13,7 @@
 
 //*************** text drawn on the canvas for name, title and help  *******************
 String title ="CS3451, Fall 2014, Project 04: Graphs!", name ="Miranda Bradley and Sebastian Monroy", // enter project number and your name
-menu="'q' drag new vertex from prev, 'w' connect two existing verts, 'e' delete vert", 
+menu="'q' drag new vertex from prev, 'w' connect two existing verts, 'e' delete vert, 'r' add vert", 
 guide="Press&drag mouse to move dot. 'x', 'y' restrict motion"; // help info
 // velocityDisplay=Float.toString(velocity)
 
@@ -32,6 +32,7 @@ boolean connectClick1 = false;
 boolean notDrawn = true;
 boolean removeVert = false;
 boolean mouseClicked = false;
+boolean addVert = true;
 int prevConnect = -1;
 
 int swingRedraw, prevRedraw, nextRedraw;
@@ -190,11 +191,19 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
   if(key == 'e'){
     removeVert = true;
   }
+
+  if(key == 'r') {
+    addVert = true;
+  }
 }
 
 void keyReleased() { // executed each time a key is released
   if (key=='b') {
 
+  }
+
+  if(key == 'r') {
+    addVert = false;
   }
   if (key=='a') animating=false;  // quit application
   change=true;
