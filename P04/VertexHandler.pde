@@ -52,7 +52,8 @@ public class VertexHandler {
 		}
 
 		if(idOfExistingConnection == -1 && successfulCreation) AddToMaster(newVertex);
-
+		if (successfulCreation)
+			CheckForFaces();
 		return successfulCreation;
 	}
 
