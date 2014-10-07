@@ -72,6 +72,7 @@ public class Corner{
   public Corner FindUnswing(){
     Corner currCorner = this;
     while(currCorner.swing != id){
+      println("swing id: " + currCorner.swing);
       currCorner = GetCornerFromID(currCorner.swing);
     }
 
@@ -89,15 +90,21 @@ public class Corner{
     }
   }
 
-  public void Draw() {
-    fill(cornerColor);
-    stroke(cornerColor);
+  public void Draw(color fillColor) {
+    fill(fillColor);
+    stroke(fillColor);
 
     Corner tmp = masterCs.get(id);
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
     // println("stored next " + next + "stored prev: " + prev);
     PVector pos = GetDisplayPosition();
     showDisk(pos.x, pos.y, 2); 
+
+    if(isHovered()) {
+      swingRedraw = swing;
+      nextRedraw = next;
+      prevRedraw = prev;
+    }
   }
 
   public void DrawInformation() {

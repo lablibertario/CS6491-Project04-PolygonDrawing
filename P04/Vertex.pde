@@ -3,6 +3,10 @@ public class Vertex{
  int id;
  public ArrayList<Integer> corners = new ArrayList<Integer>();
  
+  public Vertex(){
+
+  }
+
   public Vertex(int _x, int _y) {
     pos = new PVector(_x, _y);
   }
@@ -44,11 +48,28 @@ public class Vertex{
     if (this.isClicked()) {
       this.DrawInformation();
       selectedVertexID = this.id;
+      if(editMode) {
+        editStart = true;
+      }
     }
 
     if (this.isDragged()) {
-      this.DrawInformation();
-      this.Drag();
+      //drag in new vert/edge
+      if(editMode){
+        if(editStart){
+          boolean added = vertexHandler.AddVertex(mouseX, mouseY, id);
+          //rubberBand = GetVertexFromID(masterVs.size()-1);
+          if(added){
+            println("added a vert");
+            editStart = false;
+            editMode = false;
+            selectedVertexID = masterVs.size()-1;
+          }
+        }
+      } else {
+        this.DrawInformation();
+        this.Drag();
+      }
     }
   }
 

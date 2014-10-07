@@ -20,7 +20,10 @@ color vertexColor = black;
 PVector vertexTextOffset = new PVector(7, -15);
 
 int cornerRadius = 3;
-color cornerColor = red;
+color cornerColor = color(240, 251, 159);
+color swingColor = color(213, 162, 222);
+color nextColor = color(255, 168, 138);
+color prevColor = color(100, 185, 144);
 PVector cornerTextOffset = new PVector(7, -15);
 
 int areaTextSize = 30;
@@ -71,7 +74,6 @@ public float GetPosAngle(PVector a) {
 // ************************************************************************ IMAGES & VIDEO 
 int pictureCounter=0;
 PImage myFace, myFace2; // picture of author's face, should be: data/pic.jpg in sketch folder
-PImage power;
 void snapPicture() {
   saveFrame("PICTURES/P"+nf(pictureCounter++, 3)+".jpg");
 }
@@ -122,7 +124,7 @@ void displayFooter() { // Displays help text at the bottom
 void displayVertices() {
   for (int i = 0; i < masterVs.size(); i++) {
     Vertex v = masterVs.get(i);
-    v.Draw();
+    if(v.id != -1) v.Draw();
   }
   textSize(12);
 }
@@ -130,7 +132,7 @@ void displayVertices() {
 void displayCorners() {
   for (int i = 0; i < masterCs.size(); i++) {
     Corner c = masterCs.get(i);
-    c.Draw();
+    if(c.id != -1) c.Draw(cornerColor);
   }
   textSize(12);
 }

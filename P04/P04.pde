@@ -24,8 +24,20 @@ ArrayList<Integer> masterFs = new ArrayList<Integer>();
 int outerFace = -1;
 
 VertexHandler vertexHandler = new VertexHandler();
+boolean  singlePress = false;
+boolean editStart = true;
+boolean editing = false;
+boolean connectingTwoExisting = false;
+boolean connectClick1 = false;
+boolean notDrawn = true;
+boolean removeVert = false;
+int prevConnect = -1;
 
-boolean mouseDragged;
+int swingRedraw, prevRedraw, nextRedraw;
+
+Vertex rubberBand = new Vertex();
+
+boolean mouseDragged, editMode;
 PVector mouseDragStart;
 
 int selectedVertexID = -1;
@@ -38,13 +50,15 @@ void setup() {               // executed once at the begining
   myFace = loadImage("data/pic.jpg");  // loads image from file pic.jpg in folder data, replace it with a clear pic of your face
   myFace2 = loadImage("data/pic2.jpg");
 
+  editMode = false;
+  swingRedraw = prevRedraw = nextRedraw = -1;
+  
   //hard coded points! for testing
   vertexHandler.AddVertex(100, 100, -1);
   vertexHandler.AddVertex(100, 300, 0);
   vertexHandler.AddVertex(300, 300, 1);
   vertexHandler.AddVertex(300, 100, 2);
-  vertexHandler.AddVertex(102, 102, 3);
-  vertexHandler.AddVertex(102, 102, 2);
+  
   // vertexHandler.AddVertex(55, 55, 1);
   
   //PVector temp = new PVector(-1,0);
@@ -79,6 +93,11 @@ void draw() {      // executed at each frame
 
   displayCorners();
 
+  if(nextRedraw != -1) {
+    GetCornerFromID(nextRedraw).Draw(nextColor);
+    if(swingRedraw != -1) GetCornerFromID(swingRedraw).Draw(swingColor);
+    GetCornerFromID(prevRedraw).Draw(prevColor);
+  }
 
   displayHeader();
   if (!mousePressed && !keyPressed)
@@ -89,8 +108,30 @@ void draw() {      // executed at each frame
   // MOUSE INTERACTION STUFF
   if (selectedVertexID != -1) {
     // vertex has been selected already
-    Vertex v = GetVertexFromID(selectedVertexID);
-    v.isInteracted();
+    Vertex v = new Vertex();
+
+    //if looking to connect
+    if(connectingTwoExisting){
+      if(connectClick1){
+        println("stored prev click " + selectedVertexID);
+        prevConnect = selectedVertexID;
+        connectClick1 = false;
+      } else if (!connectClick1){
+        if((selectedVertexID != prevConnect) && notDrawn){
+          println("connected to : "+ selectedVertexID );
+          v = GetVertexFromID(prevConnect);
+          notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID);
+          notDrawn = !notDrawn;
+        }
+      }
+    } else if(removeVert) {
+      println("remove the vert");
+      boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID));
+      if(removable) vertexHandler.RemoveVertex(selectedVertexID);
+    } else {
+      v = GetVertexFromID(selectedVertexID);
+      v.isInteracted();
+    }
   } else {
     // vertex has not been selected yet
     for (int i = 0; i < masterVs.size(); i++) {
@@ -119,6 +160,26 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
   if (key=='a') animating=true;  // quit application
   if (key=='Q') exit();  // quit application
   change=true;
+
+  if (key == 'q') {
+    if(!singlePress){
+      editing = true;
+      editMode = true;
+      singlePress = true;
+    }
+  }
+
+  if(key == 'w'){
+    if(!singlePress){
+      connectingTwoExisting = true;
+      connectClick1 = true;
+      singlePress = true;
+    }
+  }
+
+  if(key == 'e'){
+    removeVert = true;
+  }
 }
 
 void keyReleased() { // executed each time a key is released
@@ -127,6 +188,23 @@ void keyReleased() { // executed each time a key is released
   }
   if (key=='a') animating=false;  // quit application
   change=true;
+
+  if (key == 'q') {
+    editing = false;
+    if(singlePress){
+      editMode = false;
+      singlePress = false;
+    }
+  }
+
+  if(key == 'w'){
+    singlePress = false;
+    connectingTwoExisting = false;
+  }
+
+  if(key == 'e'){
+    removeVert = false;
+  }
 }
 
 void mouseDragged() { // executed when mouse is pressed and moved

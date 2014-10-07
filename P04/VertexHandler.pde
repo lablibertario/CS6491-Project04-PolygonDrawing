@@ -3,22 +3,26 @@ public class VertexHandler {
 	private boolean closestToPrevEdge;
 	private float distToConnect = 6.0;
 	private Vertex connectVertex;
+	private boolean successfulCreation = true;
 
-	public void AddVertex(int _x, int _y, int connectIndex) {
+	public boolean AddVertex(int _x, int _y, int connectIndex) {
 		PVector insertionEdge, comparisonEdge;
 		newVertex = new Vertex(_x, _y, masterVs.size());
 		//println(masterVs.size());
 
 		//check to see if we're connecting two existing vertices
 		int idOfExistingConnection = -1;
-		for(int i = 0; i < masterVs.size(); i++){
-			PVector existingVertPos = new PVector(GetVertexFromID(i).pos.x, GetVertexFromID(i).pos.y);
-            PVector tmpNewVert = new PVector(newVertex.pos.x, newVertex.pos.y);
-			existingVertPos.sub(tmpNewVert);
-			if((abs(existingVertPos.x) < distToConnect) && (abs(existingVertPos.y) < distToConnect)) {
-				idOfExistingConnection = i;
-				break;
-			} 
+		if(!editing) {
+			for(int i = 0; i < masterVs.size(); i++){
+				PVector existingVertPos = new PVector(GetVertexFromID(i).pos.x, GetVertexFromID(i).pos.y);
+	            PVector tmpNewVert = new PVector(newVertex.pos.x, newVertex.pos.y);
+				existingVertPos.sub(tmpNewVert);
+				if((abs(existingVertPos.x) < distToConnect) && (abs(existingVertPos.y) < distToConnect)) {
+					idOfExistingConnection = i;
+					println("vert is on top of another");
+					break;
+				} 
+			}
 		}
 
 		if(idOfExistingConnection != -1){
@@ -47,9 +51,15 @@ public class VertexHandler {
 			}
 		}
 
+<<<<<<< HEAD
 		if(idOfExistingConnection == -1) AddToMaster(newVertex);
 
 		CheckForFaces();
+=======
+		if(idOfExistingConnection == -1 && successfulCreation) AddToMaster(newVertex);
+
+		return successfulCreation;
+>>>>>>> origin/Mir
 	}
 
 	private void ConnectExistingVerts(int IDToConnectTo){
@@ -69,11 +79,19 @@ public class VertexHandler {
 
 		if(connectSplit){
 			connectSplitCorner = FindEdgesBetween(connectVertex);
+			if(connectSplitCorner.id == -1) {
+				successfulCreation = false;
+				return;
+			}
 			println("split at connection " + connectSplitCorner.id + "for connection");
 		}
 
 		if(farSplit){
 			farSplitCorner = FindEdgesBetween(farConnection);
+			if(farSplitCorner.id == -1) {
+				successfulCreation = false;
+				return;
+			}
 			println("split at far corner " + farSplitCorner.id + "for far");
 		}
 
@@ -98,6 +116,7 @@ public class VertexHandler {
 				farCorner = GetCornerFromID(farConnection.corners.get(0));
 			}
 		}
+		
 		Corner originsNextC = GetCornerFromID(originCorner.next);
 		Corner farsPrevC = GetCornerFromID(farCorner.prev);
 
@@ -109,6 +128,21 @@ public class VertexHandler {
 		newCorner.prev = farsPrevC.id;
 		originsNextC.prev = addedCorner.id;
 		farsPrevC.next = newCorner.id;
+
+		if(originCorner.swing == -1) {
+			addedCorner.swing = originCorner.id;
+		} else {
+			addedCorner.swing = originCorner.swing;
+		}
+		originCorner.swing = addedCorner.id;
+
+		if(farCorner.swing == -1) {
+			farCorner.swing = newCorner.id;
+		} else {
+			Corner farUnSwing = farCorner.FindUnswing();
+			farUnSwing.swing = newCorner.id;
+		}
+		newCorner.swing = farCorner.id;
 
         AddToMaster(addedCorner);
         AddToMaster(newCorner);
@@ -153,23 +187,17 @@ public class VertexHandler {
 		//float smallestAngle = 2*PI; 
 		for(int i = 0; i < _connectVertex.corners.size(); i++){
 			Corner c = GetCornerFromID(_connectVertex.corners.get(i));
-			Vertex v = GetVertexFromCornerID(c.id);
+			//println("c: " + c.id + "c.next" + c.next + "c.prev: " + c.prev);
+			Vertex v = GetVertexFromCornerID(c.id); 
 			Vertex vNext = GetVertexFromCornerID(c.next);
 			Vertex vPrev = GetVertexFromCornerID(c.prev);
 
 			PVector prevEdge = new PVector(vPrev.pos.x - v.pos.x, vPrev.pos.y - v.pos.y);
 			PVector nextEdge = new PVector(vNext.pos.x - v.pos.x, vNext.pos.y - v.pos.y);
 			PVector newEdge = new PVector(newVertex.pos.x - v.pos.x, newVertex.pos.y - v.pos.y);
-			println("prevEdge: "+prevEdge);
-			println("nextEdge: "+nextEdge);
-			println("newEdge: "+newEdge);
 
-			//float angleBetween = GetSmallestAngle(prevEdge, newEdge);
-			//println("angle: " + angleBetween);
-			//if(angleBetween < smallestAngle && !isToRightOf(prevEdge, newEdge)) {
 			if (IsBetween(prevEdge, newEdge, nextEdge)) {
 				println("is between yo");
-				//smallestAngle = angleBetween;
 				splitCorner = c;
 				break;
 			}
@@ -181,7 +209,12 @@ public class VertexHandler {
 
 	private void CornerSplit(Corner splitCorner){
 		println("insert at " + splitCorner.id);
+		if(splitCorner.id == -1) {
+			successfulCreation = false;
+			return;
+		}
 
+		println("at corner " + splitCorner.id + " and still adding new corners");
 		Vertex connectVertex = GetVertexFromCornerID(splitCorner.id);
 
 		Corner newCorner = new Corner(masterCs.size()+1, newVertex.id);
@@ -224,6 +257,8 @@ public class VertexHandler {
 		AddToMaster(newCorner);
 		connectVertex.AddCorner(addedCorner.id);
 		newVertex.AddCorner(newCorner.id);
+
+		println("done splitting corner");
 	}
 
 	private Direction VertexDirection(PVector comparison, PVector insertion) {
@@ -256,15 +291,14 @@ public class VertexHandler {
 
 	private boolean IsBetween(PVector prevEdge, PVector newEdge, PVector nextEdge) {
 		PVector prevE1 = new PVector(prevEdge.x, prevEdge.y);
-		// PVector prevE2 = new PVector(prevEdge.x, prevEdge.y);
 		PVector newE1 = new PVector(newEdge.x, newEdge.y);
-		// PVector newE2 = new PVector(newEdge.x, newEdge.y);
 		PVector nextE1 = new PVector(nextEdge.x, nextEdge.y);
-		// PVector nextE2 = new PVector(nextEdge.x, nextEdge.y);
 
 		float oldPrevRot = GetPosAngle(prevEdge);
 		float oldNewRot = GetPosAngle(newEdge);
 		float oldNextRot = GetPosAngle(nextEdge);
+
+		println("new guy's rotation: " + oldNewRot);
 
 		float rotAmount = 2*PI - oldPrevRot;
 
@@ -276,8 +310,10 @@ public class VertexHandler {
 		float newNewRot = GetPosAngle(newE1);
 		float newNextRot = GetPosAngle(nextE1);
 
+		println("between lines: " + (newNewRot - newPrevRot) + ", and " + (newNextRot - newNewRot) );
+
 		closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
-		return (newNewRot - newPrevRot > 0) && (newNextRot - newNewRot < 0);
+		return ((newNewRot - newPrevRot > 0) && (newNextRot - newNewRot <= 0));
 	}
 
 	public int NumCorners(int vertexID) {
@@ -289,7 +325,57 @@ public class VertexHandler {
 	}
 
 	public void RemoveVertex(int vertexID) {
+		Vertex theVertex = GetVertexFromID(vertexID);
+		Corner theCorner = GetCornerFromID(vertexID);
+		if(theVertex.corners.size() == 1){
+			//there's one corner(we're an edge off something)
+			Corner nextCorner = GetCornerFromID(theCorner.next);
+			if(masterVs.size() == 2) {
 
+			} else {
+				Corner prevCorner = GetCornerFromID(theCorner.prev);
+				Corner nextNextCorner = GetCornerFromID(GetCornerFromID(theCorner.next).next);
+				prevCorner.next = nextNextCorner.id;
+				nextNextCorner.prev = prevCorner.id;
+				//remove the corners
+				CleanCornerReferencesAt(theCorner.id);
+				masterCs.remove(theCorner);
+				CleanCornerReferencesAt(nextCorner.id);
+				masterCs.remove(nextCorner);
+				//theCorner.id = -1;
+				//nextCorner.id = -1;
+			}
+		} else if(theVertex.corners.size() == 2) {
+
+		}
+		//else first vertex, just need to kill it
+		CleanVertReferencesAt(theVertex.id);
+		masterVs.remove(theVertex);
+
+		println("removed vert before exception");
+		//theVertex.id = -1;
+	}
+
+	public void CleanCornerReferencesAt(int index) {
+		for(int i = 0; i < masterCs.size(); i++) {
+			Corner currCorner = GetCornerFromID(i);
+			if(currCorner.next > index) currCorner.next = currCorner.next - 1;
+			if(currCorner.prev > index) currCorner.prev = currCorner.prev - 1;
+			if(currCorner.swing > index) currCorner.swing = currCorner.swing -1;
+		}
+	}
+
+	public void CleanVertReferencesAt(int index) {
+		for(int i = 0; i < masterCs.size(); i++) {
+			Corner currCorner = GetCornerFromID(i);
+			if(currCorner.vertex > index) currCorner.vertex = currCorner.vertex - 1;
+		}
+	}
+
+	public boolean CheckIfRemovable(Vertex _toRemove){
+		if(_toRemove.corners.size() <= 2) return true;
+
+		return false;
 	}
 
 	public void AddToMaster(Vertex _newVertex) {
