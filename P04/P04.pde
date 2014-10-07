@@ -82,13 +82,15 @@ void draw() {      // executed at each frame
   displayEdges();
   displayVertices();
 
-  int faceToDraw = MouseIsWithinFace();
-  if (faceToDraw != -1) {
-    DrawFaceSidewalks(faceToDraw);
-    DrawAreaOfFace(faceToDraw);
-  } else {
-    DrawFaceSidewalks(outerFace);
-    DrawAreaOfFace(outerFace);
+  if (masterFs.size() > 1) {
+    int faceToDraw = MouseIsWithinFace();
+    if (faceToDraw != -1) {
+      DrawFaceSidewalks(faceToDraw);
+      DrawAreaOfFace(faceToDraw);
+    } else {
+      DrawFaceSidewalks(outerFace);
+      DrawAreaOfFace(outerFace);
+    }
   }
 
   displayCorners();

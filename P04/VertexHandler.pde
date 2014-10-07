@@ -51,15 +51,9 @@ public class VertexHandler {
 			}
 		}
 
-<<<<<<< HEAD
-		if(idOfExistingConnection == -1) AddToMaster(newVertex);
-
-		CheckForFaces();
-=======
 		if(idOfExistingConnection == -1 && successfulCreation) AddToMaster(newVertex);
 
 		return successfulCreation;
->>>>>>> origin/Mir
 	}
 
 	private void ConnectExistingVerts(int IDToConnectTo){

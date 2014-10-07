@@ -158,6 +158,7 @@ void displayFaceSidewalks() {
 }
 
 void DrawFaceSidewalks(int faceID) {
+  println(faceID);
   Corner startC = GetCornerFromFaceID(faceID);
   Corner currentC = startC;
   do {
