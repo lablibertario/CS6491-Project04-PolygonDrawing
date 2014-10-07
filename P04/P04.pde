@@ -45,8 +45,6 @@ void setup() {               // executed once at the begining
   vertexHandler.AddVertex(300, 100, 2);
   vertexHandler.AddVertex(102, 102, 3);
   vertexHandler.AddVertex(102, 102, 2);
-  
-  CheckForFaces();  
   // vertexHandler.AddVertex(55, 55, 1);
   
   //PVector temp = new PVector(-1,0);
@@ -69,10 +67,8 @@ void draw() {      // executed at each frame
 
   displayEdges();
   displayVertices();
+  displayFaceSidewalks();
   displayCorners();
-  //if (masterCs.size() == 9) {
-    displayFaceSidewalks();
-  //}
 
   displayHeader();
   if (!mousePressed && !keyPressed)

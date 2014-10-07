@@ -48,6 +48,8 @@ public class VertexHandler {
 		}
 
 		if(idOfExistingConnection == -1) AddToMaster(newVertex);
+
+		CheckForFaces();
 	}
 
 	private void ConnectExistingVerts(int IDToConnectTo){
