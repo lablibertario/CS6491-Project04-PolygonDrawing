@@ -55,7 +55,7 @@ void setup() {               // executed once at the begining
   vertexHandler.AddVertex(300, 300, 1);
   vertexHandler.AddVertex(300, 100, 2);
  // vertexHandler.AddVertex(102, 102, 3);
- // vertexHandler.AddVertex(102, 102, 2);
+  //vertexHandler.AddVertex(100, 100, 2);
   
   
   // vertexHandler.AddVertex(55, 55, 1);
@@ -97,19 +97,24 @@ void draw() {      // executed at each frame
   // MOUSE INTERACTION STUFF
   if (selectedVertexID != -1) {
     // vertex has been selected already
-    Vertex v = GetVertexFromID(selectedVertexID);
-    v.isInteracted();
+    Vertex v = new Vertex();
+
+    //if looking to connect
     if(connectingTwoExisting){
       if(connectClick1){
         println("stored prev click " + selectedVertexID);
         prevConnect = selectedVertexID;
         connectClick1 = false;
-      } else{
+      } else if (!connectClick1){
         if((selectedVertexID != prevConnect) && notDrawn){
           println("connected to : "+ selectedVertexID );
-          notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, prevConnect);
+          v = GetVertexFromID(prevConnect);
+          notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID);
           notDrawn = !notDrawn;
         }
+      } else {
+        v = GetVertexFromID(selectedVertexID);
+        v.isInteracted();
       }
     }
   } else {

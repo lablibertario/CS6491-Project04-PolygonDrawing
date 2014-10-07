@@ -13,13 +13,13 @@ public class VertexHandler {
 		//check to see if we're connecting two existing vertices
 		int idOfExistingConnection = -1;
 		if(!editing) {
-			println("checking if vert is on top of another");
 			for(int i = 0; i < masterVs.size(); i++){
 				PVector existingVertPos = new PVector(GetVertexFromID(i).pos.x, GetVertexFromID(i).pos.y);
 	            PVector tmpNewVert = new PVector(newVertex.pos.x, newVertex.pos.y);
 				existingVertPos.sub(tmpNewVert);
 				if((abs(existingVertPos.x) < distToConnect) && (abs(existingVertPos.y) < distToConnect)) {
 					idOfExistingConnection = i;
+					println("vert is on top of another");
 					break;
 				} 
 			}
@@ -307,7 +307,7 @@ public class VertexHandler {
 		println("between lines: " + (newNewRot - newPrevRot) + ", and " + (newNextRot - newNewRot) );
 
 		closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
-		return (newNewRot - newPrevRot >= 0) && (newNextRot - newNewRot <= 0);
+		return (newNewRot - newPrevRot > 0) && (newNextRot - newNewRot <= 0);
 	}
 
 	public int NumCorners(int vertexID) {
