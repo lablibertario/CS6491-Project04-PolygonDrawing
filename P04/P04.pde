@@ -31,6 +31,7 @@ boolean connectingTwoExisting = false;
 boolean connectClick1 = false;
 boolean notDrawn = true;
 boolean removeVert = false;
+boolean mouseClicked = false;
 int prevConnect = -1;
 
 int swingRedraw, prevRedraw, nextRedraw;
@@ -227,12 +228,18 @@ void mouseMoved() { // when mouse is moved
 
 void mousePressed(MouseEvent e) { // when mouse key is pressed 
   mouseDragStart = new PVector(mouseX, mouseY);
+  mouseClicked = true;
 }
 
 void mouseReleased(MouseEvent e) { // when mouse key is released 
   mouseDragStart = new PVector();
   mouseDragged = false;
   selectedVertexID = -1;
+  mouseClicked = false;
+}
+
+void mouseClicked(MouseEvent e) {
+  
 }
 
 public Corner GetCornerFromID(int cornerID) {

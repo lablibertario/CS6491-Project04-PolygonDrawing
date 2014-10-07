@@ -4,6 +4,7 @@ public class VertexHandler {
 	private float distToConnect = 6.0;
 	private Vertex connectVertex;
 	private boolean successfulCreation = true;
+	private boolean inserting = false;
 
 	public boolean AddVertex(int _x, int _y, int connectIndex) {
 		PVector insertionEdge, comparisonEdge;
@@ -25,10 +26,20 @@ public class VertexHandler {
 			}
 		}
 
+		if(idOfExistingConnection == connectIndex) return false;
+
+		if(inserting) {
+			connectVertex = GetVertexFromID(connectIndex);
+			ConnectExistingVerts(connectVertex, newVertex.id);
+			ConnectExistingVerts(newVertex, idOfExistingConnection);
+			Corner splitCorner = FindEdgesBetween(connectVertex, newVertex);
+		}
+
 		if(idOfExistingConnection != -1){
 			//connecting two existing verts
 			connectVertex = GetVertexFromID(connectIndex);
-			ConnectExistingVerts(idOfExistingConnection);
+			println("connecting two existing");
+			ConnectExistingVerts(newVertex, idOfExistingConnection);
 		} else {
 			if (masterVs.size() == 0) {
 				
@@ -46,8 +57,6 @@ public class VertexHandler {
 				connectVertex = GetVertexFromID(connectIndex);
 				Corner splitCorner = FindEdgesBetween(connectVertex, newVertex);
 				CornerSplit(splitCorner);
-
-
 			}
 		}
 
@@ -57,7 +66,13 @@ public class VertexHandler {
 		return successfulCreation;
 	}
 
-	private void ConnectExistingVerts(int IDToConnectTo){
+	public void InsertVerteXInEdge(int _x, int _y, int _startV) {
+		inserting = true;
+		println("inserting");
+		AddVertex(_x, _y, _startV);
+	}
+
+	private void ConnectExistingVerts(Vertex IDToConnectFrom, int IDToConnectTo){
 		//CONNECTING VERTICES:
 		//connectVertex already gloabally created/set
 		Vertex farConnection = GetVertexFromID(IDToConnectTo);
@@ -66,14 +81,14 @@ public class VertexHandler {
 		//determine if we need to split corners for both verts
 		boolean  connectSplit = false;
 		boolean  farSplit = false;
-		if(connectVertex.corners.size() > 1) connectSplit = true;
+		if(IDToConnectFrom.corners.size() > 1) connectSplit = true;
 		if(farConnection.corners.size() > 1) farSplit = true;
 		//holders for corners we may need
 		Corner connectSplitCorner = new Corner();
 		Corner farSplitCorner = new Corner();
 
 		if(connectSplit){
-			connectSplitCorner = FindEdgesBetween(connectVertex, newVertex);
+			connectSplitCorner = FindEdgesBetween(IDToConnectFrom, newVertex);
 			if(connectSplitCorner.id == -1) {
 				successfulCreation = false;
 				return;
@@ -82,7 +97,7 @@ public class VertexHandler {
 		}
 
 		if(farSplit){
-			farSplitCorner = FindEdgesBetween(farConnection, connectVertex);
+			farSplitCorner = FindEdgesBetween(farConnection, IDToConnectFrom);
 			if(farSplitCorner.id == -1) {
 				successfulCreation = false;
 				return;
@@ -90,7 +105,7 @@ public class VertexHandler {
 			println("split at far corner " + farSplitCorner.id + "for far");
 		}
 
-		Corner addedCorner = new Corner(masterCs.size() , connectVertex.id);
+		Corner addedCorner = new Corner(masterCs.size() , IDToConnectFrom.id);
 		Corner newCorner = new Corner(masterCs.size()+1, farConnection.id);
 		//grab existing corners to handle connections from
 		Corner originCorner = new Corner();
@@ -98,14 +113,14 @@ public class VertexHandler {
 
 		if(!connectSplit && !farSplit) {
 			println("straight forward split: ");
-			originCorner = GetCornerFromID(connectVertex.corners.get(0));
+			originCorner = GetCornerFromID(IDToConnectFrom.corners.get(0));
 			farCorner = GetCornerFromID(farConnection.corners.get(0));
 		} else{
 			if(connectSplit) {
 				println("splits at origin");
 				originCorner = connectSplitCorner;
 			} else {
-				originCorner = GetCornerFromID(connectVertex.corners.get(0));
+				originCorner = GetCornerFromID(IDToConnectFrom.corners.get(0));
 			}
 			if(farSplit) {
 				println("splits at far corner");
@@ -146,7 +161,7 @@ public class VertexHandler {
         AddToMaster(addedCorner);
         AddToMaster(newCorner);
 
-        connectVertex.AddCorner(addedCorner.id);
+        IDToConnectFrom.AddCorner(addedCorner.id);
         farConnection.AddCorner(newCorner.id);
 	}
 
@@ -367,7 +382,7 @@ public class VertexHandler {
 				//theCorner.id = -1;
 				//nextCorner.id = -1;
 			}
-		} else if(theVertex.corners.size() == 2) {
+		} else if(theVertex.corners.size() >= 2) {
 
 		}
 		//else first vertex, just need to kill it
@@ -377,6 +392,7 @@ public class VertexHandler {
 		println("removed vert before exception");
 		//theVertex.id = -1;
 	}
+
 
 	public void CleanCornerReferencesAt(int index) {
 		for(int i = 0; i < masterCs.size(); i++) {

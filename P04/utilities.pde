@@ -206,6 +206,10 @@ void DrawEdge(Vertex startV, Vertex endV) {
     textSize(20);
     PVector closestPoint = GetClosestPointOnEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos);
     showDisk(closestPoint.x, closestPoint.y, edgeThickness*2);
+
+    if(removeVert && mouseClicked) {
+      vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id);
+    }
     //text(GetDistanceFromEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos), mouseX + edgeTextOffset.x, mouseY + edgeTextOffset.y);
   }
 }
