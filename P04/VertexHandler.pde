@@ -285,11 +285,8 @@ public class VertexHandler {
 
 	private boolean IsBetween(PVector prevEdge, PVector newEdge, PVector nextEdge) {
 		PVector prevE1 = new PVector(prevEdge.x, prevEdge.y);
-		// PVector prevE2 = new PVector(prevEdge.x, prevEdge.y);
 		PVector newE1 = new PVector(newEdge.x, newEdge.y);
-		// PVector newE2 = new PVector(newEdge.x, newEdge.y);
 		PVector nextE1 = new PVector(nextEdge.x, nextEdge.y);
-		// PVector nextE2 = new PVector(nextEdge.x, nextEdge.y);
 
 		float oldPrevRot = GetPosAngle(prevEdge);
 		float oldNewRot = GetPosAngle(newEdge);
@@ -306,6 +303,8 @@ public class VertexHandler {
 		float newPrevRot = GetPosAngle(prevE1);
 		float newNewRot = GetPosAngle(newE1);
 		float newNextRot = GetPosAngle(nextE1);
+
+		println("between lines: " + (newNewRot - newPrevRot) + ", and " + (newNextRot - newNewRot) );
 
 		closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
 		return (newNewRot - newPrevRot > 0) && (newNextRot - newNewRot < 0);
