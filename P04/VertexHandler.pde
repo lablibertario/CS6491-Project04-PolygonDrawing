@@ -307,7 +307,7 @@ public class VertexHandler {
 		println("between lines: " + (newNewRot - newPrevRot) + ", and " + (newNextRot - newNewRot) );
 
 		closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
-		return (newNewRot - newPrevRot > 0) && (newNextRot - newNewRot <= 0);
+		return ((newNewRot - newPrevRot > 0) && (newNextRot - newNewRot <= 0));
 	}
 
 	public int NumCorners(int vertexID) {
