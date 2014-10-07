@@ -125,7 +125,7 @@ void displayVertices() {
   println("draw vertices");
   for (int i = 0; i < masterVs.size(); i++) {
     Vertex v = masterVs.get(i);
-    println("drawing v " + v.id);
+    //println("drawing v " + v.id);
     if (v.exists()) {
       v.Draw();
     }

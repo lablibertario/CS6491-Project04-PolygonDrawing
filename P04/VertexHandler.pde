@@ -38,7 +38,6 @@ public class VertexHandler {
 			//ConnectExistingVerts(newVertex, idOfExistingConnection);
 			InsertVertOnEdge(connectVertex, insertionFarVert);
 		} else {
-
 			if(idOfExistingConnection != -1){
 				//connecting two existing verts
 				connectVertex = GetVertexFromID(connectIndex);
