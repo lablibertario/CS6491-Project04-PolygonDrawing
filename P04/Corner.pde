@@ -86,27 +86,31 @@ public class Corner{
 
   public void isInteracted() {
     if (this.isHovered()) {
-      this.DrawInformation(cornerColor);
+      this.DrawInformation();
     }
   }
 
-  public void Draw() {
-    fill(cornerColor);
-    stroke(cornerColor);
+  public void Draw(color fillColor) {
+    fill(fillColor);
+    stroke(fillColor);
 
     Corner tmp = masterCs.get(id);
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
     // println("stored next " + next + "stored prev: " + prev);
     PVector pos = GetDisplayPosition();
     showDisk(pos.x, pos.y, 2); 
+
+    if(isHovered()) {
+      swingRedraw = swing;
+      nextRedraw = next;
+      prevRedraw = prev;
+    }
   }
 
-  public void DrawInformation(color fillColor) {
+  public void DrawInformation() {
     // draw vertex information
-    fill(fillColor);
+    fill(cornerColor);
     textSize(20);
     text(this.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
-
-    GetCornerFromID(swing).DrawInformation(swingColor);
   }
 }

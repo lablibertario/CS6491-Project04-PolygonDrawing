@@ -26,6 +26,8 @@ boolean  singlePress = false;
 boolean editStart = true;
 boolean editing = false;
 
+int swingRedraw, prevRedraw, nextRedraw;
+
 Vertex rubberBand = new Vertex();
 
 boolean mouseDragged, editMode;
@@ -41,6 +43,7 @@ void setup() {               // executed once at the begining
   myFace = loadImage("data/pic.jpg");  // loads image from file pic.jpg in folder data, replace it with a clear pic of your face
   myFace2 = loadImage("data/pic2.jpg");
   editMode = false;
+  swingRedraw = prevRedraw = nextRedraw = -1;
   
   //hard coded points! for testing
   vertexHandler.AddVertex(100, 100, -1);
@@ -75,6 +78,11 @@ void draw() {      // executed at each frame
   displayVertices();
   displayCorners();
   displayFaceSidewalks();
+  if(nextRedraw != -1) {
+    GetCornerFromID(nextRedraw).Draw(nextColor);
+    GetCornerFromID(swingRedraw).Draw(swingColor);
+    GetCornerFromID(prevRedraw).Draw(prevColor);
+  }
 
   displayHeader();
   if (!mousePressed && !keyPressed)

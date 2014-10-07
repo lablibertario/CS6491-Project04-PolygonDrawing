@@ -20,10 +20,10 @@ color vertexColor = black;
 PVector vertexTextOffset = new PVector(7, -15);
 
 int cornerRadius = 3;
-color cornerColor = red;
-color swingColor = color(30, 20, 26);
-color nextColor = color(32, 36, 23);
-color prevColor = color(18, 28, 21);
+color cornerColor = color(240, 251, 159);
+color swingColor = color(213, 162, 222);
+color nextColor = color(255, 168, 138);
+color prevColor = color(100, 185, 144);
 PVector cornerTextOffset = new PVector(7, -15);
 
 // ************************************************************************ GRAPHICS 
@@ -129,7 +129,7 @@ void displayVertices() {
 void displayCorners() {
   for (int i = 0; i < masterCs.size(); i++) {
     Corner c = masterCs.get(i);
-    c.Draw();
+    c.Draw(cornerColor);
   }
   textSize(12);
 }
