@@ -3,6 +3,7 @@ public class VertexHandler {
 	private boolean closestToPrevEdge;
 	private float distToConnect = 6.0;
 	private Vertex connectVertex;
+	private boolean successfulCreation = true;
 
 	public void AddVertex(int _x, int _y, int connectIndex) {
 		PVector insertionEdge, comparisonEdge;
@@ -47,7 +48,7 @@ public class VertexHandler {
 			}
 		}
 
-		if(idOfExistingConnection == -1) AddToMaster(newVertex);
+		if(idOfExistingConnection == -1 && successfulCreation) AddToMaster(newVertex);
 	}
 
 	private void ConnectExistingVerts(int IDToConnectTo){
@@ -179,6 +180,10 @@ public class VertexHandler {
 
 	private void CornerSplit(Corner splitCorner){
 		println("insert at " + splitCorner.id);
+		if(splitCorner.id == -1) {
+			successfulCreation = false;
+			return;
+		}
 
 		Vertex connectVertex = GetVertexFromCornerID(splitCorner.id);
 
