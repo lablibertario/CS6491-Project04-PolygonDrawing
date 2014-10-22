@@ -32,7 +32,7 @@ boolean connectClick1 = false;
 boolean notDrawn = true;
 boolean removeVert = false;
 boolean mouseClicked = false;
-boolean addVert = true;
+boolean addVert = false;
 int prevConnect = -1;
 
 int swingRedraw, prevRedraw, nextRedraw;
