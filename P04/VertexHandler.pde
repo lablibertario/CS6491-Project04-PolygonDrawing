@@ -431,8 +431,8 @@ public class VertexHandler {
 				Corner theCorner = GetCornerFromID(theVertex.corners.get(0));
 				Corner prevCorner = GetCornerFromID(theCorner.prev);
 
-				theCorner.kill(_mastVs);
-				prevCorner.kill(_mastVs);
+				theCorner.kill();
+				prevCorner.kill();
 			} else {
 				// more than two vertices
 				Corner theCorner = GetCornerFromID(theVertex.corners.get(0));
@@ -449,8 +449,8 @@ public class VertexHandler {
 				nextCorner.prev = prevPrevCorner.id;
 				println("prevPrev -> next: " + prevPrevCorner.id + " -> " + nextCorner.id);
 
-				theCorner.kill(_mastVs);
-				prevCorner.kill(_mastVs);
+				theCorner.kill();
+				prevCorner.kill();
 			}
 		} else if(theVertex.corners.size() >= 2) {
 
