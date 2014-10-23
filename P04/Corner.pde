@@ -28,12 +28,12 @@ public class Corner{
     vertex = vertexID;
   }
 
-  public void kill() {
+  public void kill(ArrayList<Vertex> _masterVs) {
     if (this.swing != -1) {
       Corner unswing = FindUnswing();
       unswing.swing = this.swing;
     }
-    GetVertexFromID(this.vertex).RemoveCorner(this.id);
+    GetVertexFromID(this.vertex, _masterVs).RemoveCorner(this.id);
 
     id = -1;
     next = -1;
@@ -46,7 +46,7 @@ public class Corner{
     return (id > -1);
   }
 
-  public PVector GetDisplayPosition() {
+  public PVector GetDisplayPosition(ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs) {
     float d = 30;
     PVector thisPos = GetVertexFromCornerID(id).pos;
     PVector prevPos = GetVertexFromCornerID(prev).pos;
