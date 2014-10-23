@@ -14,12 +14,25 @@
 //*************** text drawn on the canvas for name, title and help  *******************
 String title ="CS3451, Fall 2014, Project 04: Graphs!", name ="Miranda Bradley and Sebastian Monroy", // enter project number and your name
 menu="'q' drag new vertex from prev, 'w' connect two existing verts, 'e' delete vert, 'r' add vert", 
-guide="Press&drag mouse to move dot. 'x', 'y' restrict motion"; // help info
+guide="Press&drag mouse to move dot. 'x', 'y' restrict motion, 'p' to toggle 2D"; // help info
 // velocityDisplay=Float.toString(velocity)
 
+//the geometry currently being altered
 ArrayList<Corner> masterCs = new ArrayList<Corner>();
 ArrayList<Vertex> masterVs = new ArrayList<Vertex>();
 ArrayList<Integer> masterFs = new ArrayList<Integer>();
+
+ArrayList<Corner> graphCs = new ArrayList<Corner>();
+ArrayList<Vertex> graphVs = new ArrayList<Vertex>();
+ArrayList<Integer> graphFs = new ArrayList<Integer>();
+
+ArrayList<Corner> sidewalkBelowCs = new ArrayList<Corner>();
+ArrayList<Vertex> sidewalkBelowVs = new ArrayList<Vertex>();
+ArrayList<Integer> sidewalkBelowFs = new ArrayList<Integer>();
+
+ArrayList<Corner> sidewalkAboveCs = new ArrayList<Corner>();
+ArrayList<Vertex> sidewalkAboveVs = new ArrayList<Vertex>();
+ArrayList<Integer> sidewalkAboveFs = new ArrayList<Integer>();
 
 int outerFace = -1;
 
@@ -34,6 +47,7 @@ boolean removeVert = false;
 boolean mouseClicked = false;
 boolean addVert = false;
 int prevConnect = -1;
+boolean in2DMode = true;
 
 int swingRedraw, prevRedraw, nextRedraw;
 
@@ -46,7 +60,8 @@ int selectedVertexID = -1;
 
 //**************************** initialization ****************************
 void setup() {               // executed once at the begining 
-  size(600, 600);            // window size
+  if(in2DMode) size(600, 600);            // window size
+  else size(600, 600, P3D);
   frameRate(30);             // render 30 frames per second
   smooth();                  // turn on antialiasing
   myFace = loadImage("data/pic.jpg");  // loads image from file pic.jpg in folder data, replace it with a clear pic of your face
@@ -66,7 +81,7 @@ void setup() {               // executed once at the begining
   // vertexHandler.AddVertex(100, 100, 2);
   
   //PVector temp = new PVector(-1,0);
-  //println("/////////" + temp.heading());
+  ////println("/////////" + temp.heading());
 }
 
 //**************************** display current frame ****************************
@@ -83,7 +98,7 @@ void draw() {      // executed at each frame
   change=false; // to avoid capturing frames when nothing happens
   // make sure that animating is set to true at the beginning of an animation and to false at the end
 
-  println("BEGIN");
+  //println("BEGIN");
   displayEdges();
   displayVertices();
 
@@ -106,7 +121,7 @@ void draw() {      // executed at each frame
     GetCornerFromID(prevRedraw).Draw(prevColor);
   }
 
-  println("display header");
+  //println("display header");
 
   displayHeader();
   if (!mousePressed && !keyPressed)
@@ -122,12 +137,12 @@ void draw() {      // executed at each frame
     //if looking to connect
     if(connectingTwoExisting){
       if(connectClick1){
-        println("stored prev click " + selectedVertexID);
+        //println("stored prev click " + selectedVertexID);
         prevConnect = selectedVertexID;
         connectClick1 = false;
       } else if (!connectClick1){
         if((selectedVertexID != prevConnect) && notDrawn){
-          println("connected to : "+ selectedVertexID );
+          //println("connected to : "+ selectedVertexID );
           v = GetVertexFromID(prevConnect);
           notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID);
           if(notDrawn == false) {
@@ -138,7 +153,7 @@ void draw() {      // executed at each frame
         }
       }
     } else if (removeVert) {
-      println("remove the vert");
+      //println("remove the vert");
       boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID));
       if(removable) {
         vertexHandler.RemoveVertex(selectedVertexID);
@@ -204,6 +219,11 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
 
   if(key == 'r') {
     addVert = true;
+  }
+
+  if(key == 'p'){
+    in2DMode = !in2DMode;
+    SetupModeToggle();
   }
 }
 
@@ -318,7 +338,7 @@ public void CheckForFaces() {
     if (det(fromPrev, toNext) < 0) {
       // counter-clockwise corner, must be outer face
       outerFace = masterFs.size();
-      println("outer face = " + outerFace);
+      //println("outer face = " + outerFace);
     }
     masterFs.add(currentCornerID);
 
@@ -329,7 +349,7 @@ public void CheckForFaces() {
     }
   }
 
-  println("FACES: " + masterFs);
+  //println("FACES: " + masterFs);
 }
 
 public int MouseIsWithinFace() {
@@ -340,9 +360,9 @@ public int MouseIsWithinFace() {
       int startCornerID = masterFs.get(i);
       Corner startCorner = GetCornerFromID(startCornerID);
       int currentCornerID = startCornerID;
-      //println("mouse in face for");
+      ////println("mouse in face for");
       do {
-        //println("mouse in face: " + i + " -> " + currentCornerID);
+        ////println("mouse in face: " + i + " -> " + currentCornerID);
         Corner currentCorner = GetCornerFromID(currentCornerID);
         Vertex currentVertex = GetVertexFromCornerID(currentCornerID);
 
@@ -364,7 +384,7 @@ public int MouseIsWithinFace() {
         currentCornerID = currentCorner.next;
       } while (currentCornerID != startCornerID);
 
-      //println("face " + i + " intersections: " + intersections);
+      ////println("face " + i + " intersections: " + intersections);
 
       if (intersections % 2 != 0) {
         return i;
@@ -444,3 +464,31 @@ public float DrawAreaOfFace(int faceID) {
   textAlign(LEFT);
   return area;
 }
+
+void SetupModeToggle() {
+  //assign the current masterC, V and F arrays
+  //will need to make sure lower sidewalk is current before ever switching from 3D mode
+
+  if(!in2DMode) {
+    //store the graph values for use later
+    graphCs = masterCs;
+    graphVs = masterVs;
+    graphFs = masterFs;
+
+    //assign the current arrays to be the sidewalk geo
+    masterCs = sidewalkBelowCs;
+    masterVs = sidewalkBelowVs;
+    masterFs = sidewalkBelowFs;
+  } else{
+    //store the graph values for use later
+    sidewalkBelowCs = masterCs;
+    sidewalkBelowVs = masterVs;
+    sidewalkBelowFs = masterFs;
+
+    //assign the current arrays to be the sidewalk geo
+    masterCs = graphCs;
+    masterVs = graphVs;
+    masterFs = graphFs;
+  }
+}
+    

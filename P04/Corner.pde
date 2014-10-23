@@ -84,7 +84,7 @@ public class Corner{
   public Corner FindUnswing(){
     Corner currCorner = this;
     while(currCorner.swing != id){
-      println("swing id: " + currCorner.swing);
+      //println("swing id: " + currCorner.swing);
       currCorner = GetCornerFromID(currCorner.swing);
     }
 
