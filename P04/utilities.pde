@@ -200,8 +200,8 @@ void DrawLine(PVector start, PVector end, float thickness, color rgb) {
 }
 
 void DrawSidewalk(Corner startC, Corner endC) {
-  PVector start = startC.GetDisplayPosition();
-  PVector end = endC.GetDisplayPosition();
+  PVector start = startC.GetDisplayPosition(masterVs, masterCs);
+  PVector end = endC.GetDisplayPosition(masterVs, masterCs);
 
   ////println("sidewalk: " + startC.vertex + " -> " + endC.vertex);
 
@@ -287,6 +287,16 @@ public PVector GetClosestPointOnEdge(PVector c, PVector a, PVector b) {
   result.add(v);
 
   return result;
+}
+
+public void CalculateSidewalkGeo() {
+  //could add a comparisson to see if recalculation is neccessary
+  //for every corner in the graph array, we need to make a vertex out of it
+  for(int i = 0; i < graphCs.size(); i++){
+    Corner cornerToConvert = GetCornerFromID(i, graphCs);
+    PVector position = cornerToConvert.GetDisplayPosition(graphVs, graphCs);  
+    vertexHandler.AddVertex((int)position.x, (int)position.y, -1);
+  }
 }
 
 //************************ capturing frames for a movie ************************

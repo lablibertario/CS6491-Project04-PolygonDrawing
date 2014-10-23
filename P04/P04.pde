@@ -285,12 +285,20 @@ public Corner GetCornerFromID(int cornerID) {
   return masterCs.get(cornerID);
 }
 
+public Corner GetCornerFromID(int cornerID, ArrayList<Corner> _cornerList) {
+  return _cornerList.get(cornerID);
+}
+
 public Corner GetCornerFromFaceID(int faceID) {
   return GetCornerFromID(masterFs.get(faceID));
 }
  
 public Vertex GetVertexFromCornerID(int cornerID) {
   return masterVs.get(masterCs.get(cornerID).vertex);
+}
+
+public Vertex GetVertexFromCornerID(int cornerID, ArrayList<Vertex> _vertList, ArrayList<Corner> _cornerList) {
+  return _vertList.get(_cornerList.get(cornerID).vertex);
 }
 
 public Vertex GetVertexFromID(int vertexID) {
@@ -479,6 +487,8 @@ void SetupModeToggle() {
     masterCs = sidewalkBelowCs;
     masterVs = sidewalkBelowVs;
     masterFs = sidewalkBelowFs;
+
+    CalculateSidewalkGeo();
   } else{
     //store the graph values for use later
     sidewalkBelowCs = masterCs;
