@@ -121,10 +121,10 @@ void displayFooter() { // Displays help text at the bottom
   scribeFooter(menu, 0);
 }
 
-void displayVertices(ArrayList<Vertex> _mastVs) {
+void displayVertices() {
   println("draw vertices");
-  for (int i = 0; i < _mastVs.size(); i++) {
-    Vertex v = _mastVs.get(i);
+  for (int i = 0; i < masterVs.size(); i++) {
+    Vertex v = masterVs.get(i);
     //println("drawing v " + v.id);
     if (v.exists()) {
       v.Draw();
@@ -135,8 +135,8 @@ void displayVertices(ArrayList<Vertex> _mastVs) {
 
 void displayCorners() {
   println("draw corners");
-  for (int i = 0; i < _mastCs.size(); i++) {
-    Corner c = _mastCs.get(i);
+  for (int i = 0; i < masterCs.size(); i++) {
+    Corner c = masterCs.get(i);
     if (c.exists()) {
       // println("draw corner " + c.id);
       c.Draw(cornerColor);
@@ -145,17 +145,17 @@ void displayCorners() {
   textSize(12);
 }
 
-void displayEdges(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+void displayEdges() {
   println("draw edges");
-  for (int i = 0; i < _mastCs.size(); i++) {
-    Corner startC = _mastCs.get(i);
+  for (int i = 0; i < masterCs.size(); i++) {
+    Corner startC = masterCs.get(i);
 
     if (startC.next != -1) {
       Corner endC = GetCornerFromID(startC.next);
 
       if (startC.exists() && endC.exists()) {
-        Vertex startV = GetVertexFromCornerID(startC.id, _mastVs);
-        Vertex endV = GetVertexFromCornerID(endC.id, _mastVs);
+        Vertex startV = GetVertexFromCornerID(startC.id);
+        Vertex endV = GetVertexFromCornerID(endC.id);
 
         DrawEdge(startV, endV);
       }
@@ -237,7 +237,7 @@ void DrawEdge(Vertex startV, Vertex endV) {
 
     if(addVert && mouseClicked) {
       println("add vert");
-      vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id, endV.id, _mastVs, _mastCs);
+      vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id, endV.id, masterVs, masterCs);
     }
     //text(GetDistanceFromEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos), mouseX + edgeTextOffset.x, mouseY + edgeTextOffset.y);
   }

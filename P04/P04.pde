@@ -2,9 +2,9 @@
  LecturesInGraphics: Template for Processing sketches in 2D
  Template author: Jarek ROSSIGNAC
  Class: CS3451 Fall 2014
- Student: Miranda Bradley
- Project number: 5
- Project title: Graphs -> 3D extruded geo
+ Student: Miranda Bradley and Sebastian Monroy
+ Project number: 4
+ Project title: Graphs!
  Date of submission: ??
  *****************************************************************/
 
@@ -14,22 +14,12 @@
 //*************** text drawn on the canvas for name, title and help  *******************
 String title ="CS3451, Fall 2014, Project 04: Graphs!", name ="Miranda Bradley and Sebastian Monroy", // enter project number and your name
 menu="'q' drag new vertex from prev, 'w' connect two existing verts, 'e' delete vert, 'r' add vert", 
-guide="Press&drag mouse to move dot. 'x', 'y' restrict motion, 'p' toggle 2D/3D"; // help info
+guide="Press&drag mouse to move dot. 'x', 'y' restrict motion, "; // help info
 // velocityDisplay=Float.toString(velocity)
 
 ArrayList<Corner> masterCs = new ArrayList<Corner>();
 ArrayList<Vertex> masterVs = new ArrayList<Vertex>();
 ArrayList<Integer> masterFs = new ArrayList<Integer>();
-
-//3D versions of the array (bottom face)
-ArrayList<Corner> bottomCs = new ArrayList<Corner>();
-ArrayList<Vertex> bottomVs = new ArrayList<Vertex>();
-ArrayList<Integer> bottomFs = new ArrayList<Integer>();
-
-//3D versions of the array (top face)
-ArrayList<Corner> topCs = new ArrayList<Corner>();
-ArrayList<Vertex> topVs = new ArrayList<Vertex>();
-ArrayList<Integer> topFs = new ArrayList<Integer>();
 
 int outerFace = -1;
 
@@ -43,7 +33,6 @@ boolean notDrawn = true;
 boolean removeVert = false;
 boolean mouseClicked = false;
 boolean addVert = false;
-boolean in3D = false;
 int prevConnect = -1;
 
 int swingRedraw, prevRedraw, nextRedraw;
@@ -96,30 +85,26 @@ void draw() {      // executed at each frame
   // make sure that animating is set to true at the beginning of an animation and to false at the end
 
   println("BEGIN");
-  if(in3D) {
-
-  } else {
-    displayEdges(masterVs, masterCs);
-    displayVertices(masterVs);
-  }
+  displayEdges();
+  displayVertices();
 
   if (masterFs.size() > 1) {
-    int faceToDraw = MouseIsWithinFace(masterVs, masterCs);
+    int faceToDraw = MouseIsWithinFace();
     if (faceToDraw != -1) {
       DrawFaceSidewalks(faceToDraw);
-      DrawAreaOfFace(faceToDraw, masterVs, masterCs);
+      DrawAreaOfFace(faceToDraw);
     } else {
       DrawFaceSidewalks(outerFace);
-      DrawAreaOfFace(outerFace, masterVs, masterCs);
+      DrawAreaOfFace(outerFace);
     }
   }
 
   displayCorners();
 
   if(nextRedraw != -1) {
-    GetCornerFromID(nextRedraw, masterCs).Draw(nextColor);
-    if(swingRedraw != -1) GetCornerFromID(swingRedraw, masterCs).Draw(swingColor);
-    GetCornerFromID(prevRedraw, masterCs).Draw(prevColor);
+    GetCornerFromID(nextRedraw).Draw(nextColor);
+    if(swingRedraw != -1) GetCornerFromID(swingRedraw).Draw(swingColor);
+    GetCornerFromID(prevRedraw).Draw(prevColor);
   }
 
   println("display header");
@@ -144,37 +129,37 @@ void draw() {      // executed at each frame
       } else if (!connectClick1){
         if((selectedVertexID != prevConnect) && notDrawn){
           println("connected to : "+ selectedVertexID );
-          v = GetVertexFromID(prevConnect, masterVs);
+          v = GetVertexFromID(prevConnect);
           notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID, masterVs, masterCs);
           if(notDrawn == false) {
-            Vertex otherVert = GetVertexFromID(selectedVertexID, masterVs);
+            Vertex otherVert = GetVertexFromID(selectedVertexID);
             notDrawn = vertexHandler.AddVertex((int)otherVert.pos.x, (int)otherVert.pos.y, v.id, masterVs, masterCs);
           }
           notDrawn = !notDrawn;
         }
       }
-    } else if (removeVert) { //NEED TO CHECK THESE FNS FOR WHICH ARRAY LIST WE CURRENTLY CARE ABOUT
+    } else if (removeVert) {
       println("remove the vert");
-      boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID, masterVs));
+      boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID));
       if(removable) {
         vertexHandler.RemoveVertex(selectedVertexID, masterVs, masterCs);
         //selectedVertexID = -1;
       }
     } else {
-      v = GetVertexFromID(selectedVertexID, masterVs);
+      v = GetVertexFromID(selectedVertexID);
       v.isInteracted();
     }
   } else {
     // vertex has not been selected yet
     for (int i = 0; i < masterVs.size(); i++) {
-      Vertex v = GetVertexFromID(i, masterVs);
+      Vertex v = GetVertexFromID(i);
       if (v.exists()) {
         v.isInteracted();
       }
     }
 
     for (int i = 0; i < masterCs.size(); i++) {
-      Corner c = GetCornerFromID(i, masterCs);
+      Corner c = GetCornerFromID(i);
       if (c.exists()) {
         c.isInteracted();
       }
@@ -221,10 +206,6 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
 
   if(key == 'r') {
     addVert = true;
-  }
-
-  if(key == 'p'){
-    in3D = !in3D;
   }
 }
 
@@ -282,30 +263,30 @@ void mouseClicked(MouseEvent e) {
   
 }
 
-public Corner GetCornerFromID(int cornerID, ArrayList<Corner> _mastCs) {
-  return _mastCs.get(cornerID);
+public Corner GetCornerFromID(int cornerID) {
+  return masterCs.get(cornerID);
 }
 
 public Corner GetCornerFromFaceID(int faceID) {
-  return GetCornerFromID(masterFs.get(faceID), masterCs);
+  return GetCornerFromID(masterFs.get(faceID));
 }
  
-public Vertex GetVertexFromCornerID(int cornerID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
-  return _mastVs.get(_mastCs.get(cornerID).vertex);
+public Vertex GetVertexFromCornerID(int cornerID) {
+  return masterVs.get(masterCs.get(cornerID).vertex);
 }
 
-public Vertex GetVertexFromID(int vertexID, ArrayList<Vertex> _mastVs) {
-  return _mastVs.get(vertexID);
+public Vertex GetVertexFromID(int vertexID) {
+  return masterVs.get(vertexID);
 }
 
-public void CheckForFaces(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+public void CheckForFaces() {
   ArrayList<Corner> unvisitedCorners = new ArrayList<Corner>();
-  unvisitedCorners = _mastCs;
+  unvisitedCorners = masterCs;
   ArrayList<Integer> unvisitedCornerIDs = new ArrayList<Integer>();
 
-  while (unvisitedCornerIDs.size() < _mastCs.size()) {
+  while (unvisitedCornerIDs.size() < masterCs.size()) {
     unvisitedCorners.get(unvisitedCornerIDs.size()).visited = false;
-    unvisitedCornerIDs.add(_mastCs.get(unvisitedCornerIDs.size()).id);
+    unvisitedCornerIDs.add(masterCs.get(unvisitedCornerIDs.size()).id);
   }
 
   masterFs.clear();
@@ -327,12 +308,12 @@ public void CheckForFaces(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) 
       break;
     }
 
-    Corner currCorner = GetCornerFromID(currentCornerID, _mastCs);
-    Vertex currVertex = GetVertexFromCornerID(currentCornerID, _mastVs, _mastCs);
+    Corner currCorner = GetCornerFromID(currentCornerID);
+    Vertex currVertex = GetVertexFromCornerID(currentCornerID);
 
     PVector currPos = currVertex.pos;
-    PVector prevPos = GetVertexFromCornerID(currCorner.prev, _mastVs, _mastCs).pos;
-    PVector nextPos = GetVertexFromCornerID(currCorner.next, _mastVs, _mastCs).pos;
+    PVector prevPos = GetVertexFromCornerID(currCorner.prev).pos;
+    PVector nextPos = GetVertexFromCornerID(currCorner.next).pos;
     
     PVector fromPrev = new PVector(currPos.x - prevPos.x, currPos.y - prevPos.y);
     PVector toNext = new PVector(nextPos.x - currPos.x, nextPos.y - currPos.y);
@@ -353,27 +334,27 @@ public void CheckForFaces(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) 
   println("FACES: " + masterFs);
 }
 
-public int MouseIsWithinFace(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+public int MouseIsWithinFace() {
   // return which face the mouse is within
   for (int i = 0; i < masterFs.size(); i++) {   ///////////////////////////////////////////////////
     if (i != outerFace) {
       int intersections = 0;
       int startCornerID = masterFs.get(i);
-      Corner startCorner = GetCornerFromID(startCornerID, _mastCs);
+      Corner startCorner = GetCornerFromID(startCornerID);
       int currentCornerID = startCornerID;
       //println("mouse in face for");
       do {
         //println("mouse in face: " + i + " -> " + currentCornerID);
-        Corner currentCorner = GetCornerFromID(currentCornerID, _mastCs);
-        Vertex currentVertex = GetVertexFromCornerID(currentCornerID, _mastVs, _mastCs);
+        Corner currentCorner = GetCornerFromID(currentCornerID);
+        Vertex currentVertex = GetVertexFromCornerID(currentCornerID);
 
         if (!currentCorner.exists()) {
-          CheckForFaces(_mastVs, _mastCs);
-          MouseIsWithinFace(_mastVs, _mastCs);
+          CheckForFaces();
+          MouseIsWithinFace();
           break;
         }
 
-        Vertex nextVertex = GetVertexFromCornerID(currentCorner.next, _mastVs, _mastCs);
+        Vertex nextVertex = GetVertexFromCornerID(currentCorner.next);
 
         PVector start = currentVertex.pos;
         PVector end = nextVertex.pos;
@@ -391,9 +372,9 @@ public int MouseIsWithinFace(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastC
         return i;
       }
     } else {
-      if (!GetCornerFromID(masterFs.get(outerFace), _mastCs).exists()) {
-        CheckForFaces(_mastVs, _mastCs);
-        MouseIsWithinFace(_mastVs, _mastCs);
+      if (!GetCornerFromID(masterFs.get(outerFace)).exists()) {
+        CheckForFaces();
+        MouseIsWithinFace();
         break;
       }
     }
@@ -430,19 +411,19 @@ public boolean HorizontalIntersectsLineSegment(float y, PVector a, PVector b) {
   return (x >= mouseX && y <= max(a.y, b.y) && y >= min(a.y, b.y));
 }
 
-public float DrawAreaOfFace(int faceID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+public float DrawAreaOfFace(int faceID) {
   float area = 0f;
   PVector center = new PVector(0, 0);
   int numCorners = 0;
 
   int startCornerID = masterFs.get(faceID);
-  Corner startCorner = GetCornerFromID(startCornerID, _mastCs);
+  Corner startCorner = GetCornerFromID(startCornerID);
   int currentCornerID = startCornerID;
 
   do {
-    Corner currentCorner = GetCornerFromID(currentCornerID, _mastCs);
-    Vertex currentVertex = GetVertexFromCornerID(currentCornerID, _mastVs, _mastCs);
-    Vertex nextVertex = GetVertexFromCornerID(currentCorner.next, _mastVs, _mastCs);
+    Corner currentCorner = GetCornerFromID(currentCornerID);
+    Vertex currentVertex = GetVertexFromCornerID(currentCornerID);
+    Vertex nextVertex = GetVertexFromCornerID(currentCorner.next);
 
     PVector start = currentVertex.pos;
     PVector end = nextVertex.pos;
