@@ -205,21 +205,7 @@ void DrawSidewalk(Corner startC, Corner endC) {
 
   //println("sidewalk: " + startC.vertex + " -> " + endC.vertex);
 
-  //if the sidewalk is on the outside and comes to a really sharp point,
-  //smooth it out
-  //part 1: determine when this happens
-  int smoothness = DetermineSmoothness(startC, endC);
-  if(smoothness == 0 ) {
-    DrawLine(start, end, sidewalkThickness, sidewalkColor);
-  } else {
-    //part 2: smooth along sphere via line segments
-
-  }
-}
-
-int DetermineSmoothness(Corner c1, Corner c2) {
-
-  return 0;
+  DrawLine(start, end, sidewalkThickness, sidewalkColor);
 }
 
 void DrawEdge(Vertex startV, Vertex endV) {
@@ -237,7 +223,7 @@ void DrawEdge(Vertex startV, Vertex endV) {
 
     if(addVert && mouseClicked) {
       println("add vert");
-      vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id, endV.id, masterVs, masterCs);
+      vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id, endV.id);
     }
     //text(GetDistanceFromEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos), mouseX + edgeTextOffset.x, mouseY + edgeTextOffset.y);
   }

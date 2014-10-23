@@ -102,7 +102,7 @@ public class Vertex{
       //drag in new vert/edge
       if(editMode){
         if(editStart){
-          boolean added = vertexHandler.AddVertex(mouseX, mouseY, id, masterVs, masterCs);
+          boolean added = vertexHandler.AddVertex(mouseX, mouseY, id);
           //rubberBand = GetVertexFromID(masterVs.size()-1);
           if(added){
             println("added a vert");

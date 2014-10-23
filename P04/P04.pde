@@ -14,7 +14,7 @@
 //*************** text drawn on the canvas for name, title and help  *******************
 String title ="CS3451, Fall 2014, Project 04: Graphs!", name ="Miranda Bradley and Sebastian Monroy", // enter project number and your name
 menu="'q' drag new vertex from prev, 'w' connect two existing verts, 'e' delete vert, 'r' add vert", 
-guide="Press&drag mouse to move dot. 'x', 'y' restrict motion, "; // help info
+guide="Press&drag mouse to move dot. 'x', 'y' restrict motion"; // help info
 // velocityDisplay=Float.toString(velocity)
 
 ArrayList<Corner> masterCs = new ArrayList<Corner>();
@@ -45,9 +45,8 @@ PVector mouseDragStart;
 int selectedVertexID = -1;
 
 //**************************** initialization ****************************
-void setup() {               // executed once at the begining
-  size(600, 600);            // window size 
-  //size(600, 600, P3D);            // window size
+void setup() {               // executed once at the begining 
+  size(600, 600);            // window size
   frameRate(30);             // render 30 frames per second
   smooth();                  // turn on antialiasing
   myFace = loadImage("data/pic.jpg");  // loads image from file pic.jpg in folder data, replace it with a clear pic of your face
@@ -57,12 +56,12 @@ void setup() {               // executed once at the begining
   swingRedraw = prevRedraw = nextRedraw = -1;
   
   //hard coded points! for testing
-  vertexHandler.AddVertex(100, 100, -1, masterVs, masterCs);
-  vertexHandler.AddVertex(100, 300, 0, masterVs, masterCs);
-  vertexHandler.AddVertex(300, 300, 1, masterVs, masterCs);
-  vertexHandler.AddVertex(300, 100, 2, masterVs, masterCs);
-  vertexHandler.AddVertex(300, 100, 0, masterVs, masterCs);
-  vertexHandler.AddVertex(100, 300, 3, masterVs, masterCs);
+  vertexHandler.AddVertex(100, 100, -1);
+  vertexHandler.AddVertex(100, 300, 0);
+  vertexHandler.AddVertex(300, 300, 1);
+  vertexHandler.AddVertex(300, 100, 2);
+  vertexHandler.AddVertex(300, 100, 0);
+  vertexHandler.AddVertex(100, 300, 3);
   // vertexHandler.AddVertex(300, 300, 0);
   // vertexHandler.AddVertex(100, 100, 2);
   
@@ -130,10 +129,10 @@ void draw() {      // executed at each frame
         if((selectedVertexID != prevConnect) && notDrawn){
           println("connected to : "+ selectedVertexID );
           v = GetVertexFromID(prevConnect);
-          notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID, masterVs, masterCs);
+          notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID);
           if(notDrawn == false) {
             Vertex otherVert = GetVertexFromID(selectedVertexID);
-            notDrawn = vertexHandler.AddVertex((int)otherVert.pos.x, (int)otherVert.pos.y, v.id, masterVs, masterCs);
+            notDrawn = vertexHandler.AddVertex((int)otherVert.pos.x, (int)otherVert.pos.y, v.id);
           }
           notDrawn = !notDrawn;
         }
@@ -142,7 +141,7 @@ void draw() {      // executed at each frame
       println("remove the vert");
       boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID));
       if(removable) {
-        vertexHandler.RemoveVertex(selectedVertexID, masterVs, masterCs);
+        vertexHandler.RemoveVertex(selectedVertexID);
         //selectedVertexID = -1;
       }
     } else {
@@ -165,7 +164,6 @@ void draw() {      // executed at each frame
       }
     }
   }  
-
 }  // end of draw()
 
 
