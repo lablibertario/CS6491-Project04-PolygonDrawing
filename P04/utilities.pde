@@ -122,10 +122,10 @@ void displayFooter() { // Displays help text at the bottom
 }
 
 void displayVertices(ArrayList<Vertex> _mastVs) {
-  println("draw vertices");
+  //println("draw vertices");
   for (int i = 0; i < _mastVs.size(); i++) {
     Vertex v = _mastVs.get(i);
-    //println("drawing v " + v.id);
+    ////println("drawing v " + v.id);
     if (v.exists()) {
       v.Draw();
     }
@@ -134,11 +134,11 @@ void displayVertices(ArrayList<Vertex> _mastVs) {
 }
 
 void displayCorners(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
-  println("draw corners");
+  //println("draw corners");
   for (int i = 0; i < _mastCs.size(); i++) {
     Corner c = _mastCs.get(i);
     if (c.exists()) {
-      // println("draw corner " + c.id);
+      // //println("draw corner " + c.id);
       c.Draw(cornerColor, _mastVs, _mastCs);
     }
   }
@@ -146,7 +146,7 @@ void displayCorners(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
 }
 
 void displayEdges(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
-  println("draw edges");
+  //println("draw edges");
   for (int i = 0; i < _mastCs.size(); i++) {
     Corner startC = _mastCs.get(i);
 
@@ -170,7 +170,7 @@ void displayFaceSidewalks(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) 
 }
 
 void DrawFaceSidewalks(int faceID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
-  println("draw face " + faceID + " sidewalks");
+  //println("draw face " + faceID + " sidewalks");
   Corner startC = GetCornerFromFaceID(faceID);
   Corner currentC = startC;
   do {
@@ -203,7 +203,7 @@ void DrawSidewalk(Corner startC, Corner endC, ArrayList<Vertex> _mastVs, ArrayLi
   PVector start = startC.GetDisplayPosition(_mastVs, _mastCs);
   PVector end = endC.GetDisplayPosition(_mastVs, _mastCs);
 
-  //println("sidewalk: " + startC.vertex + " -> " + endC.vertex);
+  ////println("sidewalk: " + startC.vertex + " -> " + endC.vertex);
 
   //if the sidewalk is on the outside and comes to a really sharp point,
   //smooth it out
@@ -236,7 +236,7 @@ void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<C
     showDisk(closestPoint.x, closestPoint.y, edgeThickness*2);
 
     if(addVert && mouseClicked) {
-      println("add vert");
+      //println("add vert");
       vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id, endV.id, _mastVs, _mastCs);
     }
     //text(GetDistanceFromEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos), mouseX + edgeTextOffset.x, mouseY + edgeTextOffset.y);

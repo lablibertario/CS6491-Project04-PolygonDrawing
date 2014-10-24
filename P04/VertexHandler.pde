@@ -11,7 +11,7 @@ public class VertexHandler {
 
 		PVector insertionEdge, comparisonEdge;
 		newVertex = new Vertex(_x, _y, _mastVs.size());
-		//println(_mastVs.size());
+		////println(_mastVs.size());
 
 		//check to see if we're connecting two existing vertices
 		int idOfExistingConnection = -1;
@@ -22,7 +22,7 @@ public class VertexHandler {
 				existingVertPos.sub(tmpNewVert);
 				if((abs(existingVertPos.x) < distToConnect) && (abs(existingVertPos.y) < distToConnect)) {
 					idOfExistingConnection = i;
-					println("vert is on top of another");
+					//println("vert is on top of another");
 					break;
 				} 
 
@@ -32,7 +32,7 @@ public class VertexHandler {
 		}
 
 		if(inserting) {
-			println("start v: " + connectIndex);
+			//println("start v: " + connectIndex);
 			connectVertex = GetVertexFromID(connectIndex, _mastVs);
 			//Corner splitCorner = FindEdgesBetween(connectVertex, newVertex);
 			//ConnectExistingVerts(connectVertex, newVertex.id);
@@ -42,22 +42,22 @@ public class VertexHandler {
 			if(idOfExistingConnection != -1){
 				//connecting two existing verts
 				connectVertex = GetVertexFromID(connectIndex, _mastVs);
-				println("connecting two existing");
+				//println("connecting two existing");
 				ConnectExistingVerts(connectVertex, idOfExistingConnection, _mastVs, _mastCs);
 			} else {
 				if (_mastVs.size() == 0) {
 					
 				} else if (NumCorners(connectIndex, _mastVs) < 1) {
-					//println("insert second vert");
+					////println("insert second vert");
 					InsertSecondVertex(_x, _y, _mastVs, _mastCs);
 				} else if (NumCorners(connectIndex, _mastVs) == 1) {
-					//println("adding to end of vert");
+					////println("adding to end of vert");
 					connectVertex = GetVertexFromID(connectIndex, _mastVs);
 					AppendToEndOfVertex(connectVertex, _mastVs, _mastCs);
 
 				} else {
 					//adding edge between two existing edges
-					//println("squeezing between verts");
+					////println("squeezing between verts");
 					connectVertex = GetVertexFromID(connectIndex, _mastVs);
 					Corner splitCorner = FindEdgesBetween(connectVertex, newVertex, _mastVs, _mastCs);
 					CornerSplit(splitCorner, _mastVs, _mastCs);
@@ -67,7 +67,7 @@ public class VertexHandler {
 
 		if(idOfExistingConnection == -1 && successfulCreation) {
 			//newVertex.startingCorner = _mastCs.size()-2;
-			//println("(newVertex.startingCorner): "+(newVertex.startingCorner));
+			////println("(newVertex.startingCorner): "+(newVertex.startingCorner));
 			AddToMaster(newVertex, _mastVs);
 		}
 		if (successfulCreation)
@@ -77,7 +77,7 @@ public class VertexHandler {
 
 	public void InsertVerteXInEdge(int _x, int _y, int _startV, int _endV, ArrayList<Vertex> v, ArrayList<Corner> c) {
 		inserting = true;
-		println("inserting");
+		//println("inserting");
 		insertionFarVert = _endV;
 		AddVertex(_x, _y, _startV, v, c);
 	}
@@ -103,7 +103,7 @@ public class VertexHandler {
 				successfulCreation = false;
 				return;
 			}
-			println("split at connection " + connectSplitCorner.id + "for connection");
+			//println("split at connection " + connectSplitCorner.id + "for connection");
 		}
 
 		if(farSplit){
@@ -112,7 +112,7 @@ public class VertexHandler {
 				successfulCreation = false;
 				return;
 			}
-			println("split at far corner " + farSplitCorner.id + "for far");
+			//println("split at far corner " + farSplitCorner.id + "for far");
 		}
 
 		Corner addedCorner = new Corner(_mastCs.size() , IDToConnectFrom.id);
@@ -122,18 +122,18 @@ public class VertexHandler {
 		Corner farCorner = new Corner();
 
 		if(!connectSplit && !farSplit) {
-			println("straight forward split: ");
+			//println("straight forward split: ");
 			originCorner = GetCornerFromID(IDToConnectFrom.corners.get(0), _mastCs);
 			farCorner = GetCornerFromID(farConnection.corners.get(0), _mastCs);
 		} else{
 			if(connectSplit) {
-				println("splits at origin");
+				//println("splits at origin");
 				originCorner = connectSplitCorner;
 			} else {
 				originCorner = GetCornerFromID(IDToConnectFrom.corners.get(0), _mastCs);
 			}
 			if(farSplit) {
-				println("splits at far corner");
+				//println("splits at far corner");
 				farCorner = farSplitCorner;
 			} else{
 				farCorner = GetCornerFromID(farConnection.corners.get(0), _mastCs);
@@ -166,7 +166,7 @@ public class VertexHandler {
 			farUnSwing.swing = newCorner.id;
 		}
 		newCorner.swing = farCorner.id;
-		println("finished splitting corner");
+		//println("finished splitting corner");
 
         AddToMaster(addedCorner, _mastCs);
         AddToMaster(newCorner, _mastCs);
@@ -210,7 +210,7 @@ public class VertexHandler {
 		//float smallestAngle = 2*PI; 
 		for(int i = 0; i < _connectVertex.corners.size(); i++){
 			Corner c = GetCornerFromID(_connectVertex.corners.get(i), _mastCs);
-			//println("c: " + c.id + "c.next" + c.next + "c.prev: " + c.prev);
+			////println("c: " + c.id + "c.next" + c.next + "c.prev: " + c.prev);
 			Vertex v = GetVertexFromCornerID(c.id, _mastVs, _mastCs); 
 			Vertex vNext = GetVertexFromCornerID(c.next, _mastVs, _mastCs);
 			Vertex vPrev = GetVertexFromCornerID(c.prev, _mastVs, _mastCs);
@@ -219,9 +219,9 @@ public class VertexHandler {
 			PVector nextEdge = new PVector(vNext.pos.x - v.pos.x, vNext.pos.y - v.pos.y);
 			PVector newEdge = new PVector(_newVertex.pos.x - v.pos.x, _newVertex.pos.y - v.pos.y);
 
-			println("check if between corner " + c.id);
+			//println("check if between corner " + c.id);
 			if (IsBetween(prevEdge, newEdge, nextEdge)) {
-				println("is between yo");
+				//println("is between yo");
 				splitCorner = c;
 				break;
 			}
@@ -231,7 +231,7 @@ public class VertexHandler {
 	}
 
 	private void InsertVertOnEdge(Vertex prev, int nextId, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs){
-		println("inserting with next " + nextId);
+		//println("inserting with next " + nextId);
 		Vertex next = GetVertexFromID(nextId, _mastVs);
 
 		Corner insert1 = new Corner(_mastCs.size(), newVertex.id);
@@ -242,12 +242,12 @@ public class VertexHandler {
 		Corner swingCorner = GetCornerFromID(prevCorner.swing, _mastCs);
 		Corner swingPrev = GetCornerFromID(swingCorner.prev, _mastCs);
 
-		// println("***********insert on edge values********");
-		// println("prevCorner: "+prevCorner.id);
-		// println("nextCorner: "+nextCorner.id);
-		// println("swingCorner: "+swingCorner.id);
-		// println("swingPrev: "+swingPrev.id);
-		// println("***********insert on edge values********");
+		// //println("***********insert on edge values********");
+		// //println("prevCorner: "+prevCorner.id);
+		// //println("nextCorner: "+nextCorner.id);
+		// //println("swingCorner: "+swingCorner.id);
+		// //println("swingPrev: "+swingPrev.id);
+		// //println("***********insert on edge values********");
 
 		prevCorner.next = insert1.id;
 		nextCorner.prev = insert1.id;
@@ -283,13 +283,13 @@ public class VertexHandler {
 	}
 
 	private void CornerSplit(Corner splitCorner, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs){
-		println("insert at " + splitCorner.id);
+		//println("insert at " + splitCorner.id);
 		if(splitCorner.id == -1) {
 			successfulCreation = false;
 			return;
 		}
 
-		println("at corner " + splitCorner.id + " and still adding new corners");
+		//println("at corner " + splitCorner.id + " and still adding new corners");
 		Vertex connectVertex = GetVertexFromCornerID(splitCorner.id, _mastVs, _mastCs);
 
 		Corner newCorner = new Corner(_mastCs.size()+1, newVertex.id);
@@ -306,7 +306,7 @@ public class VertexHandler {
 		PVector newEdge = new PVector(newVertex.pos.x - connectVertex.pos.x, newVertex.pos.y - connectVertex.pos.y);
 
 		if (closestToPrevEdge) {
-			println("closest to prev edge");
+			//println("closest to prev edge");
 			splitPrevCorner.next = addedCorner.id;
 			addedCorner.prev = splitPrevCorner.prev;
 			addedCorner.next = newCorner.id;
@@ -319,7 +319,7 @@ public class VertexHandler {
 			Corner unSwingCorner = splitCorner.FindUnswing(_mastCs);
 			unSwingCorner.swing = addedCorner.id;
 		} else {
-			println("closest to next edge");
+			//println("closest to next edge");
 			splitCorner.next = newCorner.id;
 			newCorner.prev = splitCorner.id;
 			newCorner.next = addedCorner.id;
@@ -338,7 +338,7 @@ public class VertexHandler {
 		connectVertex.AddCorner(addedCorner.id);
 		newVertex.AddCorner(newCorner.id);
 
-		println("done splitting corner");
+		//println("done splitting corner");
 	}
 
 	private Direction VertexDirection(PVector comparison, PVector insertion) {
@@ -378,9 +378,9 @@ public class VertexHandler {
 		float oldNewRot = GetPosAngle(newEdge);
 		float oldNextRot = GetPosAngle(nextEdge);
 
-		// println("oldPrevRot: "+oldPrevRot);
-		// println("oldNewRot: " + oldNewRot);
-		// println("oldNextRot: "+oldNextRot);
+		// //println("oldPrevRot: "+oldPrevRot);
+		// //println("oldNewRot: " + oldNewRot);
+		// //println("oldNextRot: "+oldNextRot);
 
 		float rotAmount = 2*PI - oldPrevRot;
 
@@ -396,9 +396,9 @@ public class VertexHandler {
 		newNewRot = round(newNewRot, 2);
 		newNextRot = round(newNextRot, 2);
 
-		// println("newPrevRot: "+newPrevRot);
-		// println("newNewRot: " + newNewRot);
-		// println("newNextRot: "+newNextRot);
+		// //println("newPrevRot: "+newPrevRot);
+		// //println("newNewRot: " + newNewRot);
+		// //println("newNextRot: "+newNextRot);
 
 		//closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
 
@@ -447,7 +447,7 @@ public class VertexHandler {
 
 				prevPrevCorner.next = nextCorner.id;
 				nextCorner.prev = prevPrevCorner.id;
-				println("prevPrev -> next: " + prevPrevCorner.id + " -> " + nextCorner.id);
+				//println("prevPrev -> next: " + prevPrevCorner.id + " -> " + nextCorner.id);
 
 				theCorner.kill(_mastVs, _mastCs);
 				prevCorner.kill(_mastVs, _mastCs);
@@ -459,7 +459,7 @@ public class VertexHandler {
 		theVertex.id = -1;
 		CheckForFaces(_mastVs, _mastCs);
 		swingRedraw = prevRedraw = nextRedraw = -1;
-		println("removed vert before exception");
+		//println("removed vert before exception");
 	}
 
 	// public void CleanCornerReferencesAt(int index) {
