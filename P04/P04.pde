@@ -2,9 +2,9 @@
  LecturesInGraphics: Template for Processing sketches in 2D
  Template author: Jarek ROSSIGNAC
  Class: CS3451 Fall 2014
- Student: Miranda Bradley and Sebastian Monroy
- Project number: 4
- Project title: Graphs!
+ Student: Miranda Bradley
+ Project number: 5
+ Project title: Graphs -> 3D extruded geo
  Date of submission: ??
  *****************************************************************/
 
@@ -14,25 +14,22 @@
 //*************** text drawn on the canvas for name, title and help  *******************
 String title ="CS3451, Fall 2014, Project 04: Graphs!", name ="Miranda Bradley and Sebastian Monroy", // enter project number and your name
 menu="'q' drag new vertex from prev, 'w' connect two existing verts, 'e' delete vert, 'r' add vert", 
-guide="Press&drag mouse to move dot. 'x', 'y' restrict motion, 'p' to toggle 2D"; // help info
+guide="Press&drag mouse to move dot. 'x', 'y' restrict motion, 'p' toggle 2D/3D"; // help info
 // velocityDisplay=Float.toString(velocity)
 
-//the geometry currently being altered
 ArrayList<Corner> masterCs = new ArrayList<Corner>();
 ArrayList<Vertex> masterVs = new ArrayList<Vertex>();
 ArrayList<Integer> masterFs = new ArrayList<Integer>();
 
-ArrayList<Corner> graphCs = new ArrayList<Corner>();
-ArrayList<Vertex> graphVs = new ArrayList<Vertex>();
-ArrayList<Integer> graphFs = new ArrayList<Integer>();
+//3D versions of the array (bottom face)
+ArrayList<Corner> bottomCs = new ArrayList<Corner>();
+ArrayList<Vertex> bottomVs = new ArrayList<Vertex>();
+ArrayList<Integer> bottomFs = new ArrayList<Integer>();
 
-ArrayList<Corner> sidewalkBelowCs = new ArrayList<Corner>();
-ArrayList<Vertex> sidewalkBelowVs = new ArrayList<Vertex>();
-ArrayList<Integer> sidewalkBelowFs = new ArrayList<Integer>();
-
-ArrayList<Corner> sidewalkAboveCs = new ArrayList<Corner>();
-ArrayList<Vertex> sidewalkAboveVs = new ArrayList<Vertex>();
-ArrayList<Integer> sidewalkAboveFs = new ArrayList<Integer>();
+//3D versions of the array (top face)
+ArrayList<Corner> topCs = new ArrayList<Corner>();
+ArrayList<Vertex> topVs = new ArrayList<Vertex>();
+ArrayList<Integer> topFs = new ArrayList<Integer>();
 
 int outerFace = -1;
 
@@ -46,9 +43,8 @@ boolean notDrawn = true;
 boolean removeVert = false;
 boolean mouseClicked = false;
 boolean addVert = false;
+boolean in3D = false;
 int prevConnect = -1;
-boolean in2DMode = true;
-boolean modeToggle = false;
 
 int swingRedraw, prevRedraw, nextRedraw;
 
@@ -60,9 +56,9 @@ PVector mouseDragStart;
 int selectedVertexID = -1;
 
 //**************************** initialization ****************************
-void setup() {               // executed once at the begining 
-  if(in2DMode) size(600, 600);            // window size
-  else size(600, 600, P3D);
+void setup() {               // executed once at the begining
+  size(600, 600);            // window size 
+  //size(600, 600, P3D);            // window size
   frameRate(30);             // render 30 frames per second
   smooth();                  // turn on antialiasing
   myFace = loadImage("data/pic.jpg");  // loads image from file pic.jpg in folder data, replace it with a clear pic of your face
@@ -72,28 +68,21 @@ void setup() {               // executed once at the begining
   swingRedraw = prevRedraw = nextRedraw = -1;
   
   //hard coded points! for testing
-  vertexHandler.AddVertex(100, 100, -1);
-  vertexHandler.AddVertex(100, 300, 0);
-  vertexHandler.AddVertex(300, 300, 1);
-  vertexHandler.AddVertex(300, 100, 2);
-  vertexHandler.AddVertex(300, 100, 0);
-  vertexHandler.AddVertex(100, 300, 3);
+  vertexHandler.AddVertex(100, 100, -1, masterVs, masterCs);
+  vertexHandler.AddVertex(100, 300, 0, masterVs, masterCs);
+  vertexHandler.AddVertex(300, 300, 1, masterVs, masterCs);
+  vertexHandler.AddVertex(300, 100, 2, masterVs, masterCs);
+  vertexHandler.AddVertex(300, 100, 0, masterVs, masterCs);
+  vertexHandler.AddVertex(100, 300, 3, masterVs, masterCs);
   // vertexHandler.AddVertex(300, 300, 0);
   // vertexHandler.AddVertex(100, 100, 2);
   
   //PVector temp = new PVector(-1,0);
-  ////println("/////////" + temp.heading());
+  //println("/////////" + temp.heading());
 }
 
 //**************************** display current frame ****************************
 void draw() {      // executed at each frame
-  if(modeToggle) {
-    println("masterCs: "+masterCs);
-    println("masterVs: "+masterVs);
-    SetupModeToggle();
-    modeToggle = false;
-  }
-
   background(white); // clear screen and paints white background
   pen(black, 3); // sets stroke color (to balck) and width (to 3 pixels)
 
@@ -106,30 +95,34 @@ void draw() {      // executed at each frame
   change=false; // to avoid capturing frames when nothing happens
   // make sure that animating is set to true at the beginning of an animation and to false at the end
 
-  //println("BEGIN");
-  displayEdges();
-  displayVertices();
+  println("BEGIN");
+  if(in3D) {
+
+  } else {
+    displayEdges(masterVs, masterCs);
+    displayVertices(masterVs);
+  }
 
   if (masterFs.size() > 1) {
-    int faceToDraw = MouseIsWithinFace();
+    int faceToDraw = MouseIsWithinFace(masterVs, masterCs);
     if (faceToDraw != -1) {
-      DrawFaceSidewalks(faceToDraw);
-      DrawAreaOfFace(faceToDraw);
+      DrawFaceSidewalks(faceToDraw, masterVs, masterCs);
+      DrawAreaOfFace(faceToDraw, masterVs, masterCs);
     } else {
-      DrawFaceSidewalks(outerFace);
-      DrawAreaOfFace(outerFace);
+      DrawFaceSidewalks(outerFace, masterVs, masterCs);
+      DrawAreaOfFace(outerFace, masterVs, masterCs);
     }
   }
 
-  displayCorners();
+  displayCorners(masterVs, masterCs);
 
   if(nextRedraw != -1) {
-    GetCornerFromID(nextRedraw).Draw(nextColor);
-    if(swingRedraw != -1) GetCornerFromID(swingRedraw).Draw(swingColor);
-    GetCornerFromID(prevRedraw).Draw(prevColor);
+    GetCornerFromID(nextRedraw, masterCs).Draw(nextColor, masterVs, masterCs);
+    if(swingRedraw != -1) GetCornerFromID(swingRedraw, masterCs).Draw(swingColor, masterVs, masterCs);
+    GetCornerFromID(prevRedraw, masterCs).Draw(prevColor, masterVs, masterCs);
   }
 
-  //println("display header");
+  println("display header");
 
   displayHeader();
   if (!mousePressed && !keyPressed)
@@ -145,48 +138,49 @@ void draw() {      // executed at each frame
     //if looking to connect
     if(connectingTwoExisting){
       if(connectClick1){
-        //println("stored prev click " + selectedVertexID);
+        println("stored prev click " + selectedVertexID);
         prevConnect = selectedVertexID;
         connectClick1 = false;
       } else if (!connectClick1){
         if((selectedVertexID != prevConnect) && notDrawn){
-          //println("connected to : "+ selectedVertexID );
-          v = GetVertexFromID(prevConnect);
-          notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID);
+          println("connected to : "+ selectedVertexID );
+          v = GetVertexFromID(prevConnect, masterVs);
+          notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID, masterVs, masterCs);
           if(notDrawn == false) {
-            Vertex otherVert = GetVertexFromID(selectedVertexID);
-            notDrawn = vertexHandler.AddVertex((int)otherVert.pos.x, (int)otherVert.pos.y, v.id);
+            Vertex otherVert = GetVertexFromID(selectedVertexID, masterVs);
+            notDrawn = vertexHandler.AddVertex((int)otherVert.pos.x, (int)otherVert.pos.y, v.id, masterVs, masterCs);
           }
           notDrawn = !notDrawn;
         }
       }
-    } else if (removeVert) {
-      //println("remove the vert");
-      boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID));
+    } else if (removeVert) { //NEED TO CHECK THESE FNS FOR WHICH ARRAY LIST WE CURRENTLY CARE ABOUT
+      println("remove the vert");
+      boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID, masterVs));
       if(removable) {
-        vertexHandler.RemoveVertex(selectedVertexID);
+        vertexHandler.RemoveVertex(selectedVertexID, masterVs, masterCs);
         //selectedVertexID = -1;
       }
     } else {
-      v = GetVertexFromID(selectedVertexID);
-      v.isInteracted();
+      v = GetVertexFromID(selectedVertexID, masterVs);
+      v.isInteracted(masterVs, masterCs);
     }
   } else {
     // vertex has not been selected yet
     for (int i = 0; i < masterVs.size(); i++) {
-      Vertex v = GetVertexFromID(i);
+      Vertex v = GetVertexFromID(i, masterVs);
       if (v.exists()) {
-        v.isInteracted();
+        v.isInteracted(masterVs, masterCs);
       }
     }
 
     for (int i = 0; i < masterCs.size(); i++) {
-      Corner c = GetCornerFromID(i);
+      Corner c = GetCornerFromID(i, masterCs);
       if (c.exists()) {
-        c.isInteracted();
+        c.isInteracted(masterVs, masterCs);
       }
     }
   }  
+
 }  // end of draw()
 
 
@@ -230,8 +224,7 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
   }
 
   if(key == 'p'){
-    in2DMode = !in2DMode;
-    modeToggle = true;
+    in3D = !in3D;
   }
 }
 
@@ -289,39 +282,30 @@ void mouseClicked(MouseEvent e) {
   
 }
 
-public Corner GetCornerFromID(int cornerID) {
-  return masterCs.get(cornerID);
-}
-
-public Corner GetCornerFromID(int cornerID, ArrayList<Corner> _cornerList) {
-  return _cornerList.get(cornerID);
+public Corner GetCornerFromID(int cornerID, ArrayList<Corner> _mastCs) {
+  return _mastCs.get(cornerID);
 }
 
 public Corner GetCornerFromFaceID(int faceID) {
-  return GetCornerFromID(masterFs.get(faceID));
+  return GetCornerFromID(masterFs.get(faceID), masterCs);
 }
  
-public Vertex GetVertexFromCornerID(int cornerID) {
-  return masterVs.get(masterCs.get(cornerID).vertex);
+public Vertex GetVertexFromCornerID(int cornerID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+  return _mastVs.get(_mastCs.get(cornerID).vertex);
 }
 
-public Vertex GetVertexFromCornerID(int cornerID, ArrayList<Vertex> _vertList, ArrayList<Corner> _cornerList) {
-  return _vertList.get(_cornerList.get(cornerID).vertex);
+public Vertex GetVertexFromID(int vertexID, ArrayList<Vertex> _mastVs) {
+  return _mastVs.get(vertexID);
 }
 
-public Vertex GetVertexFromID(int vertexID) {
-  if(vertexID != -1) return masterVs.get(vertexID);
-  else return  masterVs.get(0);
-}
-
-public void CheckForFaces() {
+public void CheckForFaces(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
   ArrayList<Corner> unvisitedCorners = new ArrayList<Corner>();
-  unvisitedCorners = masterCs;
+  unvisitedCorners = _mastCs;
   ArrayList<Integer> unvisitedCornerIDs = new ArrayList<Integer>();
 
-  while (unvisitedCornerIDs.size() < masterCs.size()) {
+  while (unvisitedCornerIDs.size() < _mastCs.size()) {
     unvisitedCorners.get(unvisitedCornerIDs.size()).visited = false;
-    unvisitedCornerIDs.add(masterCs.get(unvisitedCornerIDs.size()).id);
+    unvisitedCornerIDs.add(_mastCs.get(unvisitedCornerIDs.size()).id);
   }
 
   masterFs.clear();
@@ -343,19 +327,19 @@ public void CheckForFaces() {
       break;
     }
 
-    Corner currCorner = GetCornerFromID(currentCornerID);
-    Vertex currVertex = GetVertexFromCornerID(currentCornerID);
+    Corner currCorner = GetCornerFromID(currentCornerID, _mastCs);
+    Vertex currVertex = GetVertexFromCornerID(currentCornerID, _mastVs, _mastCs);
 
     PVector currPos = currVertex.pos;
-    PVector prevPos = GetVertexFromCornerID(currCorner.prev).pos;
-    PVector nextPos = GetVertexFromCornerID(currCorner.next).pos;
+    PVector prevPos = GetVertexFromCornerID(currCorner.prev, _mastVs, _mastCs).pos;
+    PVector nextPos = GetVertexFromCornerID(currCorner.next, _mastVs, _mastCs).pos;
     
     PVector fromPrev = new PVector(currPos.x - prevPos.x, currPos.y - prevPos.y);
     PVector toNext = new PVector(nextPos.x - currPos.x, nextPos.y - currPos.y);
     if (det(fromPrev, toNext) < 0) {
       // counter-clockwise corner, must be outer face
       outerFace = masterFs.size();
-      //println("outer face = " + outerFace);
+      println("outer face = " + outerFace);
     }
     masterFs.add(currentCornerID);
 
@@ -366,30 +350,30 @@ public void CheckForFaces() {
     }
   }
 
-  //println("FACES: " + masterFs);
+  println("FACES: " + masterFs);
 }
 
-public int MouseIsWithinFace() {
+public int MouseIsWithinFace(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
   // return which face the mouse is within
   for (int i = 0; i < masterFs.size(); i++) {   ///////////////////////////////////////////////////
     if (i != outerFace) {
       int intersections = 0;
       int startCornerID = masterFs.get(i);
-      Corner startCorner = GetCornerFromID(startCornerID);
+      Corner startCorner = GetCornerFromID(startCornerID, _mastCs);
       int currentCornerID = startCornerID;
-      ////println("mouse in face for");
+      //println("mouse in face for");
       do {
-        ////println("mouse in face: " + i + " -> " + currentCornerID);
-        Corner currentCorner = GetCornerFromID(currentCornerID);
-        Vertex currentVertex = GetVertexFromCornerID(currentCornerID);
+        //println("mouse in face: " + i + " -> " + currentCornerID);
+        Corner currentCorner = GetCornerFromID(currentCornerID, _mastCs);
+        Vertex currentVertex = GetVertexFromCornerID(currentCornerID, _mastVs, _mastCs);
 
         if (!currentCorner.exists()) {
-          CheckForFaces();
-          MouseIsWithinFace();
+          CheckForFaces(_mastVs, _mastCs);
+          MouseIsWithinFace(_mastVs, _mastCs);
           break;
         }
 
-        Vertex nextVertex = GetVertexFromCornerID(currentCorner.next);
+        Vertex nextVertex = GetVertexFromCornerID(currentCorner.next, _mastVs, _mastCs);
 
         PVector start = currentVertex.pos;
         PVector end = nextVertex.pos;
@@ -401,15 +385,15 @@ public int MouseIsWithinFace() {
         currentCornerID = currentCorner.next;
       } while (currentCornerID != startCornerID);
 
-      ////println("face " + i + " intersections: " + intersections);
+      //println("face " + i + " intersections: " + intersections);
 
       if (intersections % 2 != 0) {
         return i;
       }
     } else {
-      if (!GetCornerFromID(masterFs.get(outerFace)).exists()) {
-        CheckForFaces();
-        MouseIsWithinFace();
+      if (!GetCornerFromID(masterFs.get(outerFace), _mastCs).exists()) {
+        CheckForFaces(_mastVs, _mastCs);
+        MouseIsWithinFace(_mastVs, _mastCs);
         break;
       }
     }
@@ -446,19 +430,19 @@ public boolean HorizontalIntersectsLineSegment(float y, PVector a, PVector b) {
   return (x >= mouseX && y <= max(a.y, b.y) && y >= min(a.y, b.y));
 }
 
-public float DrawAreaOfFace(int faceID) {
+public float DrawAreaOfFace(int faceID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
   float area = 0f;
   PVector center = new PVector(0, 0);
   int numCorners = 0;
 
   int startCornerID = masterFs.get(faceID);
-  Corner startCorner = GetCornerFromID(startCornerID);
+  Corner startCorner = GetCornerFromID(startCornerID, _mastCs);
   int currentCornerID = startCornerID;
 
   do {
-    Corner currentCorner = GetCornerFromID(currentCornerID);
-    Vertex currentVertex = GetVertexFromCornerID(currentCornerID);
-    Vertex nextVertex = GetVertexFromCornerID(currentCorner.next);
+    Corner currentCorner = GetCornerFromID(currentCornerID, _mastCs);
+    Vertex currentVertex = GetVertexFromCornerID(currentCornerID, _mastVs, _mastCs);
+    Vertex nextVertex = GetVertexFromCornerID(currentCorner.next, _mastVs, _mastCs);
 
     PVector start = currentVertex.pos;
     PVector end = nextVertex.pos;
@@ -481,33 +465,3 @@ public float DrawAreaOfFace(int faceID) {
   textAlign(LEFT);
   return area;
 }
-
-void SetupModeToggle() {
-  //assign the current masterC, V and F arrays
-  //will need to make sure lower sidewalk is current before ever switching from 3D mode
-
-  if(!in2DMode) {
-    //store the graph values for use later
-    graphCs = masterCs;
-    graphVs = masterVs;
-    graphFs = masterFs;
-
-    //assign the current arrays to be the sidewalk geo
-    masterCs = sidewalkBelowCs;
-    masterVs = sidewalkBelowVs;
-    masterFs = sidewalkBelowFs;
-
-    CalculateSidewalkGeo();
-  } else{
-    //store the graph values for use later
-    sidewalkBelowCs = masterCs;
-    sidewalkBelowVs = masterVs;
-    sidewalkBelowFs = masterFs;
-
-    //assign the current arrays to be the sidewalk geo
-    masterCs = graphCs;
-    masterVs = graphVs;
-    masterFs = graphFs;
-  }
-}
-    

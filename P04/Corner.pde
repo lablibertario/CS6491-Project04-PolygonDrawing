@@ -28,12 +28,12 @@ public class Corner{
     vertex = vertexID;
   }
 
-  public void kill() {
+  public void kill(ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs) {
     if (this.swing != -1) {
-      Corner unswing = FindUnswing();
+      Corner unswing = FindUnswing(_masterCs);
       unswing.swing = this.swing;
     }
-    GetVertexFromID(this.vertex).RemoveCorner(this.id);
+    GetVertexFromID(this.vertex, _masterVs).RemoveCorner(this.id);
 
     id = -1;
     next = -1;
@@ -46,11 +46,11 @@ public class Corner{
     return (id > -1);
   }
 
-  public PVector GetDisplayPosition(ArrayList<Vertex> _vertList, ArrayList<Corner> _cornerList) {
+  public PVector GetDisplayPosition(ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs) {
     float d = 30;
-    PVector thisPos = GetVertexFromCornerID(id, _vertList, _cornerList).pos;
-    PVector prevPos = GetVertexFromCornerID(prev, _vertList, _cornerList).pos;
-    PVector nextPos = GetVertexFromCornerID(next, _vertList, _cornerList).pos;
+    PVector thisPos = GetVertexFromCornerID(id, _masterVs, _masterCs).pos;
+    PVector prevPos = GetVertexFromCornerID(prev, _masterVs, _masterCs).pos;
+    PVector nextPos = GetVertexFromCornerID(next, _masterVs,_masterCs).pos;
     PVector result = new PVector(thisPos.x,thisPos.y);
 
     PVector toPrev = new PVector(prevPos.x-thisPos.x, prevPos.y-thisPos.y); // BA
@@ -81,38 +81,38 @@ public class Corner{
     return result;
   }
 
-  public Corner FindUnswing(){
+  public Corner FindUnswing(ArrayList<Corner> _masterCs){
     Corner currCorner = this;
     while(currCorner.swing != id){
-      //println("swing id: " + currCorner.swing);
-      currCorner = GetCornerFromID(currCorner.swing);
+      println("swing id: " + currCorner.swing);
+      currCorner = GetCornerFromID(currCorner.swing, _masterCs);
     }
 
     return currCorner;
   }
 
-  public boolean isHovered() {
-    boolean result = mouseIsWithinCircle(this.GetDisplayPosition(masterVs, masterCs), cornerRadius);
+  public boolean isHovered(ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs) {
+    boolean result = mouseIsWithinCircle(this.GetDisplayPosition(_masterVs, _masterCs), cornerRadius);
     return result;
   }
 
-  public void isInteracted() {
-    if (this.isHovered()) {
+  public void isInteracted(ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs) {
+    if (this.isHovered(_masterVs, _masterCs)) {
       this.DrawInformation();
     }
   }
 
-  public void Draw(color fillColor) {
+  public void Draw(color fillColor, ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs) {
     fill(fillColor);
     stroke(fillColor);
 
     Corner tmp = masterCs.get(id);
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
     // println("stored next " + next + "stored prev: " + prev);
-    PVector pos = GetDisplayPosition(masterVs, masterCs);
+    PVector pos = GetDisplayPosition(_masterVs, _masterCs);
     showDisk(pos.x, pos.y, 2); 
 
-    if(isHovered()) {
+    if(isHovered(_masterVs, _masterCs)) {
       swingRedraw = swing;
       nextRedraw = next;
       prevRedraw = prev;

@@ -121,11 +121,11 @@ void displayFooter() { // Displays help text at the bottom
   scribeFooter(menu, 0);
 }
 
-void displayVertices() {
-  //println("draw vertices");
-  for (int i = 0; i < masterVs.size(); i++) {
-    Vertex v = masterVs.get(i);
-    ////println("drawing v " + v.id);
+void displayVertices(ArrayList<Vertex> _mastVs) {
+  println("draw vertices");
+  for (int i = 0; i < _mastVs.size(); i++) {
+    Vertex v = _mastVs.get(i);
+    //println("drawing v " + v.id);
     if (v.exists()) {
       v.Draw();
     }
@@ -133,49 +133,49 @@ void displayVertices() {
   textSize(12);
 }
 
-void displayCorners() {
-  //println("draw corners");
-  for (int i = 0; i < masterCs.size(); i++) {
-    Corner c = masterCs.get(i);
+void displayCorners(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+  println("draw corners");
+  for (int i = 0; i < _mastCs.size(); i++) {
+    Corner c = _mastCs.get(i);
     if (c.exists()) {
-      // //println("draw corner " + c.id);
-      c.Draw(cornerColor);
+      // println("draw corner " + c.id);
+      c.Draw(cornerColor, _mastVs, _mastCs);
     }
   }
   textSize(12);
 }
 
-void displayEdges() {
-  //println("draw edges");
-  for (int i = 0; i < masterCs.size(); i++) {
-    Corner startC = masterCs.get(i);
+void displayEdges(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+  println("draw edges");
+  for (int i = 0; i < _mastCs.size(); i++) {
+    Corner startC = _mastCs.get(i);
 
     if (startC.next != -1) {
-      Corner endC = GetCornerFromID(startC.next);
+      Corner endC = GetCornerFromID(startC.next, _mastCs);
 
       if (startC.exists() && endC.exists()) {
-        Vertex startV = GetVertexFromCornerID(startC.id);
-        Vertex endV = GetVertexFromCornerID(endC.id);
+        Vertex startV = GetVertexFromCornerID(startC.id, _mastVs, _mastCs);
+        Vertex endV = GetVertexFromCornerID(endC.id, _mastVs, _mastCs);
 
-        DrawEdge(startV, endV);
+        DrawEdge(startV, endV, _mastVs, _mastCs);
       }
     }
   }
 }
 
-void displayFaceSidewalks() {
+void displayFaceSidewalks(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
   for (int i = 0; i < masterFs.size(); i++) {
-    DrawFaceSidewalks(i);
+    DrawFaceSidewalks(i, _mastVs, _mastCs);
   }
 }
 
-void DrawFaceSidewalks(int faceID) {
-  //println("draw face " + faceID + " sidewalks");
+void DrawFaceSidewalks(int faceID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+  println("draw face " + faceID + " sidewalks");
   Corner startC = GetCornerFromFaceID(faceID);
   Corner currentC = startC;
   do {
-      Corner nextC = GetCornerFromID(currentC.next);
-      DrawSidewalk(currentC, nextC);
+      Corner nextC = GetCornerFromID(currentC.next, _mastCs);
+      DrawSidewalk(currentC, nextC, _mastVs, _mastCs);
       currentC = nextC;
   } while (currentC.id != startC.id && currentC.next != -1);
 }
@@ -199,16 +199,30 @@ void DrawLine(PVector start, PVector end, float thickness, color rgb) {
   popMatrix();
 }
 
-void DrawSidewalk(Corner startC, Corner endC) {
-  PVector start = startC.GetDisplayPosition(masterVs, masterCs);
-  PVector end = endC.GetDisplayPosition(masterVs, masterCs);
+void DrawSidewalk(Corner startC, Corner endC, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+  PVector start = startC.GetDisplayPosition(_mastVs, _mastCs);
+  PVector end = endC.GetDisplayPosition(_mastVs, _mastCs);
 
-  ////println("sidewalk: " + startC.vertex + " -> " + endC.vertex);
+  //println("sidewalk: " + startC.vertex + " -> " + endC.vertex);
 
-  DrawLine(start, end, sidewalkThickness, sidewalkColor);
+  //if the sidewalk is on the outside and comes to a really sharp point,
+  //smooth it out
+  //part 1: determine when this happens
+  int smoothness = DetermineSmoothness(startC, endC);
+  if(smoothness == 0 ) {
+    DrawLine(start, end, sidewalkThickness, sidewalkColor);
+  } else {
+    //part 2: smooth along sphere via line segments
+
+  }
 }
 
-void DrawEdge(Vertex startV, Vertex endV) {
+int DetermineSmoothness(Corner c1, Corner c2) {
+
+  return 0;
+}
+
+void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
   PVector start = startV.pos;
   PVector end = endV.pos;
 
@@ -222,8 +236,8 @@ void DrawEdge(Vertex startV, Vertex endV) {
     showDisk(closestPoint.x, closestPoint.y, edgeThickness*2);
 
     if(addVert && mouseClicked) {
-      //println("add vert");
-      vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id, endV.id);
+      println("add vert");
+      vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id, endV.id, _mastVs, _mastCs);
     }
     //text(GetDistanceFromEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos), mouseX + edgeTextOffset.x, mouseY + edgeTextOffset.y);
   }
@@ -287,24 +301,6 @@ public PVector GetClosestPointOnEdge(PVector c, PVector a, PVector b) {
   result.add(v);
 
   return result;
-}
-
-public void CalculateSidewalkGeo() {
-  //could add a comparisson to see if recalculation is neccessary
-  //for every corner in the graph array, we need to make a vertex out of it
-
-  for(int i = 0; i < graphCs.size(); i++){
-    if(i > graphCs.size()) break;
-    Corner cornerToConvert = GetCornerFromID(i, graphCs);
-    PVector position = cornerToConvert.GetDisplayPosition(graphVs, graphCs);
-    //need to determine who to connect it to somehow
-    //int prevVertPos = cornerToConvert.prev;  
-    //if( i = 0 ) {
-      vertexHandler.AddVertex((int)position.x, (int)position.y, i-1);
-    //} else {
-      //vertexHandler.AddVertex((int)position.x, (int)position.y, );
-    //}
-  }
 }
 
 //************************ capturing frames for a movie ************************
