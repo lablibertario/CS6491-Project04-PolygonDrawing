@@ -48,6 +48,7 @@ boolean mouseClicked = false;
 boolean addVert = false;
 int prevConnect = -1;
 boolean in2DMode = true;
+boolean modeToggle = false;
 
 int swingRedraw, prevRedraw, nextRedraw;
 
@@ -86,6 +87,13 @@ void setup() {               // executed once at the begining
 
 //**************************** display current frame ****************************
 void draw() {      // executed at each frame
+  if(modeToggle) {
+    println("masterCs: "+masterCs);
+    println("masterVs: "+masterVs);
+    SetupModeToggle();
+    modeToggle = false;
+  }
+
   background(white); // clear screen and paints white background
   pen(black, 3); // sets stroke color (to balck) and width (to 3 pixels)
 
@@ -223,7 +231,7 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
 
   if(key == 'p'){
     in2DMode = !in2DMode;
-    SetupModeToggle();
+    modeToggle = true;
   }
 }
 
@@ -302,7 +310,8 @@ public Vertex GetVertexFromCornerID(int cornerID, ArrayList<Vertex> _vertList, A
 }
 
 public Vertex GetVertexFromID(int vertexID) {
-  return masterVs.get(vertexID);
+  if(vertexID != -1) return masterVs.get(vertexID);
+  else return  masterVs.get(0);
 }
 
 public void CheckForFaces() {

@@ -292,10 +292,18 @@ public PVector GetClosestPointOnEdge(PVector c, PVector a, PVector b) {
 public void CalculateSidewalkGeo() {
   //could add a comparisson to see if recalculation is neccessary
   //for every corner in the graph array, we need to make a vertex out of it
+
   for(int i = 0; i < graphCs.size(); i++){
+    if(i > graphCs.size()) break;
     Corner cornerToConvert = GetCornerFromID(i, graphCs);
-    PVector position = cornerToConvert.GetDisplayPosition(graphVs, graphCs);  
-    vertexHandler.AddVertex((int)position.x, (int)position.y, -1);
+    PVector position = cornerToConvert.GetDisplayPosition(graphVs, graphCs);
+    //need to determine who to connect it to somehow
+    //int prevVertPos = cornerToConvert.prev;  
+    //if( i = 0 ) {
+      vertexHandler.AddVertex((int)position.x, (int)position.y, i-1);
+    //} else {
+      //vertexHandler.AddVertex((int)position.x, (int)position.y, );
+    //}
   }
 }
 
