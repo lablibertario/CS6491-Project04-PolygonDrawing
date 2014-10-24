@@ -103,10 +103,10 @@ void draw() {      // executed at each frame
     if (masterFs.size() > 1) {
       int faceToDraw = MouseIsWithinFace(masterVs, masterCs);
       if (faceToDraw != -1) {
-        DrawFaceSidewalks(faceToDraw, masterVs, masterCs);
+        DrawFaceSidewalks(faceToDraw, masterVs, masterCs, masterFs);
         DrawAreaOfFace(faceToDraw, masterVs, masterCs);
       } else {
-        DrawFaceSidewalks(outerFace, masterVs, masterCs);
+        DrawFaceSidewalks(outerFace, masterVs, masterCs, masterFs);
         DrawAreaOfFace(outerFace, masterVs, masterCs);
       }
     }
@@ -277,8 +277,8 @@ public Corner GetCornerFromID(int cornerID, ArrayList<Corner> _mastCs) {
   return _mastCs.get(cornerID);
 }
 
-public Corner GetCornerFromFaceID(int faceID) {
-  return GetCornerFromID(masterFs.get(faceID), masterCs);
+public Corner GetCornerFromFaceID(int faceID, ArrayList<Integer> _mastFs) {
+  return GetCornerFromID(_mastFs.get(faceID), masterCs);
 }
  
 public Vertex GetVertexFromCornerID(int cornerID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
@@ -460,6 +460,6 @@ public float DrawAreaOfFace(int faceID, ArrayList<Vertex> _mastVs, ArrayList<Cor
 void SetupModeSwitch() {
   if(in3D) {
     println("3d mode");
-   // CalculateSidewalkGeo();
+    CalculateSidewalkGeo();
   }
 }

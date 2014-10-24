@@ -162,15 +162,15 @@ void displayEdges(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
   }
 }
 
-void displayFaceSidewalks(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
-  for (int i = 0; i < masterFs.size(); i++) {
-    DrawFaceSidewalks(i, _mastVs, _mastCs);
+void displayFaceSidewalks(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
+  for (int i = 0; i < _mastFs.size(); i++) {
+    DrawFaceSidewalks(i, _mastVs, _mastCs, _mastFs);
   }
 }
 
-void DrawFaceSidewalks(int faceID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+void DrawFaceSidewalks(int faceID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
   //println("draw face " + faceID + " sidewalks");
-  Corner startC = GetCornerFromFaceID(faceID);
+  Corner startC = GetCornerFromFaceID(faceID, _mastFs);
   Corner currentC = startC;
   do {
       Corner nextC = GetCornerFromID(currentC.next, _mastCs);
@@ -300,6 +300,10 @@ public PVector GetClosestPointOnEdge(PVector c, PVector a, PVector b) {
   result.add(v);
 
   return result;
+}
+
+public void CalculateSidewalkGeo() {
+  //for (int i = 0; i < masterFs.size(); i++) {
 }
 
 //************************ capturing frames for a movie ************************
