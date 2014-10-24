@@ -12,7 +12,7 @@
 //**************************** global variables ****************************
 
 //*************** text drawn on the canvas for name, title and help  *******************
-String title ="CS3451, Fall 2014, Project 04: Graphs!", name ="Miranda Bradley and Sebastian Monroy", // enter project number and your name
+String title ="CS3451, Fall 2014, Project 05: Graph -> 3D Geo", name ="Miranda Bradley", // enter project number and your name
 menu="'q' drag new vertex from prev, 'w' connect two existing verts, 'e' delete vert, 'r' add vert", 
 guide="Press&drag mouse to move dot. 'x', 'y' restrict motion, 'p' toggle 2D/3D"; // help info
 // velocityDisplay=Float.toString(velocity)
@@ -56,7 +56,6 @@ void setup() {               // executed once at the begining
   frameRate(30);             // render 30 frames per second
   smooth();                  // turn on antialiasing
   myFace = loadImage("data/pic.jpg");  // loads image from file pic.jpg in folder data, replace it with a clear pic of your face
-  myFace2 = loadImage("data/pic2.jpg");
 
   editMode = false;
   swingRedraw = prevRedraw = nextRedraw = -1;
@@ -89,6 +88,11 @@ void draw() {      // executed at each frame
   change=false; // to avoid capturing frames when nothing happens
   // make sure that animating is set to true at the beginning of an animation and to false at the end
 
+  displayHeader();
+  if (!mousePressed && !keyPressed)
+    scribeMouseCoordinates(); // writes current mouse coordinates if nothing pressed
+  if (scribeText && !filming)
+    displayFooter(); // shows title, menu, and my face & name 
 
   if(in3D) {
 
@@ -114,14 +118,6 @@ void draw() {      // executed at each frame
       if(swingRedraw != -1) GetCornerFromID(swingRedraw, masterCs).Draw(swingColor, masterVs, masterCs);
       GetCornerFromID(prevRedraw, masterCs).Draw(prevColor, masterVs, masterCs);
     }
-
-    //println("display header");
-
-    displayHeader();
-    if (!mousePressed && !keyPressed)
-      scribeMouseCoordinates(); // writes current mouse coordinates if nothing pressed
-    if (scribeText && !filming)
-      displayFooter(); // shows title, menu, and my face & name 
 
     // MOUSE INTERACTION STUFF
     if (selectedVertexID != -1) {

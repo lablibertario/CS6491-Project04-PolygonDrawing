@@ -73,7 +73,7 @@ public float GetPosAngle(PVector a) {
 
 // ************************************************************************ IMAGES & VIDEO 
 int pictureCounter=0;
-PImage myFace, myFace2; // picture of author's face, should be: data/pic.jpg in sketch folder
+PImage myFace; // picture of author's face, should be: data/pic.jpg in sketch folder
 void snapPicture() {
   saveFrame("PICTURES/P"+nf(pictureCounter++, 3)+".jpg");
 }
@@ -114,7 +114,6 @@ void displayHeader() { // Displays title and authors face on screen
   scribeHeader(title, 0); 
   scribeHeaderRight(name); 
   image(myFace, width-myFace.width/2, 25, myFace.width/2, myFace.height/2); 
-  image(myFace2, (width-myFace.width), 25, myFace.width/2, myFace.height/2);
 }
 void displayFooter() { // Displays help text at the bottom
   scribeFooter(guide, 1); 
