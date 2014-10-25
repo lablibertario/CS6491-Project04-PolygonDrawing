@@ -40,6 +40,8 @@ public class VertexHandler {
 			InsertVertOnEdge(connectVertex, insertionFarVert, _mastVs, _mastCs);
 		} else {
 			if(idOfExistingConnection != -1){
+				//RUNNING CONNECT EXISTING INSTEAD OF ATTACH SECOND VERT, CHECKING FOR CORNERS THAT DON'T YET EXIST
+				println("idOfExistingConnection: "+idOfExistingConnection);
 				//connecting two existing verts
 				connectVertex = GetVertexFromID(connectIndex, _mastVs);
 				//println("connecting two existing");

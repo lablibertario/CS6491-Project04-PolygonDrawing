@@ -95,6 +95,11 @@ void draw() {      // executed at each frame
     displayFooter(); // shows title, menu, and my face & name 
 
   if(in3D) {
+    //draw verts/edges for each face
+    for(Geo3D c: faces3D) {
+      displayEdges(masterVs, masterCs);
+      displayVertices(masterVs);
+    }
 
   } else {
     displayEdges(masterVs, masterCs);
@@ -277,8 +282,8 @@ public Corner GetCornerFromID(int cornerID, ArrayList<Corner> _mastCs) {
   return _mastCs.get(cornerID);
 }
 
-public Corner GetCornerFromFaceID(int faceID, ArrayList<Integer> _mastFs) {
-  return GetCornerFromID(_mastFs.get(faceID), masterCs);
+public Corner GetCornerFromFaceID(int faceID, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
+  return GetCornerFromID(_mastFs.get(faceID), _mastCs);
 }
  
 public Vertex GetVertexFromCornerID(int cornerID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {

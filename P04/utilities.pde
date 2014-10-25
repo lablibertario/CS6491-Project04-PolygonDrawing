@@ -170,7 +170,7 @@ void displayFaceSidewalks(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, 
 
 void DrawFaceSidewalks(int faceID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
   //println("draw face " + faceID + " sidewalks");
-  Corner startC = GetCornerFromFaceID(faceID, _mastFs);
+  Corner startC = GetCornerFromFaceID(faceID, _mastCs, _mastFs);
   Corner currentC = startC;
   do {
       Corner nextC = GetCornerFromID(currentC.next, _mastCs);
@@ -303,7 +303,47 @@ public PVector GetClosestPointOnEdge(PVector c, PVector a, PVector b) {
 }
 
 public void CalculateSidewalkGeo() {
-  //for (int i = 0; i < masterFs.size(); i++) {
+  //cycle through each face and generate the geometry that goes with it
+  faces3D = new ArrayList<Geo3D>();
+  for (int i = 0; i < masterFs.size(); i++) {
+    //set up geo3D objects
+    Geo3D geo3DObject = new Geo3D();
+    ArrayList<Corner> _geoCs = new ArrayList<Corner>();
+    ArrayList<Vertex> _geoVs = new ArrayList<Vertex>();
+    ArrayList<Integer> _geoFs = new ArrayList<Integer>();
+    //walk through the existing faces from the master(graph) arrays
+    Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
+    Corner currentC = startC;
+    //get position of start corner
+    PVector cPos = GetVertexFromID(startC.vertex, masterVs).pos;
+    //assign startC to a new vertex
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, -1, _geoVs, _geoCs);
+
+    int connectPos = 0;
+    /*do {
+        Corner nextC = GetCornerFromID(currentC.next, masterCs);
+        PVector cNextPos = GetVertexFromID(startC.vertex, masterVs).pos;
+        //assign startC to a new vertex
+        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, connectPos, _geoVs, _geoCs);
+        //assign each next to a new vertex
+        currentC = nextC;
+        connectPos++;
+        println("geo3DObject.geoCs: "+geo3DObject.geoCs);
+        println("geo3DObject.geoVs: "+geo3DObject.geoVs);
+        println("geo3DObject.geoFs: "+geo3DObject.geoFs);
+    } while (currentC.id != startC.id && currentC.next != -1);*/
+
+    //assign our determined arrays to the faces3D Array
+    geo3DObject.geoCs = _geoCs;
+    geo3DObject.geoVs = _geoVs;
+    geo3DObject.geoFs = _geoFs;
+    println("geo3DObject.geoCs: "+geo3DObject.geoCs);
+    println("geo3DObject.geoVs: "+geo3DObject.geoVs);
+    println("geo3DObject.geoFs: "+geo3DObject.geoFs);
+    faces3D.add(geo3DObject);
+  }
+
+  //handle drawing of these in p04
 }
 
 //************************ capturing frames for a movie ************************
