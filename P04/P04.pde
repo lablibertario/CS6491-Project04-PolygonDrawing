@@ -97,8 +97,8 @@ void draw() {      // executed at each frame
   if(in3D) {
     //draw verts/edges for each face
     for(Geo3D c: faces3D) {
-      displayEdges(masterVs, masterCs);
-      displayVertices(masterVs);
+      displayEdges(c.geoVs, c.geoCs);
+      displayVertices(c.geoVs);
     }
 
   } else {
@@ -294,7 +294,7 @@ public Vertex GetVertexFromID(int vertexID, ArrayList<Vertex> _mastVs) {
   return _mastVs.get(vertexID);
 }
 
-public void CheckForFaces(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+public void CheckForFaces(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
   ArrayList<Corner> unvisitedCorners = new ArrayList<Corner>();
   unvisitedCorners = _mastCs;
   ArrayList<Integer> unvisitedCornerIDs = new ArrayList<Integer>();
@@ -304,7 +304,7 @@ public void CheckForFaces(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) 
     unvisitedCornerIDs.add(_mastCs.get(unvisitedCornerIDs.size()).id);
   }
 
-  masterFs.clear();
+  _mastFs.clear();
 
   int numUnvisitedCorners = 0;
   int currentCornerID = 0;
@@ -334,10 +334,10 @@ public void CheckForFaces(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) 
     PVector toNext = new PVector(nextPos.x - currPos.x, nextPos.y - currPos.y);
     if (det(fromPrev, toNext) < 0) {
       // counter-clockwise corner, must be outer face
-      outerFace = masterFs.size();
+      outerFace = _mastFs.size();
       //println("outer face = " + outerFace);
     }
-    masterFs.add(currentCornerID);
+    _mastFs.add(currentCornerID);
 
     while (!unvisitedCorners.get(currentCornerID).visited) {
       unvisitedCorners.get(currentCornerID).visited = true;
@@ -349,12 +349,12 @@ public void CheckForFaces(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) 
   //println("FACES: " + masterFs);
 }
 
-public int MouseIsWithinFace(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+public int MouseIsWithinFace(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
   // return which face the mouse is within
-  for (int i = 0; i < masterFs.size(); i++) {   ///////////////////////////////////////////////////
+  for (int i = 0; i < _mastFs.size(); i++) {   ///////////////////////////////////////////////////
     if (i != outerFace) {
       int intersections = 0;
-      int startCornerID = masterFs.get(i);
+      int startCornerID = _mastFs.get(i);
       Corner startCorner = GetCornerFromID(startCornerID, _mastCs);
       int currentCornerID = startCornerID;
       ////println("mouse in face for");
@@ -387,7 +387,7 @@ public int MouseIsWithinFace(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastC
         return i;
       }
     } else {
-      if (!GetCornerFromID(masterFs.get(outerFace), _mastCs).exists()) {
+      if (!GetCornerFromID(_mastFs.get(outerFace), _mastCs).exists()) {
         CheckForFaces(_mastVs, _mastCs);
         MouseIsWithinFace(_mastVs, _mastCs);
         break;
@@ -426,12 +426,12 @@ public boolean HorizontalIntersectsLineSegment(float y, PVector a, PVector b) {
   return (x >= mouseX && y <= max(a.y, b.y) && y >= min(a.y, b.y));
 }
 
-public float DrawAreaOfFace(int faceID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+public float DrawAreaOfFace(int faceID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
   float area = 0f;
   PVector center = new PVector(0, 0);
   int numCorners = 0;
 
-  int startCornerID = masterFs.get(faceID);
+  int startCornerID = _mastFs.get(faceID);
   Corner startCorner = GetCornerFromID(startCornerID, _mastCs);
   int currentCornerID = startCornerID;
 
