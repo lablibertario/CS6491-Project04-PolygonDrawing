@@ -22,7 +22,7 @@ public class VertexHandler {
 				existingVertPos.sub(tmpNewVert);
 				if((abs(existingVertPos.x) < distToConnect) && (abs(existingVertPos.y) < distToConnect)) {
 					idOfExistingConnection = i;
-					println("vert is on top of another");
+					println("vert is on top of another at " + existingVertPos);
 					break;
 				} 
 

@@ -305,6 +305,7 @@ public PVector GetClosestPointOnEdge(PVector c, PVector a, PVector b) {
 public void CalculateSidewalkGeo() {
   //cycle through each face and generate the geometry that goes with it
   faces3D = new ArrayList<Geo3D>();
+  println("------------------------------: ");
   println("masterFs: "+masterFs);
   for (int i = 0; i < masterFs.size(); i++) {
     //set up geo3D objects
@@ -316,9 +317,12 @@ public void CalculateSidewalkGeo() {
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
     Corner currentC = startC;
     //get position of start corner
-    PVector cPos = GetVertexFromID(startC.vertex, masterVs).pos;
+    PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, -1, _geoVs, _geoCs, _geoFs);
+    println("geo3DObject.geoCs: "+geo3DObject.geoCs);
+    println("geo3DObject.geoVs: "+geo3DObject.geoVs);
+    println("geo3DObject.geoFs: "+geo3DObject.geoFs);
 
     int connectPos = 0;
     do {
@@ -338,9 +342,7 @@ public void CalculateSidewalkGeo() {
     geo3DObject.geoCs = _geoCs;
     geo3DObject.geoVs = _geoVs;
     geo3DObject.geoFs = _geoFs;
-    println("geo3DObject.geoCs: "+geo3DObject.geoCs);
-    println("geo3DObject.geoVs: "+geo3DObject.geoVs);
-    println("geo3DObject.geoFs: "+geo3DObject.geoFs);
+
     faces3D.add(geo3DObject);
   }
 
