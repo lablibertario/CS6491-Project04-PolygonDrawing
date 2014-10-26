@@ -320,9 +320,6 @@ public void CalculateSidewalkGeo() {
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, -1, _geoVs, _geoCs, _geoFs);
-    println("geo3DObject.geoCs: "+geo3DObject.geoCs);
-    println("geo3DObject.geoVs: "+geo3DObject.geoVs);
-    println("geo3DObject.geoFs: "+geo3DObject.geoFs);
 
     int connectPos = 0;
     do {
@@ -333,15 +330,19 @@ public void CalculateSidewalkGeo() {
         //assign each next to a new vertex
         currentC = nextC;
         connectPos++;
-        println("geo3DObject.geoCs: "+geo3DObject.geoCs);
+        /*println("geo3DObject.geoCs: "+geo3DObject.geoCs);
         println("geo3DObject.geoVs: "+geo3DObject.geoVs);
-        println("geo3DObject.geoFs: "+geo3DObject.geoFs);
+        println("geo3DObject.geoFs: "+geo3DObject.geoFs);*/
     } while (currentC.id != startC.id && currentC.next != -1);
 
     //assign our determined arrays to the faces3D Array
     geo3DObject.geoCs = _geoCs;
     geo3DObject.geoVs = _geoVs;
     geo3DObject.geoFs = _geoFs;
+
+    println("geo3DObject.geoCs: "+geo3DObject.geoCs);
+    println("geo3DObject.geoVs: "+geo3DObject.geoVs);
+    println("geo3DObject.geoFs: "+geo3DObject.geoFs);
 
     faces3D.add(geo3DObject);
   }
