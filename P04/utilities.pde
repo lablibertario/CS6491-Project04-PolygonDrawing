@@ -333,6 +333,8 @@ public void CalculateSidewalkGeo() {
         println("geo3DObject.geoFs: "+geo3DObject.geoFs);*/
     } while (currentC.id != startC.id && currentC.next != -1);
 
+    RemoveInsideCorners();
+
     //assign our determined arrays to the faces3D Array
     geo3DObject.geoCs = _geoCs;
     geo3DObject.geoVs = _geoVs;
