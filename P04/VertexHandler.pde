@@ -22,7 +22,7 @@ public class VertexHandler {
 				existingVertPos.sub(tmpNewVert);
 				if((abs(existingVertPos.x) < distToConnect) && (abs(existingVertPos.y) < distToConnect)) {
 					idOfExistingConnection = i;
-					println("vert is on top of another at " + existingVertPos);
+					//println("vert is on top of another at " + existingVertPos);
 					break;
 				} 
 
@@ -41,7 +41,7 @@ public class VertexHandler {
 		} else {
 			if(idOfExistingConnection != -1){
 				//RUNNING CONNECT EXISTING INSTEAD OF ATTACH SECOND VERT, CHECKING FOR CORNERS THAT DON'T YET EXIST
-				println("idOfExistingConnection: "+idOfExistingConnection);
+				//println("idOfExistingConnection: "+idOfExistingConnection);
 				//connecting two existing verts
 				connectVertex = GetVertexFromID(connectIndex, _mastVs);
 				//println("connecting two existing");
