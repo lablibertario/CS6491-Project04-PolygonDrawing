@@ -7,7 +7,7 @@ public class VertexHandler {
 	private boolean inserting = false;
 	private int insertionFarVert;
 
-	public boolean AddVertex(int _x, int _y, int connectIndex, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+	public boolean AddVertex(int _x, int _y, int connectIndex, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
 
 		PVector insertionEdge, comparisonEdge;
 		newVertex = new Vertex(_x, _y, _mastVs.size());
@@ -22,7 +22,7 @@ public class VertexHandler {
 				existingVertPos.sub(tmpNewVert);
 				if((abs(existingVertPos.x) < distToConnect) && (abs(existingVertPos.y) < distToConnect)) {
 					idOfExistingConnection = i;
-					//println("vert is on top of another");
+					println("vert is on top of another");
 					break;
 				} 
 
@@ -73,15 +73,15 @@ public class VertexHandler {
 			AddToMaster(newVertex, _mastVs);
 		}
 		if (successfulCreation)
-			CheckForFaces(_mastVs, _mastCs);
+			CheckForFaces(_mastVs, _mastCs, _mastFs);
 		return successfulCreation;
 	}
 
-	public void InsertVerteXInEdge(int _x, int _y, int _startV, int _endV, ArrayList<Vertex> v, ArrayList<Corner> c) {
+	public void InsertVerteXInEdge(int _x, int _y, int _startV, int _endV, ArrayList<Vertex> v, ArrayList<Corner> c, ArrayList<Integer> f) {
 		inserting = true;
 		//println("inserting");
 		insertionFarVert = _endV;
-		AddVertex(_x, _y, _startV, v, c);
+		AddVertex(_x, _y, _startV, v, c, f);
 	}
 
 	private void ConnectExistingVerts(Vertex IDToConnectFrom, int IDToConnectTo, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs){
@@ -423,7 +423,7 @@ public class VertexHandler {
 		}
 	}
 
-	public void RemoveVertex(int vertexID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+	public void RemoveVertex(int vertexID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
 		Vertex theVertex = GetVertexFromID(vertexID, _mastVs);
 
 		if(theVertex.corners.size() == 1){
@@ -459,7 +459,7 @@ public class VertexHandler {
 		}
 		//else first vertex, just need to kill it
 		theVertex.id = -1;
-		CheckForFaces(_mastVs, _mastCs);
+		CheckForFaces(_mastVs, _mastCs, _mastFs);
 		swingRedraw = prevRedraw = nextRedraw = -1;
 		//println("removed vert before exception");
 	}

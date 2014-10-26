@@ -61,12 +61,12 @@ void setup() {               // executed once at the begining
   swingRedraw = prevRedraw = nextRedraw = -1;
   
   //hard coded points! for testing
-  vertexHandler.AddVertex(100, 100, -1, masterVs, masterCs);
-  vertexHandler.AddVertex(100, 300, 0, masterVs, masterCs);
-  vertexHandler.AddVertex(300, 300, 1, masterVs, masterCs);
-  vertexHandler.AddVertex(300, 100, 2, masterVs, masterCs);
-  vertexHandler.AddVertex(300, 100, 0, masterVs, masterCs);
-  vertexHandler.AddVertex(100, 300, 3, masterVs, masterCs);
+  vertexHandler.AddVertex(100, 100, -1, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(100, 300, 0, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(300, 300, 1, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(300, 100, 2, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(300, 100, 0, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(100, 300, 3, masterVs, masterCs, masterFs);
   // vertexHandler.AddVertex(300, 300, 0);
   // vertexHandler.AddVertex(100, 100, 2);
   
@@ -97,22 +97,22 @@ void draw() {      // executed at each frame
   if(in3D) {
     //draw verts/edges for each face
     for(Geo3D c: faces3D) {
-      displayEdges(c.geoVs, c.geoCs);
+      displayEdges(c.geoVs, c.geoCs, c.geoFs);
       displayVertices(c.geoVs);
     }
 
   } else {
-    displayEdges(masterVs, masterCs);
+    displayEdges(masterVs, masterCs, masterFs);
     displayVertices(masterVs);
 
     if (masterFs.size() > 1) {
-      int faceToDraw = MouseIsWithinFace(masterVs, masterCs);
+      int faceToDraw = MouseIsWithinFace(masterVs, masterCs, masterFs);
       if (faceToDraw != -1) {
         DrawFaceSidewalks(faceToDraw, masterVs, masterCs, masterFs);
-        DrawAreaOfFace(faceToDraw, masterVs, masterCs);
+        DrawAreaOfFace(faceToDraw, masterVs, masterCs, masterFs);
       } else {
         DrawFaceSidewalks(outerFace, masterVs, masterCs, masterFs);
-        DrawAreaOfFace(outerFace, masterVs, masterCs);
+        DrawAreaOfFace(outerFace, masterVs, masterCs, masterFs);
       }
     }
 
@@ -139,10 +139,10 @@ void draw() {      // executed at each frame
           if((selectedVertexID != prevConnect) && notDrawn){
             //println("connected to : "+ selectedVertexID );
             v = GetVertexFromID(prevConnect, masterVs);
-            notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID, masterVs, masterCs);
+            notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID, masterVs, masterCs, masterFs);
             if(notDrawn == false) {
               Vertex otherVert = GetVertexFromID(selectedVertexID, masterVs);
-              notDrawn = vertexHandler.AddVertex((int)otherVert.pos.x, (int)otherVert.pos.y, v.id, masterVs, masterCs);
+              notDrawn = vertexHandler.AddVertex((int)otherVert.pos.x, (int)otherVert.pos.y, v.id, masterVs, masterCs, masterFs);
             }
             notDrawn = !notDrawn;
           }
@@ -151,19 +151,19 @@ void draw() {      // executed at each frame
         //println("remove the vert");
         boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID, masterVs));
         if(removable) {
-          vertexHandler.RemoveVertex(selectedVertexID, masterVs, masterCs);
+          vertexHandler.RemoveVertex(selectedVertexID, masterVs, masterCs, masterFs);
           //selectedVertexID = -1;
         }
       } else {
         v = GetVertexFromID(selectedVertexID, masterVs);
-        v.isInteracted(masterVs, masterCs);
+        v.isInteracted(masterVs, masterCs, masterFs);
       }
     } else {
       // vertex has not been selected yet
       for (int i = 0; i < masterVs.size(); i++) {
         Vertex v = GetVertexFromID(i, masterVs);
         if (v.exists()) {
-          v.isInteracted(masterVs, masterCs);
+          v.isInteracted(masterVs, masterCs, masterFs);
         }
       }
 
@@ -364,8 +364,8 @@ public int MouseIsWithinFace(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastC
         Vertex currentVertex = GetVertexFromCornerID(currentCornerID, _mastVs, _mastCs);
 
         if (!currentCorner.exists()) {
-          CheckForFaces(_mastVs, _mastCs);
-          MouseIsWithinFace(_mastVs, _mastCs);
+          CheckForFaces(_mastVs, _mastCs, _mastFs);
+          MouseIsWithinFace(_mastVs, _mastCs, _mastFs);
           break;
         }
 
@@ -388,8 +388,8 @@ public int MouseIsWithinFace(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastC
       }
     } else {
       if (!GetCornerFromID(_mastFs.get(outerFace), _mastCs).exists()) {
-        CheckForFaces(_mastVs, _mastCs);
-        MouseIsWithinFace(_mastVs, _mastCs);
+        CheckForFaces(_mastVs, _mastCs, _mastFs);
+        MouseIsWithinFace(_mastVs, _mastCs, _mastFs);
         break;
       }
     }

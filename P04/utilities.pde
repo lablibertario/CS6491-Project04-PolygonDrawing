@@ -144,7 +144,7 @@ void displayCorners(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
   textSize(12);
 }
 
-void displayEdges(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+void displayEdges(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
   //println("draw edges");
   for (int i = 0; i < _mastCs.size(); i++) {
     Corner startC = _mastCs.get(i);
@@ -156,7 +156,7 @@ void displayEdges(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
         Vertex startV = GetVertexFromCornerID(startC.id, _mastVs, _mastCs);
         Vertex endV = GetVertexFromCornerID(endC.id, _mastVs, _mastCs);
 
-        DrawEdge(startV, endV, _mastVs, _mastCs);
+        DrawEdge(startV, endV, _mastVs, _mastCs, _mastFs);
       }
     }
   }
@@ -221,7 +221,7 @@ int DetermineSmoothness(Corner c1, Corner c2) {
   return 0;
 }
 
-void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
   PVector start = startV.pos;
   PVector end = endV.pos;
 
@@ -236,7 +236,7 @@ void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<C
 
     if(addVert && mouseClicked) {
       //println("add vert");
-      vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id, endV.id, _mastVs, _mastCs);
+      vertexHandler.InsertVerteXInEdge(mouseX, mouseY, startV.id, endV.id, _mastVs, _mastCs, _mastFs);
     }
     //text(GetDistanceFromEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos), mouseX + edgeTextOffset.x, mouseY + edgeTextOffset.y);
   }
@@ -318,14 +318,14 @@ public void CalculateSidewalkGeo() {
     //get position of start corner
     PVector cPos = GetVertexFromID(startC.vertex, masterVs).pos;
     //assign startC to a new vertex
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, -1, _geoVs, _geoCs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, -1, _geoVs, _geoCs, _geoFs);
 
     int connectPos = 0;
     /*do {
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
         PVector cNextPos = GetVertexFromID(startC.vertex, masterVs).pos;
         //assign startC to a new vertex
-        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, connectPos, _geoVs, _geoCs);
+        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, connectPos, _geoVs, _geoCs, _geoFs);
         //assign each next to a new vertex
         currentC = nextC;
         connectPos++;

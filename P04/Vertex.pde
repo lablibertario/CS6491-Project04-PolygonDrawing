@@ -85,7 +85,7 @@ public class Vertex{
     return result;
   }
 
-  public void isInteracted(ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs) {
+  public void isInteracted(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
     if (this.isHovered()) {
       this.DrawInformation();
     }
@@ -102,7 +102,7 @@ public class Vertex{
       //drag in new vert/edge
       if(editMode){
         if(editStart){
-          boolean added = vertexHandler.AddVertex(mouseX, mouseY, id, _masterVs, _masterCs);
+          boolean added = vertexHandler.AddVertex(mouseX, mouseY, id, _mastVs, _mastCs, _mastFs);
           //rubberBand = GetVertexFromID(masterVs.size()-1);
           if(added){
             println("added a vert");
