@@ -321,7 +321,7 @@ public void CalculateSidewalkGeo() {
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, -1, _geoVs, _geoCs, _geoFs);
 
     int connectPos = 0;
-    /*do {
+    do {
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
         PVector cNextPos = GetVertexFromID(startC.vertex, masterVs).pos;
         //assign startC to a new vertex
@@ -332,7 +332,7 @@ public void CalculateSidewalkGeo() {
         println("geo3DObject.geoCs: "+geo3DObject.geoCs);
         println("geo3DObject.geoVs: "+geo3DObject.geoVs);
         println("geo3DObject.geoFs: "+geo3DObject.geoFs);
-    } while (currentC.id != startC.id && currentC.next != -1);*/
+    } while (currentC.id != startC.id && currentC.next != -1);
 
     //assign our determined arrays to the faces3D Array
     geo3DObject.geoCs = _geoCs;
