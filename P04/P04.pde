@@ -183,23 +183,6 @@ void DrawAllGeo(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<
 }
 
 
-//***********************************************************************
-//TO DO:
-//***********************************************************************
-
-//need to seperate overlapping corners(maybe?)
-//they appear along the lines they formally represented, so you know they vertices they
-//belong to are either side of the new face
-//need to figure out how sebastian was determining to show
-//the outside face, then correct that for '3D' forms
-//
-//..want inside faces?
-//
-//convert these points to 3D points
-//3D drawing will be done differently, so draw all fn isn't permanent
-//
-
-
 //************************* mouse and key actions ****************************
 void keyPressed() { // executed each time a key is pressed: the "key" variable contains the correspoinding char, 
   if (key=='?') scribeText=!scribeText; // toggle display of help text and authors picture
