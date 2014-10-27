@@ -305,6 +305,8 @@ public PVector GetClosestPointOnEdge(PVector c, PVector a, PVector b) {
 public void CalculateSidewalkGeo() {
   //cycle through each face and generate the geometry that goes with it
   faces3D = new ArrayList<Geo3D>();
+  println("masterFs.size(): "+ masterFs.size());
+
   for (int i = 0; i < masterFs.size(); i++) {
     //set up geo3D objects
     Geo3D geo3DObject = new Geo3D();
@@ -333,7 +335,7 @@ public void CalculateSidewalkGeo() {
         println("geo3DObject.geoFs: "+geo3DObject.geoFs);*/
     } while (currentC.id != startC.id && currentC.next != -1);
 
-    RemoveInsideCorners();
+    
 
     //assign our determined arrays to the faces3D Array
     geo3DObject.geoCs = _geoCs;

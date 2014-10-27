@@ -63,10 +63,10 @@ void setup() {               // executed once at the begining
   //hard coded points! for testing
   vertexHandler.AddVertex(100, 100, -1, masterVs, masterCs, masterFs);
   vertexHandler.AddVertex(100, 300, 0, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(300, 300, 1, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(300, 100, 2, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(300, 100, 0, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(100, 300, 3, masterVs, masterCs, masterFs);
+  //vertexHandler.AddVertex(300, 300, 1, masterVs, masterCs, masterFs);
+  //vertexHandler.AddVertex(300, 100, 2, masterVs, masterCs, masterFs);
+  //vertexHandler.AddVertex(300, 100, 0, masterVs, masterCs, masterFs);
+  //vertexHandler.AddVertex(100, 300, 3, masterVs, masterCs, masterFs);
   // vertexHandler.AddVertex(300, 300, 0);
   // vertexHandler.AddVertex(100, 100, 2);
   
@@ -181,23 +181,6 @@ void DrawAllGeo(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<
     }
   }
 }
-
-
-//***********************************************************************
-//TO DO:
-//***********************************************************************
-
-//need to seperate overlapping corners(maybe?)
-//they appear along the lines they formally represented, so you know they vertices they
-//belong to are either side of the new face
-//need to figure out how sebastian was determining to show
-//the outside face, then correct that for '3D' forms
-//
-//..want inside faces?
-//
-//convert these points to 3D points
-//3D drawing will be done differently, so draw all fn isn't permanent
-//
 
 
 //************************* mouse and key actions ****************************
