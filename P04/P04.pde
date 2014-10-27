@@ -97,90 +97,86 @@ void draw() {      // executed at each frame
   if(in3D) {
     //draw verts/edges for each face
     for(Geo3D c: faces3D) {
-      DrawAllGeo(c.geoVs, c.geoCs, c.geoFs);
+      displayEdges(c.geoVs, c.geoCs, c.geoFs);
+      displayVertices(c.geoVs);
     }
 
   } else {
-    DrawAllGeo(masterVs, masterCs, masterFs);  
+    displayEdges(masterVs, masterCs, masterFs);
+    displayVertices(masterVs);
+
+    if (masterFs.size() > 1) {
+      int faceToDraw = MouseIsWithinFace(masterVs, masterCs, masterFs);
+      if (faceToDraw != -1) {
+        DrawFaceSidewalks(faceToDraw, masterVs, masterCs, masterFs);
+        DrawAreaOfFace(faceToDraw, masterVs, masterCs, masterFs);
+      } else {
+        DrawFaceSidewalks(outerFace, masterVs, masterCs, masterFs);
+        DrawAreaOfFace(outerFace, masterVs, masterCs, masterFs);
+      }
+    }
+
+    displayCorners(masterVs, masterCs);
+
+    if(nextRedraw != -1) {
+      GetCornerFromID(nextRedraw, masterCs).Draw(nextColor, masterVs, masterCs);
+      if(swingRedraw != -1) GetCornerFromID(swingRedraw, masterCs).Draw(swingColor, masterVs, masterCs);
+      GetCornerFromID(prevRedraw, masterCs).Draw(prevColor, masterVs, masterCs);
+    }
+
+    // MOUSE INTERACTION STUFF
+    if (selectedVertexID != -1) {
+      // vertex has been selected already
+      Vertex v = new Vertex();
+
+      //if looking to connect
+      if(connectingTwoExisting){
+        if(connectClick1){
+          //println("stored prev click " + selectedVertexID);
+          prevConnect = selectedVertexID;
+          connectClick1 = false;
+        } else if (!connectClick1){
+          if((selectedVertexID != prevConnect) && notDrawn){
+            //println("connected to : "+ selectedVertexID );
+            v = GetVertexFromID(prevConnect, masterVs);
+            notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID, masterVs, masterCs, masterFs);
+            if(notDrawn == false) {
+              Vertex otherVert = GetVertexFromID(selectedVertexID, masterVs);
+              notDrawn = vertexHandler.AddVertex((int)otherVert.pos.x, (int)otherVert.pos.y, v.id, masterVs, masterCs, masterFs);
+            }
+            notDrawn = !notDrawn;
+          }
+        }
+      } else if (removeVert) { //NEED TO CHECK THESE FNS FOR WHICH ARRAY LIST WE CURRENTLY CARE ABOUT
+        //println("remove the vert");
+        boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID, masterVs));
+        if(removable) {
+          vertexHandler.RemoveVertex(selectedVertexID, masterVs, masterCs, masterFs);
+          //selectedVertexID = -1;
+        }
+      } else {
+        v = GetVertexFromID(selectedVertexID, masterVs);
+        v.isInteracted(masterVs, masterCs, masterFs);
+      }
+    } else {
+      // vertex has not been selected yet
+      for (int i = 0; i < masterVs.size(); i++) {
+        Vertex v = GetVertexFromID(i, masterVs);
+        if (v.exists()) {
+          v.isInteracted(masterVs, masterCs, masterFs);
+        }
+      }
+
+      for (int i = 0; i < masterCs.size(); i++) {
+        Corner c = GetCornerFromID(i, masterCs);
+        if (c.exists()) {
+          c.isInteracted(masterVs, masterCs);
+        }
+      }
+    }  
   } //end 2D drawing
 
 }  // end of draw()
-
-//draw all the vertices, edges, sidewalks and corners for geo collection passed
-void DrawAllGeo(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
-  displayEdges(_mastVs, _mastCs, _mastFs);
-  displayVertices(_mastVs);
-
-  if (_mastFs.size() > 1) {
-    int faceToDraw = MouseIsWithinFace(_mastVs, _mastCs, _mastFs);
-    if (faceToDraw != -1) {
-      DrawFaceSidewalks(faceToDraw, _mastVs, _mastCs, _mastFs);
-      DrawAreaOfFace(faceToDraw, _mastVs, _mastCs, _mastFs);
-    } else {
-      DrawFaceSidewalks(outerFace, _mastVs, _mastCs, _mastFs);
-      DrawAreaOfFace(outerFace, _mastVs, _mastCs, _mastFs);
-    }
-  }
-
-  displayCorners(_mastVs, _mastCs);
-
-  if(nextRedraw != -1) {
-    GetCornerFromID(nextRedraw, _mastCs).Draw(nextColor, _mastVs, _mastCs);
-    if(swingRedraw != -1) GetCornerFromID(swingRedraw, _mastCs).Draw(swingColor, _mastVs, _mastCs);
-    GetCornerFromID(prevRedraw, _mastCs).Draw(prevColor, _mastVs, _mastCs);
-  }
-
-  // MOUSE INTERACTION STUFF
-  if (selectedVertexID != -1) {
-    // vertex has been selected already
-    Vertex v = new Vertex();
-
-    //if looking to connect
-    if(connectingTwoExisting){
-      if(connectClick1){
-        //println("stored prev click " + selectedVertexID);
-        prevConnect = selectedVertexID;
-        connectClick1 = false;
-      } else if (!connectClick1){
-        if((selectedVertexID != prevConnect) && notDrawn){
-          //println("connected to : "+ selectedVertexID );
-          v = GetVertexFromID(prevConnect, _mastVs);
-          notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID, _mastVs, _mastCs, _mastFs);
-          if(notDrawn == false) {
-            Vertex otherVert = GetVertexFromID(selectedVertexID, _mastVs);
-            notDrawn = vertexHandler.AddVertex((int)otherVert.pos.x, (int)otherVert.pos.y, v.id, _mastVs, _mastCs, _mastFs);
-          }
-          notDrawn = !notDrawn;
-        }
-      }
-    } else if (removeVert) { //NEED TO CHECK THESE FNS FOR WHICH ARRAY LIST WE CURRENTLY CARE ABOUT
-      //println("remove the vert");
-      boolean removable = vertexHandler.CheckIfRemovable(GetVertexFromID(selectedVertexID, _mastVs));
-      if(removable) {
-        vertexHandler.RemoveVertex(selectedVertexID, _mastVs, _mastCs, _mastFs);
-        //selectedVertexID = -1;
-      }
-    } else {
-      v = GetVertexFromID(selectedVertexID, _mastVs);
-      v.isInteracted(_mastVs, _mastCs, _mastFs);
-    }
-  } else {
-    // vertex has not been selected yet
-    for (int i = 0; i < _mastVs.size(); i++) {
-      Vertex v = GetVertexFromID(i, _mastVs);
-      if (v.exists()) {
-        v.isInteracted(_mastVs, _mastCs, _mastFs);
-      }
-    }
-
-    for (int i = 0; i < _mastCs.size(); i++) {
-      Corner c = GetCornerFromID(i, _mastCs);
-      if (c.exists()) {
-        c.isInteracted(_mastVs, _mastCs);
-      }
-    }
-  }
-}
 
 
 //************************* mouse and key actions ****************************
