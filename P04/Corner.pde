@@ -106,12 +106,7 @@ public class Corner{
     fill(fillColor);
     stroke(fillColor);
 
-    //println("finding corner from: "+ _masterCs + "which is size " + _masterCs.size());
-    try {
-      Corner tmp = masterCs.get(id);
-    } catch(Exception e) {
-      e.printStackTrace();
-    }
+    Corner tmp = masterCs.get(id);
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
     // println("stored next " + next + "stored prev: " + prev);
     PVector pos = GetDisplayPosition(_masterVs, _masterCs);
