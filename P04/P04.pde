@@ -99,11 +99,22 @@ void draw() {      // executed at each frame
     for(Geo3D c: faces3D) {
       DrawAllGeo(c.geoVs, c.geoCs, c.geoFs);
     }
+    //need to handle interactivity differently here since cycling through multiple faces
 
   } else {
     DrawAllGeo(masterVs, masterCs, masterFs);
 
     //displayCorners(masterVs, masterCs);
+    if (masterFs.size() > 1) {
+      int faceToDraw = MouseIsWithinFace(masterVs, masterCs, masterFs);
+      if (faceToDraw != -1) {
+        DrawFaceSidewalks(faceToDraw, masterVs, masterCs, masterFs);
+        DrawAreaOfFace(faceToDraw, masterVs, masterCs, masterFs);
+      } else {
+        DrawFaceSidewalks(outerFace, masterVs, masterCs, masterFs);
+        DrawAreaOfFace(outerFace, masterVs, masterCs, masterFs);
+      }
+    }
 
     if(nextRedraw != -1) {
       GetCornerFromID(nextRedraw, masterCs).Draw(nextColor, masterVs, masterCs);
@@ -168,17 +179,6 @@ void draw() {      // executed at each frame
 void DrawAllGeo(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs){
   displayEdges(_mastVs, _mastCs, _mastFs);
   displayVertices(_mastVs);
-
-  if (_mastFs.size() > 1) {
-    int faceToDraw = MouseIsWithinFace(_mastVs, _mastCs, _mastFs);
-    if (faceToDraw != -1) {
-      DrawFaceSidewalks(faceToDraw, _mastVs, _mastCs, _mastFs);
-      DrawAreaOfFace(faceToDraw, _mastVs, _mastCs, _mastFs);
-    } else {
-      DrawFaceSidewalks(outerFace, _mastVs, _mastCs, _mastFs);
-      DrawAreaOfFace(outerFace, _mastVs, _mastCs, _mastFs);
-    }
-  }
 
   displayCorners(_mastVs, _mastCs);
 }
