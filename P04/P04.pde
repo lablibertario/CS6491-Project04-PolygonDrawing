@@ -100,11 +100,23 @@ void draw() {      // executed at each frame
       DrawAllGeo(c.geoVs, c.geoCs, c.geoFs);
     }
     //need to handle interactivity differently here since cycling through multiple faces
+    //determine which set we currently care about
+    Geo3D c = (Geo3D)faces3D.get(0);
+
+    //draw sidewalk/area calculation for that geo set
+    if (masterFs.size() > 1) {
+      int faceToDraw = MouseIsWithinFace(c.geoVs, c.geoCs, c.geoFs);
+      if (faceToDraw != -1) {
+        DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
+        DrawAreaOfFace(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
+      } else {
+        DrawFaceSidewalks(outerFace, c.geoVs, c.geoCs, c.geoFs);
+      }
+    }
 
   } else {
     DrawAllGeo(masterVs, masterCs, masterFs);
 
-    //displayCorners(masterVs, masterCs);
     if (masterFs.size() > 1) {
       int faceToDraw = MouseIsWithinFace(masterVs, masterCs, masterFs);
       if (faceToDraw != -1) {
