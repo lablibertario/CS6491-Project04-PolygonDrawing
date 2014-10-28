@@ -111,20 +111,7 @@ void draw() {      // executed at each frame
       }
       area3D += Calculate3DArea(c.geoVs, c.geoCs, c.geoFs);
 
-      //interactive vert drawing
-      for (int i = 0; i < c.geoVs.size(); i++) {
-        Vertex v = GetVertexFromID(i, c.geoVs);
-        if (v.exists()) {
-          v.isInteracted(c.geoVs, c.geoCs, c.geoFs);
-        }
-      }
-
-      for (int i = 0; i < c.geoCs.size(); i++) {
-        Corner corner = GetCornerFromID(i, c.geoCs);
-        if (corner.exists()) {
-          corner.isInteracted(c.geoVs, c.geoCs);
-        }
-      }
+      CheckForVertexHover(c.geoVs, c.geoCs, c.geoFs);
 
     }
     //println("area3D: "+area3D);
@@ -199,19 +186,7 @@ void draw() {      // executed at each frame
       }
     } else {
       // vertex has not been selected yet
-      for (int i = 0; i < masterVs.size(); i++) {
-        Vertex v = GetVertexFromID(i, masterVs);
-        if (v.exists()) {
-          v.isInteracted(masterVs, masterCs, masterFs);
-        }
-      }
-
-      for (int i = 0; i < masterCs.size(); i++) {
-        Corner c = GetCornerFromID(i, masterCs);
-        if (c.exists()) {
-          c.isInteracted(masterVs, masterCs);
-        }
-      }
+      CheckForVertexHover(masterVs, masterCs, masterFs);
     }  
   } //end 2D drawing
 
@@ -393,6 +368,23 @@ public void CheckForFaces(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, 
   }
 
   //println("FACES: " + masterFs);
+}
+
+void CheckForVertexHover(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs){
+    //interactive vert drawing
+  for (int i = 0; i < _mastVs.size(); i++) {
+    Vertex v = GetVertexFromID(i, _mastVs);
+    if (v.exists()) {
+      v.isInteracted(_mastVs, _mastCs, _mastFs);
+    }
+  }
+
+  for (int i = 0; i < _mastCs.size(); i++) {
+    Corner corner = GetCornerFromID(i, _mastCs);
+    if (corner.exists()) {
+      corner.isInteracted(_mastVs, _mastCs);
+    }
+  }
 }
 
 public int MouseIsWithinFace(int _outerFace, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
