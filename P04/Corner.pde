@@ -51,18 +51,18 @@ public class Corner{
     PVector thisPos = GetVertexFromCornerID(id, _masterVs, _masterCs).pos;
     PVector prevPos = GetVertexFromCornerID(prev, _masterVs, _masterCs).pos;
     PVector nextPos = GetVertexFromCornerID(next, _masterVs,_masterCs).pos;
-    PVector result = new PVector(thisPos.x,thisPos.y);
+    PVector result = new PVector(thisPos.x,thisPos.y, thisPos.z);
 
-    PVector toPrev = new PVector(prevPos.x-thisPos.x, prevPos.y-thisPos.y); // BA
-    PVector fromPrev = new PVector(thisPos.x-prevPos.x, thisPos.y-prevPos.y); // AB
-    PVector toNext = new PVector(nextPos.x-thisPos.x, nextPos.y-thisPos.y); // BC
+    PVector toPrev = new PVector(prevPos.x-thisPos.x, prevPos.y-thisPos.y, prevPos.z-thisPos.z); // BA
+    PVector fromPrev = new PVector(thisPos.x-prevPos.x, thisPos.y-prevPos.y, thisPos.z-prevPos.z); // AB
+    PVector toNext = new PVector(nextPos.x-thisPos.x, nextPos.y-thisPos.y, nextPos.z-thisPos.z); // BC
 
     toPrev.normalize();
     fromPrev.normalize();
     toNext.normalize();
 
     // s.magnitude = d / (toPrev . toNext)
-    PVector divisionTemp = new PVector(toPrev.x, toPrev.y);
+    PVector divisionTemp = new PVector(toPrev.x, toPrev.y, toPrev.z);
     float divResult = divisionTemp.dot(toNext);
     float s = d;//abs(d / divResult);
 

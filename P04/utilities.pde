@@ -339,6 +339,11 @@ public void CalculateSidewalkGeo() {
         connectPos++;
     } while (currentC.id != startC.id && currentC.next != -1);
 
+
+    //tmp
+    for(Vertex v : _geoVs){
+      v.pos.z += 50;
+    }
     //assign our determined arrays to the faces3D Array
     geo3DObject.geoCs = _geoCs;
     geo3DObject.geoVs = _geoVs;
@@ -346,17 +351,18 @@ public void CalculateSidewalkGeo() {
 
     //offset top verts in z
     for(Vertex v : _topVs){
-      v.pos.y += 50;
+      v.pos.z += -50;
     }
 
     geo3DTopObject.geoCs = _topCs;
     geo3DTopObject.geoVs = _topVs;
     geo3DTopObject.geoFs = _topFs;
+    geo3DTopObject.planeBelongsTo = 1;
 
     println("geo3DTopObject.geoFs: "+geo3DTopObject.geoFs);
 
     faces3D.add(geo3DObject);
-    faces3D.add(geo3DTopObject);
+    //faces3D.add(geo3DTopObject);
   }
 
   //handle drawing of these in p04
