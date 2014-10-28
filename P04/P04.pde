@@ -101,7 +101,7 @@ void draw() {      // executed at each frame
     //draw verts/edges for each face
     for(Geo3D c: faces3D) {
       DrawAllGeo(c.geoVs, c.geoCs, c.geoFs);
-      if (masterFs.size() > 1) {
+      if (c.geoFs.size() > 1) {
         int faceToDraw = MouseIsWithinFace(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
         if (faceToDraw != -1) {
           DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
@@ -110,15 +110,36 @@ void draw() {      // executed at each frame
         }
       }
       area3D += Calculate3DArea(c.geoVs, c.geoCs, c.geoFs);
+
+      //interactive vert drawing
+      for (int i = 0; i < c.geoVs.size(); i++) {
+        Vertex v = GetVertexFromID(i, c.geoVs);
+        if (v.exists()) {
+          v.isInteracted(c.geoVs, c.geoCs, c.geoFs);
+        }
+      }
+
+      for (int i = 0; i < c.geoCs.size(); i++) {
+        Corner corner = GetCornerFromID(i, c.geoCs);
+        if (corner.exists()) {
+          corner.isInteracted(c.geoVs, c.geoCs);
+        }
+      }
+
     }
     //println("area3D: "+area3D);
 
+    //display total area of the face in this plane
     fill(areaColor);
     textSize(areaTextSize);
     textAlign(CENTER);
     String areaText = String.format("%.0f", area3D);
     text(areaText, center.x, center.y+10);
     textAlign(LEFT);
+
+
+    //interactive corner drawing
+
     //need to handle interactivity differently here since cycling through multiple faces
     //determine which set we currently care about
 
