@@ -333,7 +333,7 @@ public void CalculateSidewalkGeo() {
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
         //assign startC to a new vertex
         vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, connectPos, _geoVs, _geoCs, _geoFs);
-        vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, connectPos, _topVs, _topCs, _topFs);
+        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, connectPos, _topVs, _topCs, _topFs);
         //assign each next to a new vertex
         currentC = nextC;
         connectPos++;
@@ -346,14 +346,14 @@ public void CalculateSidewalkGeo() {
 
     //offset top verts in z
     for(Vertex v : _topVs){
-      v.pos.y +=50;
+      v.pos.y += 50;
     }
 
     geo3DTopObject.geoCs = _topCs;
     geo3DTopObject.geoVs = _topVs;
     geo3DTopObject.geoFs = _topFs;
 
-    println("geo3DObject.geoFs: "+geo3DObject.geoFs);
+    println("geo3DTopObject.geoFs: "+geo3DTopObject.geoFs);
 
     faces3D.add(geo3DObject);
     faces3D.add(geo3DTopObject);
