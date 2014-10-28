@@ -132,13 +132,13 @@ void displayVertices(ArrayList<Vertex> _mastVs) {
   textSize(12);
 }
 
-void displayCorners(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
+void displayCorners(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, int _nextRedraw, int _prevRedraw, int _swingRedraw) {
   //println("draw corners");
   for (int i = 0; i < _mastCs.size(); i++) {
     Corner c = _mastCs.get(i);
     if (c.exists()) {
       // //println("draw corner " + c.id);
-      c.Draw(cornerColor, _mastVs, _mastCs);
+      c.Draw(cornerColor, _mastVs, _mastCs, _nextRedraw, _prevRedraw, _swingRedraw);
     }
   }
   textSize(12);

@@ -102,7 +102,7 @@ public class Corner{
     }
   }
 
-  public void Draw(color fillColor, ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs) {
+  public void Draw(color fillColor, ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs, int _nextRedraw, int _prevRedraw, int _swingRedraw) {
     fill(fillColor);
     stroke(fillColor);
 
@@ -113,9 +113,9 @@ public class Corner{
     showDisk(pos.x, pos.y, 2); 
 
     if(isHovered(_masterVs, _masterCs)) {
-      swingRedraw = swing;
-      nextRedraw = next;
-      prevRedraw = prev;
+      _swingRedraw = swing;
+      _nextRedraw = next;
+      _prevRedraw = prev;
     }
   }
 

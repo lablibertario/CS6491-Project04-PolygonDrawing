@@ -100,7 +100,7 @@ void draw() {      // executed at each frame
     area3D = 0f;
     //draw verts/edges for each face
     for(Geo3D c: faces3D) {
-      DrawAllGeo(c.geoVs, c.geoCs, c.geoFs);
+      DrawAllGeo(c.geoVs, c.geoCs, c.geoFs, c.nextRedraw, c.prevRedraw, c.swingRedraw);
       if (c.geoFs.size() > 1) {
         int faceToDraw = MouseIsWithinFace(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
         if (faceToDraw != -1) {
@@ -111,7 +111,7 @@ void draw() {      // executed at each frame
       }
       area3D += Calculate3DArea(c.geoVs, c.geoCs, c.geoFs);
 
-      CheckForVertexHover(c.geoVs, c.geoCs, c.geoFs);
+      CheckForVertexHover(c.geoVs, c.geoCs, c.geoFs, c.nextRedraw, c.prevRedraw, c.swingRedraw);
 
     }
     //println("area3D: "+area3D);
@@ -131,7 +131,7 @@ void draw() {      // executed at each frame
     //determine which set we currently care about
 
   } else {
-    DrawAllGeo(masterVs, masterCs, masterFs);
+    DrawAllGeo(masterVs, masterCs, masterFs, nextRedraw, prevRedraw, swingRedraw);
 
     if (masterFs.size() > 1) {
       int faceToDraw = MouseIsWithinFace(outerFace, masterVs, masterCs, masterFs);
@@ -142,12 +142,6 @@ void draw() {      // executed at each frame
         DrawFaceSidewalks(outerFace, masterVs, masterCs, masterFs);
         DrawAreaOfFace(outerFace, masterVs, masterCs, masterFs);
       }
-    }
-
-    if(nextRedraw != -1) {
-      GetCornerFromID(nextRedraw, masterCs).Draw(nextColor, masterVs, masterCs);
-      if(swingRedraw != -1) GetCornerFromID(swingRedraw, masterCs).Draw(swingColor, masterVs, masterCs);
-      GetCornerFromID(prevRedraw, masterCs).Draw(prevColor, masterVs, masterCs);
     }
 
     // MOUSE INTERACTION STUFF
@@ -186,17 +180,16 @@ void draw() {      // executed at each frame
       }
     } else {
       // vertex has not been selected yet
-      CheckForVertexHover(masterVs, masterCs, masterFs);
+      CheckForVertexHover(masterVs, masterCs, masterFs, nextRedraw, prevRedraw, swingRedraw);
     }  
   } //end 2D drawing
 
 }  // end of draw()
 
-void DrawAllGeo(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs){
-  displayEdges(_mastVs, _mastCs, _mastFs);
+void DrawAllGeo(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs, int _nextRedraw, int _prevRedraw, int _swingRedraw){
   displayVertices(_mastVs);
-
-  displayCorners(_mastVs, _mastCs);
+  displayEdges(_mastVs, _mastCs, _mastFs);
+  displayCorners(_mastVs, _mastCs, _nextRedraw, _prevRedraw, _swingRedraw);
 }
 
 
@@ -370,7 +363,7 @@ public void CheckForFaces(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, 
   //println("FACES: " + masterFs);
 }
 
-void CheckForVertexHover(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs){
+void CheckForVertexHover(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs, int _nextRedraw, int _prevRedraw, int _swingRedraw){
     //interactive vert drawing
   for (int i = 0; i < _mastVs.size(); i++) {
     Vertex v = GetVertexFromID(i, _mastVs);
@@ -384,6 +377,13 @@ void CheckForVertexHover(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, A
     if (corner.exists()) {
       corner.isInteracted(_mastVs, _mastCs);
     }
+  }
+
+  //handle next and swing
+  if(_nextRedraw != -1) {
+    GetCornerFromID(_nextRedraw, _mastCs).Draw(nextColor, _mastVs, _mastCs, _prevRedraw, _nextRedraw, _swingRedraw);
+    if(_swingRedraw != -1) GetCornerFromID(_swingRedraw, _mastCs).Draw(swingColor, _mastVs, _mastCs, _prevRedraw, _nextRedraw, _swingRedraw);
+    GetCornerFromID(_prevRedraw, _mastCs).Draw(prevColor, _mastVs, _mastCs, _prevRedraw, _nextRedraw, _swingRedraw);
   }
 }
 
