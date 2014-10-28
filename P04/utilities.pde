@@ -27,7 +27,7 @@ color prevColor = color(100, 185, 144);
 PVector cornerTextOffset = new PVector(7, -15);
 
 int areaTextSize = 30;
-color areaColor = yellow;
+color areaColor = blue;
 
 // ************************************************************************ GRAPHICS 
 void pen(color c, float w) {

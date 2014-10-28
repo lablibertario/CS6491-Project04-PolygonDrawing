@@ -39,6 +39,8 @@ boolean mouseClicked = false;
 boolean addVert = false;
 boolean in3D = false;
 int prevConnect = -1;
+float area3D = 0.0f;
+PVector center = new PVector(0,0);
 
 int swingRedraw, prevRedraw, nextRedraw;
 
@@ -95,24 +97,30 @@ void draw() {      // executed at each frame
     displayFooter(); // shows title, menu, and my face & name 
 
   if(in3D) {
+    area3D = 0f;
     //draw verts/edges for each face
     for(Geo3D c: faces3D) {
       DrawAllGeo(c.geoVs, c.geoCs, c.geoFs);
+      if (masterFs.size() > 1) {
+        int faceToDraw = MouseIsWithinFace(c.geoVs, c.geoCs, c.geoFs);
+        if (faceToDraw != -1) {
+          DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
+        } else {
+          DrawFaceSidewalks(outerFace, c.geoVs, c.geoCs, c.geoFs);
+        }
+      }
+      area3D += Calculate3DArea(c.geoVs, c.geoCs, c.geoFs);
     }
+    println("area3D: "+area3D);
+
+    fill(areaColor);
+    textSize(areaTextSize);
+    textAlign(CENTER);
+    String areaText = String.format("%.0f", area3D);
+    text(areaText, center.x, center.y+10);
+    textAlign(LEFT);
     //need to handle interactivity differently here since cycling through multiple faces
     //determine which set we currently care about
-    Geo3D c = (Geo3D)faces3D.get(0);
-
-    //draw sidewalk/area calculation for that geo set
-    if (masterFs.size() > 1) {
-      int faceToDraw = MouseIsWithinFace(c.geoVs, c.geoCs, c.geoFs);
-      if (faceToDraw != -1) {
-        DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
-        DrawAreaOfFace(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
-      } else {
-        DrawFaceSidewalks(outerFace, c.geoVs, c.geoCs, c.geoFs);
-      }
-    }
 
   } else {
     DrawAllGeo(masterVs, masterCs, masterFs);
@@ -445,7 +453,7 @@ public boolean HorizontalIntersectsLineSegment(float y, PVector a, PVector b) {
 
 public float DrawAreaOfFace(int faceID, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
   float area = 0f;
-  PVector center = new PVector(0, 0);
+  center = new PVector(0, 0);
   int numCorners = 0;
 
   int startCornerID = _mastFs.get(faceID);
@@ -476,6 +484,35 @@ public float DrawAreaOfFace(int faceID, ArrayList<Vertex> _mastVs, ArrayList<Cor
   String areaText = String.format("%.0f", abs(area));
   text(areaText, center.x, center.y+10);
   textAlign(LEFT);
+  return area;
+}
+
+public float Calculate3DArea(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
+  float area = 0f;
+  PVector center = new PVector(0, 0);
+  int numCorners = 0;
+
+  int startCornerID = _mastFs.get(1);
+  Corner startCorner = GetCornerFromID(startCornerID, _mastCs);
+  int currentCornerID = startCornerID;
+
+  do {
+    Corner currentCorner = GetCornerFromID(currentCornerID, _mastCs);
+    Vertex currentVertex = GetVertexFromCornerID(currentCornerID, _mastVs, _mastCs);
+    Vertex nextVertex = GetVertexFromCornerID(currentCorner.next, _mastVs, _mastCs);
+
+    PVector start = currentVertex.pos;
+    PVector end = nextVertex.pos;
+
+    numCorners++;
+    center.add(start);
+    area += (end.x + start.x) * (end.y - start.y) / 2;
+
+    currentCornerID = currentCorner.next;
+  } while (currentCornerID != startCornerID);
+
+  center.div(numCorners);
+
   return area;
 }
 
