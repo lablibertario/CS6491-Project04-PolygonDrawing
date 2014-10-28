@@ -53,8 +53,8 @@ int selectedVertexID = -1;
 
 //**************************** initialization ****************************
 void setup() {               // executed once at the begining
-  size(600, 600);            // window size 
-  //size(600, 600, P3D);            // window size
+  //size(600, 600);            // window size 
+  size(600, 600, P3D);            // window size
   frameRate(30);             // render 30 frames per second
   smooth();                  // turn on antialiasing
   myFace = loadImage("data/pic.jpg");  // loads image from file pic.jpg in folder data, replace it with a clear pic of your face
@@ -102,7 +102,7 @@ void draw() {      // executed at each frame
     for(Geo3D c: faces3D) {
       DrawAllGeo(c.geoVs, c.geoCs, c.geoFs);
       if (masterFs.size() > 1) {
-        int faceToDraw = MouseIsWithinFace(c.geoVs, c.geoCs, c.geoFs);
+        int faceToDraw = MouseIsWithinFace(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
         if (faceToDraw != -1) {
           DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
         } else {
@@ -111,7 +111,7 @@ void draw() {      // executed at each frame
       }
       area3D += Calculate3DArea(c.geoVs, c.geoCs, c.geoFs);
     }
-    println("area3D: "+area3D);
+    //println("area3D: "+area3D);
 
     fill(areaColor);
     textSize(areaTextSize);
@@ -126,7 +126,7 @@ void draw() {      // executed at each frame
     DrawAllGeo(masterVs, masterCs, masterFs);
 
     if (masterFs.size() > 1) {
-      int faceToDraw = MouseIsWithinFace(masterVs, masterCs, masterFs);
+      int faceToDraw = MouseIsWithinFace(outerFace, masterVs, masterCs, masterFs);
       if (faceToDraw != -1) {
         DrawFaceSidewalks(faceToDraw, masterVs, masterCs, masterFs);
         DrawAreaOfFace(faceToDraw, masterVs, masterCs, masterFs);
@@ -374,10 +374,10 @@ public void CheckForFaces(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, 
   //println("FACES: " + masterFs);
 }
 
-public int MouseIsWithinFace(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
+public int MouseIsWithinFace(int _outerFace, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
   // return which face the mouse is within
   for (int i = 0; i < _mastFs.size(); i++) {   ///////////////////////////////////////////////////
-    if (i != outerFace) {
+    if (i != _outerFace) {
       int intersections = 0;
       int startCornerID = _mastFs.get(i);
       Corner startCorner = GetCornerFromID(startCornerID, _mastCs);
@@ -390,7 +390,7 @@ public int MouseIsWithinFace(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastC
 
         if (!currentCorner.exists()) {
           CheckForFaces(_mastVs, _mastCs, _mastFs);
-          MouseIsWithinFace(_mastVs, _mastCs, _mastFs);
+          MouseIsWithinFace(_outerFace, _mastVs, _mastCs, _mastFs);
           break;
         }
 
@@ -412,9 +412,9 @@ public int MouseIsWithinFace(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastC
         return i;
       }
     } else {
-      if (!GetCornerFromID(_mastFs.get(outerFace), _mastCs).exists()) {
+      if (!GetCornerFromID(_mastFs.get(_outerFace), _mastCs).exists()) {
         CheckForFaces(_mastVs, _mastCs, _mastFs);
-        MouseIsWithinFace(_mastVs, _mastCs, _mastFs);
+        MouseIsWithinFace(_outerFace, _mastVs, _mastCs, _mastFs);
         break;
       }
     }
