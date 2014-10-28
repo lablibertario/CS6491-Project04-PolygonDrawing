@@ -310,9 +310,14 @@ public void CalculateSidewalkGeo() {
   for (int i = 0; i < masterFs.size(); i++) {
     //set up geo3D objects
     Geo3D geo3DObject = new Geo3D();
+    Geo3D geo3DTopObject = new Geo3D();
     ArrayList<Corner> _geoCs = new ArrayList<Corner>();
     ArrayList<Vertex> _geoVs = new ArrayList<Vertex>();
     ArrayList<Integer> _geoFs = new ArrayList<Integer>();
+    //store top face values
+    ArrayList<Corner> _topCs = new ArrayList<Corner>();
+    ArrayList<Vertex> _topVs = new ArrayList<Vertex>();
+    ArrayList<Integer> _topFs = new ArrayList<Integer>();
     //walk through the existing faces from the master(graph) arrays
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
     Corner currentC = startC;
@@ -320,6 +325,7 @@ public void CalculateSidewalkGeo() {
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, -1, _geoVs, _geoCs, _geoFs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, -1, _topVs, _topCs, _topFs);
 
     int connectPos = 0;
     do {
@@ -327,6 +333,7 @@ public void CalculateSidewalkGeo() {
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
         //assign startC to a new vertex
         vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, connectPos, _geoVs, _geoCs, _geoFs);
+        vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, connectPos, _topVs, _topCs, _topFs);
         //assign each next to a new vertex
         currentC = nextC;
         connectPos++;
@@ -337,24 +344,22 @@ public void CalculateSidewalkGeo() {
     geo3DObject.geoVs = _geoVs;
     geo3DObject.geoFs = _geoFs;
 
+    //offset top verts in z
+    for(Vertex v : _topVs){
+      v.pos.y +=50;
+    }
+
+    geo3DTopObject.geoCs = _topCs;
+    geo3DTopObject.geoVs = _topVs;
+    geo3DTopObject.geoFs = _topFs;
+
     println("geo3DObject.geoFs: "+geo3DObject.geoFs);
 
     faces3D.add(geo3DObject);
+    faces3D.add(geo3DTopObject);
   }
 
   //handle drawing of these in p04
-}
-
-void CreateTopFace(){
-  //duplicate current geometry with a higher z position
-  ArrayList<Geo3D> tmpGeo3D = faces3D;
-  for (int i = 0; i < faces3D.size(); i ++) {
-    Geo3D gCopy = (Geo3D)tmpGeo3D.get(i);
-    for(Vertex v : gCopy.geoVs) {
-      v.pos.y += 50;
-    }
-   // tmpGeo3D.add(gCopy);
-  }
 }
 
 //************************ capturing frames for a movie ************************

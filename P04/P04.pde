@@ -544,6 +544,5 @@ void SetupModeSwitch() {
   if(in3D) {
     println("3d mode");
     CalculateSidewalkGeo();
-    CreateTopFace();
   }
 }

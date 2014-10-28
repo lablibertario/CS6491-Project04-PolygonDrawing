@@ -1,4 +1,4 @@
-public class Vertex{
+public class Vertex {
  PVector pos;
  int id;
  public ArrayList<Integer> corners = new ArrayList<Integer>();
