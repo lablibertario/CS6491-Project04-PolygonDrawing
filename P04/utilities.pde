@@ -19,7 +19,7 @@ int vertexRadius = 10;
 color vertexColor = black;
 PVector vertexTextOffset = new PVector(7, -15);
 
-int cornerRadius = 3;
+int cornerRadius = 6;
 color cornerColor = black;
 color swingColor = color(213, 162, 222);
 color nextColor = color(255, 168, 138);
@@ -343,6 +343,18 @@ public void CalculateSidewalkGeo() {
   }
 
   //handle drawing of these in p04
+}
+
+void CreateTopFace(){
+  //duplicate current geometry with a higher z position
+  ArrayList<Geo3D> tmpGeo3D = faces3D;
+  for (int i = 0; i < faces3D.size(); i ++) {
+    Geo3D gCopy = (Geo3D)tmpGeo3D.get(i);
+    for(Vertex v : gCopy.geoVs) {
+      v.pos.y += 50;
+    }
+   // tmpGeo3D.add(gCopy);
+  }
 }
 
 //************************ capturing frames for a movie ************************

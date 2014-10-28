@@ -8,11 +8,11 @@ public class Vertex{
   }
 
   public Vertex(int _x, int _y) {
-    pos = new PVector(_x, _y);
+    pos = new PVector(_x, _y, 0);
   }
 
   public Vertex(int _x, int _y, int vertexID) {
-    pos = new PVector(_x, _y);
+    pos = new PVector(_x, _y, 0);
     id = vertexID;
   }
  
