@@ -96,10 +96,12 @@ public class Corner{
     return result;
   }
 
-  public void isInteracted(ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs) {
+  public boolean isInteracted(ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs) {
     if (this.isHovered(_masterVs, _masterCs)) {
       this.DrawInformation();
+      return true;
     }
+    return false;
   }
 
   public void Draw(color fillColor, ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs, int _nextRedraw, int _prevRedraw, int _swingRedraw) {

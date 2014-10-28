@@ -372,13 +372,24 @@ void CheckForVertexHover(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, A
     }
   }
 
+  Corner interactCorner = GetCornerFromID(0, _mastCs);
+  boolean newInteract = false;
   for (int i = 0; i < _mastCs.size(); i++) {
     Corner corner = GetCornerFromID(i, _mastCs);
     if (corner.exists()) {
-      corner.isInteracted(_mastVs, _mastCs);
+      boolean interact = corner.isInteracted(_mastVs, _mastCs);
+      if(interact) {
+        interactCorner = corner;
+        newInteract = true;
+      }
     }
   }
 
+  if(newInteract) {
+    _nextRedraw = interactCorner.next;
+    _prevRedraw = interactCorner.prev;
+    _swingRedraw = interactCorner.swing;
+  }
   //handle next and swing
   if(_nextRedraw != -1) {
     GetCornerFromID(_nextRedraw, _mastCs).Draw(nextColor, _mastVs, _mastCs, _prevRedraw, _nextRedraw, _swingRedraw);
