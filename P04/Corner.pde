@@ -112,7 +112,7 @@ public class Corner{
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
     // println("stored next " + next + "stored prev: " + prev);
     PVector pos = GetDisplayPosition(_masterVs, _masterCs);
-    showDisk(pos.x, pos.y, 2); 
+    showDisk(pos.x, pos.y, pos.z, 2); 
 
     if(isHovered(_masterVs, _masterCs)) {
       _swingRedraw = swing;

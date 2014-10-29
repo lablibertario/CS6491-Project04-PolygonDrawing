@@ -34,8 +34,16 @@ void pen(color c, float w) {
   stroke(c); 
   strokeWeight(w);
 }
-void showDisk(float x, float y, float r) {
-  ellipse(x, y, r*2, r*2);
+void showDisk(float x, float y, float z, float r) {
+  if(in3D) {
+    //sphere(r);
+    pushMatrix();
+    translate(x, y, z);
+    sphere(r);
+    popMatrix();
+    //println("sphere at x, y, z: "+x  +", "+ y +", "+ z);
+  }
+  else ellipse(x, y, r*2, r*2);
 }
 
 float det(PVector a, PVector b) { //may be a terrible terrible thing
@@ -232,7 +240,7 @@ void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<C
     fill(edgeColor);
     textSize(20);
     PVector closestPoint = GetClosestPointOnEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos);
-    showDisk(closestPoint.x, closestPoint.y, edgeThickness*2);
+    showDisk(closestPoint.x, closestPoint.y, closestPoint.z, edgeThickness*2);
 
     if(addVert && mouseClicked) {
       //println("add vert");
@@ -339,10 +347,8 @@ public void CalculateSidewalkGeo() {
         connectPos++;
     } while (currentC.id != startC.id && currentC.next != -1);
 
-
-    //tmp
-    for(Vertex v : _geoVs){
-      v.pos.z += 50;
+    for(Vertex v : _topVs){
+      println("v.pos: "+v.pos);
     }
     //assign our determined arrays to the faces3D Array
     geo3DObject.geoCs = _geoCs;
@@ -351,7 +357,7 @@ public void CalculateSidewalkGeo() {
 
     //offset top verts in z
     for(Vertex v : _topVs){
-      v.pos.z += -50;
+      v.pos.z += 50;
     }
 
     geo3DTopObject.geoCs = _topCs;
