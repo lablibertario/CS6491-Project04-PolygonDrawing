@@ -163,7 +163,6 @@ void displayEdges(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayLis
       if (startC.exists() && endC.exists()) {
         Vertex startV = GetVertexFromCornerID(startC.id, _mastVs, _mastCs);
         Vertex endV = GetVertexFromCornerID(endC.id, _mastVs, _mastCs);
-
         DrawEdge(startV, endV, _mastVs, _mastCs, _mastFs);
       }
     }
@@ -197,7 +196,7 @@ void DrawLine(PVector start, PVector end, float thickness, color rgb) {
   fill(rgb);
   stroke(rgb);
 
-  translate(loc.x, loc.y);
+  translate(loc.x, loc.y, loc.z);
   rotate(rot);
   rectMode(CENTER);
 
@@ -358,6 +357,7 @@ public void CalculateSidewalkGeo() {
     //offset top verts in z
     for(Vertex v : _topVs){
       v.pos.z += 50;
+      v.pos.y += 200;
     }
 
     geo3DTopObject.geoCs = _topCs;
@@ -368,7 +368,7 @@ public void CalculateSidewalkGeo() {
     println("geo3DTopObject.geoFs: "+geo3DTopObject.geoFs);
 
     faces3D.add(geo3DObject);
-    //faces3D.add(geo3DTopObject);
+    faces3D.add(geo3DTopObject);
   }
 
   //handle drawing of these in p04

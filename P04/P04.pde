@@ -55,6 +55,7 @@ int selectedVertexID = -1;
 void setup() {               // executed once at the begining
   //size(600, 600);            // window size 
   size(600, 600, P3D);            // window size
+  lights();
   frameRate(30);             // render 30 frames per second
   smooth();                  // turn on antialiasing
   myFace = loadImage("data/pic.jpg");  // loads image from file pic.jpg in folder data, replace it with a clear pic of your face
@@ -96,7 +97,7 @@ void draw() {      // executed at each frame
   if (scribeText && !filming)
     displayFooter(); // shows title, menu, and my face & name 
 
-  rotateX(PI/8); //tmp testing rotation
+  rotateX(PI/6); //tmp testing rotation
   if(in3D) {
     area3D = 0f;
     //draw verts/edges for each face
