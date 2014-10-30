@@ -2,6 +2,17 @@
 // Colors, pictures, text formatting
 // Author: Jarek ROSSIGNAC, last edited on September 10, 2012
 
+
+///////////////
+//left to do:
+//bridge edges
+//smooth corners
+//extrusion walls
+//insert new corners w/ extrusion
+//add rotation/movement stuff from yarick's code
+//get pt on edge working more smoothly in 3d
+////////////////
+
 // ************************************************************************ COLORS 
 color black=#000000, white=#FFFFFF, // set more colors using Menu >  Tools > Color Selector
 red=#FF0000, green=#00FF01, blue=#0300FF, yellow=#FEFF00, cyan=#00FDFF, magenta=#FF00FB;
@@ -239,6 +250,8 @@ void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<C
     // Handle mouse hovering over edge
     fill(edgeColor);
     textSize(20);
+   // pt mousepos;
+   // mousepos = pick(mouseX, mouseY);
     PVector closestPoint = GetClosestPointOnEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos);
     showDisk(closestPoint.x, closestPoint.y, closestPoint.z, edgeThickness*2);
 
