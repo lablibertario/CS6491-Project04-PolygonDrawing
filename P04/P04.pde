@@ -7,7 +7,9 @@
  Project title: Graphs -> 3D extruded geo
  Date of submission: ??
  *****************************************************************/
-
+import processing.opengl.*;
+import javax.media.opengl.*;
+import java.nio.*;
 
 //**************************** global variables ****************************
 
@@ -57,7 +59,7 @@ void setup() {               // executed once at the begining
   size(600, 600, P3D);            // window size
   lights();
   frameRate(30);             // render 30 frames per second
-  smooth();                  // turn on antialiasing
+  noSmooth();                  // turn on antialiasing
   myFace = loadImage("data/pic.jpg");  // loads image from file pic.jpg in folder data, replace it with a clear pic of your face
 
   editMode = false;
@@ -81,6 +83,10 @@ void setup() {               // executed once at the begining
 void draw() {      // executed at each frame
   background(white); // clear screen and paints white background
   pen(black, 3); // sets stroke color (to balck) and width (to 3 pixels)
+
+  pt mousepos;
+  mousepos = pick(mouseX, mouseY);
+  println(mousepos.x, mousepos.y, mousepos.z);
 
   if (keyPressed) {
     fill(black); 
@@ -194,6 +200,36 @@ void DrawAllGeo(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<
   displayCorners(_mastVs, _mastCs, _nextRedraw, _prevRedraw, _swingRedraw);
 }
 
+public pt pick(int mX, int mY) //given fn by TA & Professor for picking a point in 3D with mouse
+{
+  PGL pgl = beginPGL();
+  FloatBuffer depthBuffer = ByteBuffer.allocateDirect(1 << 2).order(ByteOrder.
+
+  nativeOrder()).asFloatBuffer();
+  pgl.readPixels(mX, height - mY - 1, 1, 1, PGL.DEPTH_COMPONENT, PGL.FLOAT, depthBuffer);
+  float depthValue = depthBuffer.get(0);
+  depthBuffer.clear();
+  endPGL();
+
+  //get 3d matrices
+  PGraphics3D p3d = (PGraphics3D)g;
+  PMatrix3D proj = p3d.projection.get();
+  PMatrix3D modelView = p3d.modelview.get();
+  PMatrix3D modelViewProjInv = proj; modelViewProjInv.apply( modelView ); modelViewProjInv.invert();
+  
+  float[] viewport = {0, 0, p3d.width, p3d.height};
+  
+  float[] normalized = new float[4];
+  normalized[0] = ((mX - viewport[0]) / viewport[2]) * 2.0f - 1.0f;
+  normalized[1] = ((height - mY - viewport[1]) / viewport[3]) * 2.0f - 1.0f;
+  normalized[2] = depthValue * 2.0f - 1.0f;
+  normalized[3] = 1.0f;
+  
+  float[] unprojected = new float[4];
+  
+  modelViewProjInv.mult( normalized, unprojected );
+  return P( unprojected[0]/unprojected[3], unprojected[1]/unprojected[3], unprojected[2]/unprojected[3] );
+}
 
 //************************* mouse and key actions ****************************
 void keyPressed() { // executed each time a key is pressed: the "key" variable contains the correspoinding char, 
