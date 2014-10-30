@@ -251,7 +251,9 @@ void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<C
 }
 
 public boolean mouseIsWithinCircle(PVector pos, float radius) {
-  PVector mousePos = new PVector(mouseX, mouseY);
+  pt mousepos;
+  mousepos = pick(mouseX, mouseY);
+  PVector mousePos = new PVector(mousepos.x, mousepos.y, mousepos.z);
   return (mousePos.dist(pos) <= radius);
 }
 

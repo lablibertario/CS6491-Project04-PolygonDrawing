@@ -83,10 +83,7 @@ void setup() {               // executed once at the begining
 void draw() {      // executed at each frame
   background(white); // clear screen and paints white background
   pen(black, 3); // sets stroke color (to balck) and width (to 3 pixels)
-
-  pt mousepos;
-  mousepos = pick(mouseX, mouseY);
-  println(mousepos.x, mousepos.y, mousepos.z);
+  //println(mousepos.x, mousepos.y, mousepos.z);
 
   if (keyPressed) {
     fill(black); 
