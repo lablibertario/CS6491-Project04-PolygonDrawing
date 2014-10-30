@@ -36,10 +36,11 @@ void pen(color c, float w) {
 }
 void showDisk(float x, float y, float z, float r) {
   if(in3D) {
-    //sphere(r);
     pushMatrix();
     translate(x, y, z);
-    sphere(r);
+    noStroke();
+    //fill(255);
+    sphere(r*2);
     popMatrix();
     //println("sphere at x, y, z: "+x  +", "+ y +", "+ z);
   }
