@@ -250,10 +250,10 @@ void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<C
 
   if(in3D) {
     pushMatrix();
-    translate(start.x, start.y, start.z);
+    //translate(start.x, start.y, start.z);
     //noFill();
     stroke(edgeColor);
-    beginShape();
+    beginShape(LINES);
     vertex(start.x, start.y, start.z);
     vertex(end.x, end.y, end.z);
     endShape();

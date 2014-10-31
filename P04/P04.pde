@@ -197,9 +197,9 @@ void draw() {      // executed at each frame
 }  // end of draw()
 
 void DrawAllGeo(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs, int _nextRedraw, int _prevRedraw, int _swingRedraw){
-  //displayVertices(_mastVs);
+  displayVertices(_mastVs);
   displayEdges(_mastVs, _mastCs, _mastFs);
-  //displayCorners(_mastVs, _mastCs, _nextRedraw, _prevRedraw, _swingRedraw);
+  displayCorners(_mastVs, _mastCs, _nextRedraw, _prevRedraw, _swingRedraw);
 }
 
 public pt pick(int mX, int mY) //given fn by TA & Professor for picking a point in 3D with mouse
