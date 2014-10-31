@@ -47,7 +47,7 @@ public class VertexHandler {
 				//println("connecting two existing");
 				ConnectExistingVerts(connectVertex, idOfExistingConnection, _mastVs, _mastCs);
 			} else {
-				if (_mastVs.size() == 0 || connectIndex == -1) {
+				if (_mastVs.size() == 0) {
 					println("insert start vert ");
 				} else if (NumCorners(connectIndex, _mastVs) < 1) {
 					println("insert second vert");
