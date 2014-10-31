@@ -331,6 +331,7 @@ public void CalculateSidewalkGeo() {
   faces3D = new ArrayList<Geo3D>();
   println("------------------------------: ");
   println("masterFs: "+masterFs);
+
   for (int i = 0; i < masterFs.size(); i++) {
     //set up geo3D objects
     Geo3D geo3DObject = new Geo3D();
@@ -363,9 +364,6 @@ public void CalculateSidewalkGeo() {
         connectPos++;
     } while (currentC.id != startC.id && currentC.next != -1);
 
-    for(Vertex v : _topVs){
-      println("v.pos: "+v.pos);
-    }
     //assign our determined arrays to the faces3D Array
     geo3DObject.geoCs = _geoCs;
     geo3DObject.geoVs = _geoVs;
@@ -386,9 +384,10 @@ public void CalculateSidewalkGeo() {
 
     faces3D.add(geo3DObject);
     //faces3D.add(geo3DTopObject);
+
   }
 
-  ConnectAllSidewalks();
+  //ConnectAllSidewalks();
   //recalculate faces
 
   //handle drawing of these in p04
@@ -397,19 +396,22 @@ public void CalculateSidewalkGeo() {
 void ConnectAllSidewalks(){
   if(faces3D.size() > 1) {
     //add all additional points to first sidewalk
-    int lastConnectionID = 0;
-    int newConnectionID = faces3D.size();
     Geo3D startGeo = (Geo3D)faces3D.get(0);
+    int lastConnectionID = 0;
+    int newConnectionID = startGeo.geoVs.size();
 
     for (int i = 1; i < faces3D.size(); i++) {
       Geo3D connectGeo = (Geo3D)faces3D.get(i);
-      for(Corner c: connectGeo.geoCs){
+      /*for(Corner c: connectGeo.geoCs){
         startGeo.geoCs.add(c);
-      }
+      }*/
+      int k = 0;
       for(Vertex v: connectGeo.geoVs){
-        startGeo.geoVs.add(v);
+        //startGeo.geoVs.add(v);
+        vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, -1+k,startGeo.geoVs, startGeo.geoCs, startGeo.geoFs);
+        k++;
       }
-     /* for(Integer f: connectGeo.geoFs){
+      /*for(Integer f: connectGeo.geoFs){
         startGeo.geoFs.add(f);
       }*/
 
@@ -418,11 +420,11 @@ void ConnectAllSidewalks(){
       println("connecting from position " + connectV.pos.x +", " + connectV.pos.y);
       Vertex oldV = GetVertexFromID(lastConnectionID, startGeo.geoVs);
       println("to position: "+ oldV.pos.x + ", " + oldV.pos.y);
-      vertexHandler.AddVertex((int)connectV.pos.x, (int)connectV.pos.y, lastConnectionID, startGeo.geoVs, startGeo.geoCs, startGeo.geoFs);
+      //vertexHandler.AddVertex((int)connectV.pos.x, (int)connectV.pos.y, lastConnectionID, startGeo.geoVs, startGeo.geoCs, startGeo.geoFs);
 
       //println("startGeo.geoVs.size(): "+startGeo.geoVs.size());
       lastConnectionID = newConnectionID;
-      newConnectionID = faces3D.size();
+      newConnectionID = startGeo.geoVs.size();
     }
   }
 
