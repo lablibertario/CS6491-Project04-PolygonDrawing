@@ -343,7 +343,6 @@ public void CalculateSidewalkGeo() {
   ArrayList<Vertex> _topVs = new ArrayList<Vertex>();
   ArrayList<Integer> _topFs = new ArrayList<Integer>();
 
-  int firstConnection = -1;
   for (int i = 0; i < masterFs.size(); i++) {
     //walk through the existing faces from the master(graph) arrays
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
@@ -351,8 +350,8 @@ public void CalculateSidewalkGeo() {
     //get position of start corner
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, firstConnection, _geoVs, _geoCs, _geoFs);
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, firstConnection, _topVs, _topCs, _topFs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, -1, _geoVs, _geoCs, _geoFs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, -1, _topVs, _topCs, _topFs);
 
     int connectPos = 0;
     do {
