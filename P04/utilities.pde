@@ -381,7 +381,8 @@ public void CalculateSidewalkGeo() {
 
   //offset top verts in z
   for(Vertex v : _topVs){
-    v.pos.z += 100;
+    v.pos.z += 50;
+    v.pos.y += 50;
   }
 
   geo3DTopObject.geoCs = _topCs;
@@ -450,9 +451,10 @@ void ConnectBottomToTop(){
   Geo3D topBottom = (Geo3D)faces3D.get(0);
   int half = topBottom.geoVs.size()/2;
 
-  for(int i = 0; i < half-2; i++){
+  for(int i = 0; i < half; i++){
     Vertex startV = GetVertexFromID(i, topBottom.geoVs);
     Vertex endV = GetVertexFromID(half+i, topBottom.geoVs);
+    println("connecting: "+ startV.id + " to " + endV.id);
 
     vertexHandler.AddVertex((int)startV.pos.x, (int)startV.pos.y, endV.id, topBottom.geoVs, topBottom.geoCs, topBottom.geoFs);
   }
