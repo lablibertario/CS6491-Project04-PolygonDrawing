@@ -343,17 +343,20 @@ public void CalculateSidewalkGeo() {
   ArrayList<Vertex> _topVs = new ArrayList<Vertex>();
   ArrayList<Integer> _topFs = new ArrayList<Integer>();
 
-  for (int i = 0; i < masterFs.size(); i++) {
+  int connectVert = -1;
+ for (int i = 0; i < masterFs.size(); i++) {
     //walk through the existing faces from the master(graph) arrays
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
     Corner currentC = startC;
     //get position of start corner
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, -1, _geoVs, _geoCs, _geoFs);
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, -1, _topVs, _topCs, _topFs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, connectVert, _geoVs, _geoCs, _geoFs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, connectVert, _topVs, _topCs, _topFs);
 
-    int connectPos = 0;
+    int connectPos;
+    if(_geoVs.size() > 0) connectPos = _geoVs.size()-1;
+    else connectPos = 0;
     do {
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
@@ -365,6 +368,7 @@ public void CalculateSidewalkGeo() {
         connectPos++;
     } while (currentC.id != startC.id && currentC.next != -1);
 
+    if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs);
   }
 
   //assign our determined arrays to the faces3D Array
@@ -386,12 +390,36 @@ public void CalculateSidewalkGeo() {
   println("geo3DTopObject.geoFs: "+geo3DTopObject.geoFs);
 
   faces3D.add(geo3DObject);
-  //faces3D.add(geo3DTopObject);
+  faces3D.add(geo3DTopObject);
 
   //ConnectAllSidewalks();
   //recalculate faces
 
   //handle drawing of these in p04
+}
+
+int determineNearestVert(int i, ArrayList<Vertex> geoVs) {
+  int nearestVertIndex = 0;
+
+  //take the first vert of the next sidewal/geo set
+  Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
+  Corner currentC = startC;
+  PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
+
+  //figure out which of the previous set is closest to this point
+  float shortestDist = 9001f;
+  for (int j = 0; j < geoVs.size(); j++){
+    Vertex v = (Vertex)geoVs.get(j);
+    float distFromNextPt = sqrt(sq(cPos.x - v.pos.x) + sq(cPos.y - v.pos.y) + sq(cPos.z - v.pos.z));
+    if(distFromNextPt < shortestDist) {
+      shortestDist = distFromNextPt;
+      nearestVertIndex = j;
+    }
+  }
+
+  println("closest to vert: "+nearestVertIndex);
+
+  return nearestVertIndex;
 }
 
 void ConnectAllSidewalks(){

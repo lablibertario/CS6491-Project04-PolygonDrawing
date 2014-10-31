@@ -108,7 +108,7 @@ public class Corner{
     fill(fillColor);
     stroke(fillColor);
 
-    Corner tmp = masterCs.get(id);
+    Corner tmp = _masterCs.get(id);
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
     // println("stored next " + next + "stored prev: " + prev);
     PVector pos = GetDisplayPosition(_masterVs, _masterCs);
