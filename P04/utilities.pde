@@ -232,7 +232,19 @@ void DrawSidewalk(Corner startC, Corner endC, ArrayList<Vertex> _mastVs, ArrayLi
   //part 1: determine when this happens
   int smoothness = DetermineSmoothness(startC, endC);
   if(smoothness == 0 ) {
-    DrawLine(start, end, sidewalkThickness, sidewalkColor);
+      if(in3D) {
+      pushMatrix();
+      //translate(start.x, start.y, start.z);
+      //noFill();
+      stroke(sidewalkColor);
+      beginShape(LINES);
+      vertex(start.x, start.y, start.z);
+      vertex(end.x, end.y, end.z);
+      endShape();
+      popMatrix();
+    } else {
+      DrawLine(start, end, sidewalkThickness, sidewalkColor);
+    }
   } else {
     //part 2: smooth along sphere via line segments
 
