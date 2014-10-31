@@ -13,6 +13,8 @@
 
 //3d coversion breaks when inserting vert?
 //mouse over pos isn't exactly aligned w/ 3D position
+//change the connection of two face edges to be a straight line (nearest pt has potential
+//  trouble of going outside shape)
 ////////////////
 
 // ************************************************************************ COLORS 
@@ -420,6 +422,25 @@ int determineNearestVert(int i, ArrayList<Vertex> geoVs) {
   //println("closest to vert: "+nearestVertIndex);
 
   return nearestVertIndex;
+}
+
+void showWalls(){
+  Geo3D topBottom = (Geo3D)faces3D.get(0);
+  int half = topBottom.geoVs.size()/2;
+
+  for(int i = 0; i < half-2; i++){
+    PVector v1Pos = GetVertexFromID(i, topBottom.geoVs).pos;
+    PVector v2Pos = GetVertexFromID(i+1, topBottom.geoVs).pos;
+    PVector v3Pos = GetVertexFromID(half+i, topBottom.geoVs).pos;
+    PVector v4Pos = GetVertexFromID(half+i+1, topBottom.geoVs).pos;
+
+    beginShape(); 
+    vertex(v1Pos.x, v1Pos.y, v1Pos.z);
+    vertex(v2Pos.x, v2Pos.y, v2Pos.z);
+    vertex(v3Pos.x, v3Pos.y, v3Pos.z);
+    vertex(v4Pos.x, v4Pos.y, v4Pos.z);
+    endShape(CLOSE);
+  }
 }
 
 //************************ capturing frames for a movie ************************
