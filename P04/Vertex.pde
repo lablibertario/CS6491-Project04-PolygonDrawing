@@ -129,7 +129,7 @@ public class Vertex {
     stroke(vertexColor);
     noFill();
 
-    showDisk(pos.x, pos.y, pos.z, vertexRadius);
+    showDisk(pos.x, pos.y, pos.z, vertexRadius, false);
   }
 
   public void DrawInformation() {

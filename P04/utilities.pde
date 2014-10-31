@@ -27,7 +27,7 @@ int sidewalkThickness = 1;
 color sidewalkColor = green;
 PVector sidewalkTextOffset;
 
-int vertexRadius = 10;
+int vertexRadius = 5;
 color vertexColor = black;
 PVector vertexTextOffset = new PVector(7, -15);
 
@@ -46,11 +46,11 @@ void pen(color c, float w) {
   stroke(c); 
   strokeWeight(w);
 }
-void showDisk(float x, float y, float z, float r) {
+void showDisk(float x, float y, float z, float r, boolean showStroke) {
   if(in3D) {
     pushMatrix();
     translate(x, y, z);
-    noStroke();
+    //if(!showStroke) noStroke();
     //fill(255);
     sphere(r*2);
     popMatrix();
@@ -254,7 +254,7 @@ void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<C
    // pt mousepos;
    // mousepos = pick(mouseX, mouseY);
     PVector closestPoint = GetClosestPointOnEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos);
-    showDisk(closestPoint.x, closestPoint.y, closestPoint.z, edgeThickness*2);
+    showDisk(closestPoint.x, closestPoint.y, closestPoint.z, edgeThickness*2, true);
 
     if(addVert && mouseClicked) {
       //println("add vert");
