@@ -6,6 +6,7 @@
 ///////////////
 //left to do:
 //bridge edges
+
 //smooth corners
 //extrusion walls
 //insert new corners w/ extrusion
@@ -384,10 +385,45 @@ public void CalculateSidewalkGeo() {
     println("geo3DTopObject.geoFs: "+geo3DTopObject.geoFs);
 
     faces3D.add(geo3DObject);
-    faces3D.add(geo3DTopObject);
+    //faces3D.add(geo3DTopObject);
   }
 
+  ConnectAllSidewalks();
+  //recalculate faces
+
   //handle drawing of these in p04
+}
+
+void ConnectAllSidewalks(){
+  if(faces3D.size() > 1) {
+    //add all additional points to first sidewalk
+    int newConnectionID = faces3D.size();
+    Geo3D startGeo = (Geo3D)faces3D.get(0);
+
+    for (int i = 1; i < faces3D.size(); i++) {
+      Geo3D connectGeo = (Geo3D)faces3D.get(i);
+      for(Corner c: connectGeo.geoCs){
+        startGeo.geoCs.add(c);
+      }
+      for(Vertex v: connectGeo.geoVs){
+        startGeo.geoVs.add(v);
+      }
+     /* for(Integer f: connectGeo.geoFs){
+        startGeo.geoFs.add(f);
+      }*/
+
+      //connect sidewalks
+      Vertex connectV = GetVertexFromID(newConnectionID, startGeo.geoVs);
+      println("connecting from position " + connectV.pos.x +", " + connectV.pos.y);
+      Vertex oldV = GetVertexFromID(0, startGeo.geoVs);
+      println("to position: "+ oldV.pos.x + ", " + oldV.pos.y);
+      vertexHandler.AddVertex((int)connectV.pos.x, (int)connectV.pos.y, 0, startGeo.geoVs, startGeo.geoCs, startGeo.geoFs);
+
+      newConnectionID = faces3D.size();
+    }
+  }
+
+  //remove old sidewalk objects
 }
 
 //************************ capturing frames for a movie ************************
