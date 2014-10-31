@@ -397,6 +397,7 @@ public void CalculateSidewalkGeo() {
 void ConnectAllSidewalks(){
   if(faces3D.size() > 1) {
     //add all additional points to first sidewalk
+    int lastConnectionID = 0;
     int newConnectionID = faces3D.size();
     Geo3D startGeo = (Geo3D)faces3D.get(0);
 
@@ -415,10 +416,12 @@ void ConnectAllSidewalks(){
       //connect sidewalks
       Vertex connectV = GetVertexFromID(newConnectionID, startGeo.geoVs);
       println("connecting from position " + connectV.pos.x +", " + connectV.pos.y);
-      Vertex oldV = GetVertexFromID(0, startGeo.geoVs);
+      Vertex oldV = GetVertexFromID(lastConnectionID, startGeo.geoVs);
       println("to position: "+ oldV.pos.x + ", " + oldV.pos.y);
-      vertexHandler.AddVertex((int)connectV.pos.x, (int)connectV.pos.y, 0, startGeo.geoVs, startGeo.geoCs, startGeo.geoFs);
+      vertexHandler.AddVertex((int)connectV.pos.x, (int)connectV.pos.y, lastConnectionID, startGeo.geoVs, startGeo.geoCs, startGeo.geoFs);
 
+      //println("startGeo.geoVs.size(): "+startGeo.geoVs.size());
+      lastConnectionID = newConnectionID;
       newConnectionID = faces3D.size();
     }
   }
