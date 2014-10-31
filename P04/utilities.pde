@@ -394,6 +394,8 @@ public void CalculateSidewalkGeo() {
   faces3D.add(geo3DObject);
   faces3D.add(geo3DTopObject);
 
+  ConnectBottomToTop();
+
   //ConnectAllSidewalks();
   //recalculate faces
 
@@ -429,7 +431,8 @@ void showWalls(){
   int half = topBottom.geoVs.size()/2;
 
   for(int i = 0; i < half-2; i++){
-    PVector v1Pos = GetVertexFromID(i, topBottom.geoVs).pos;
+    //need to do this for faces instead (sidewalks)
+    /*PVector v1Pos = GetVertexFromID(i, topBottom.geoVs).pos;
     PVector v2Pos = GetVertexFromID(i+1, topBottom.geoVs).pos;
     PVector v3Pos = GetVertexFromID(half+i, topBottom.geoVs).pos;
     PVector v4Pos = GetVertexFromID(half+i+1, topBottom.geoVs).pos;
@@ -439,7 +442,19 @@ void showWalls(){
     vertex(v2Pos.x, v2Pos.y, v2Pos.z);
     vertex(v3Pos.x, v3Pos.y, v3Pos.z);
     vertex(v4Pos.x, v4Pos.y, v4Pos.z);
-    endShape(CLOSE);
+    endShape(CLOSE);*/
+  }
+}
+
+void ConnectBottomToTop(){
+  Geo3D topBottom = (Geo3D)faces3D.get(0);
+  int half = topBottom.geoVs.size()/2;
+
+  for(int i = 0; i < half-2; i++){
+    Vertex startV = GetVertexFromID(i, topBottom.geoVs);
+    Vertex endV = GetVertexFromID(half+i, topBottom.geoVs);
+
+    vertexHandler.AddVertex((int)startV.pos.x, (int)startV.pos.y, endV.id, topBottom.geoVs, topBottom.geoCs, topBottom.geoFs);
   }
 }
 
