@@ -332,17 +332,18 @@ public void CalculateSidewalkGeo() {
   println("------------------------------: ");
   println("masterFs: "+masterFs);
 
+  //set up geo3D objects
+  Geo3D geo3DObject = new Geo3D();
+  Geo3D geo3DTopObject = new Geo3D();
+  ArrayList<Corner> _geoCs = new ArrayList<Corner>();
+  ArrayList<Vertex> _geoVs = new ArrayList<Vertex>();
+  ArrayList<Integer> _geoFs = new ArrayList<Integer>();
+  //store top face values
+  ArrayList<Corner> _topCs = new ArrayList<Corner>();
+  ArrayList<Vertex> _topVs = new ArrayList<Vertex>();
+  ArrayList<Integer> _topFs = new ArrayList<Integer>();
+
   for (int i = 0; i < masterFs.size(); i++) {
-    //set up geo3D objects
-    Geo3D geo3DObject = new Geo3D();
-    Geo3D geo3DTopObject = new Geo3D();
-    ArrayList<Corner> _geoCs = new ArrayList<Corner>();
-    ArrayList<Vertex> _geoVs = new ArrayList<Vertex>();
-    ArrayList<Integer> _geoFs = new ArrayList<Integer>();
-    //store top face values
-    ArrayList<Corner> _topCs = new ArrayList<Corner>();
-    ArrayList<Vertex> _topVs = new ArrayList<Vertex>();
-    ArrayList<Integer> _topFs = new ArrayList<Integer>();
     //walk through the existing faces from the master(graph) arrays
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
     Corner currentC = startC;
@@ -364,28 +365,28 @@ public void CalculateSidewalkGeo() {
         connectPos++;
     } while (currentC.id != startC.id && currentC.next != -1);
 
-    //assign our determined arrays to the faces3D Array
-    geo3DObject.geoCs = _geoCs;
-    geo3DObject.geoVs = _geoVs;
-    geo3DObject.geoFs = _geoFs;
-
-    //offset top verts in z
-    for(Vertex v : _topVs){
-      v.pos.z += 50;
-      v.pos.y += 200;
-    }
-
-    geo3DTopObject.geoCs = _topCs;
-    geo3DTopObject.geoVs = _topVs;
-    geo3DTopObject.geoFs = _topFs;
-    geo3DTopObject.planeBelongsTo = 1;
-
-    println("geo3DTopObject.geoFs: "+geo3DTopObject.geoFs);
-
-    faces3D.add(geo3DObject);
-    //faces3D.add(geo3DTopObject);
-
   }
+
+  //assign our determined arrays to the faces3D Array
+  geo3DObject.geoCs = _geoCs;
+  geo3DObject.geoVs = _geoVs;
+  geo3DObject.geoFs = _geoFs;
+
+  //offset top verts in z
+  for(Vertex v : _topVs){
+    v.pos.z += 50;
+    v.pos.y += 200;
+  }
+
+  geo3DTopObject.geoCs = _topCs;
+  geo3DTopObject.geoVs = _topVs;
+  geo3DTopObject.geoFs = _topFs;
+  geo3DTopObject.planeBelongsTo = 1;
+
+  println("geo3DTopObject.geoFs: "+geo3DTopObject.geoFs);
+
+  faces3D.add(geo3DObject);
+  //faces3D.add(geo3DTopObject);
 
   //ConnectAllSidewalks();
   //recalculate faces
