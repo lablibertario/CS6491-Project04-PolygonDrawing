@@ -248,7 +248,19 @@ void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<C
   PVector start = startV.pos;
   PVector end = endV.pos;
 
-  DrawLine(start, end, edgeThickness, edgeColor);
+  if(in3D) {
+    pushMatrix();
+    translate(start.x, start.y, start.z);
+    //noFill();
+    stroke(edgeColor);
+    beginShape();
+    vertex(start.x, start.y, start.z);
+    vertex(end.x, end.y, end.z);
+    endShape();
+    popMatrix();
+  } else {
+    DrawLine(start, end, edgeThickness, edgeColor);
+  }
 
   if (mouseIsWithinRectangle(startV.pos, endV.pos, edgeThickness*2)) {
     // Handle mouse hovering over edge
