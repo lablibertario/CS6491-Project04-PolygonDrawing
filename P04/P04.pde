@@ -100,7 +100,6 @@ void draw() {      // executed at each frame
   if (scribeText && !filming)
     displayFooter(); // shows title, menu, and my face & name 
 
-  rotateX(PI/6); //tmp testing rotation
   if(in3D) {
     area3D = 0f;
     //draw verts/edges for each face

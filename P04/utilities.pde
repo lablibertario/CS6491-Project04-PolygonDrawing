@@ -5,13 +5,14 @@
 
 ///////////////
 //left to do:
-//bridge edges
-
 //smooth corners
 //extrusion walls
 //insert new corners w/ extrusion
 //add rotation/movement stuff from yarick's code
 //get pt on edge working more smoothly in 3d
+
+//3d coversion breaks when inserting vert?
+//mouse over pos isn't exactly aligned w/ 3D position
 ////////////////
 
 // ************************************************************************ COLORS 
@@ -378,8 +379,7 @@ public void CalculateSidewalkGeo() {
 
   //offset top verts in z
   for(Vertex v : _topVs){
-    v.pos.z += 50;
-    v.pos.y += 200;
+    v.pos.z += 100;
   }
 
   geo3DTopObject.geoCs = _topCs;
@@ -387,7 +387,7 @@ public void CalculateSidewalkGeo() {
   geo3DTopObject.geoFs = _topFs;
   geo3DTopObject.planeBelongsTo = 1;
 
-  println("geo3DTopObject.geoFs: "+geo3DTopObject.geoFs);
+ // println("geo3DTopObject.geoFs: "+geo3DTopObject.geoFs);
 
   faces3D.add(geo3DObject);
   faces3D.add(geo3DTopObject);
@@ -417,47 +417,9 @@ int determineNearestVert(int i, ArrayList<Vertex> geoVs) {
     }
   }
 
-  println("closest to vert: "+nearestVertIndex);
+  //println("closest to vert: "+nearestVertIndex);
 
   return nearestVertIndex;
-}
-
-void ConnectAllSidewalks(){
-  if(faces3D.size() > 1) {
-    //add all additional points to first sidewalk
-    Geo3D startGeo = (Geo3D)faces3D.get(0);
-    int lastConnectionID = 0;
-    int newConnectionID = startGeo.geoVs.size();
-
-    for (int i = 1; i < faces3D.size(); i++) {
-      Geo3D connectGeo = (Geo3D)faces3D.get(i);
-      /*for(Corner c: connectGeo.geoCs){
-        startGeo.geoCs.add(c);
-      }*/
-      int k = 0;
-      for(Vertex v: connectGeo.geoVs){
-        //startGeo.geoVs.add(v);
-        vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, -1+k,startGeo.geoVs, startGeo.geoCs, startGeo.geoFs);
-        k++;
-      }
-      /*for(Integer f: connectGeo.geoFs){
-        startGeo.geoFs.add(f);
-      }*/
-
-      //connect sidewalks
-      Vertex connectV = GetVertexFromID(newConnectionID, startGeo.geoVs);
-      println("connecting from position " + connectV.pos.x +", " + connectV.pos.y);
-      Vertex oldV = GetVertexFromID(lastConnectionID, startGeo.geoVs);
-      println("to position: "+ oldV.pos.x + ", " + oldV.pos.y);
-      //vertexHandler.AddVertex((int)connectV.pos.x, (int)connectV.pos.y, lastConnectionID, startGeo.geoVs, startGeo.geoCs, startGeo.geoFs);
-
-      //println("startGeo.geoVs.size(): "+startGeo.geoVs.size());
-      lastConnectionID = newConnectionID;
-      newConnectionID = startGeo.geoVs.size();
-    }
-  }
-
-  //remove old sidewalk objects
 }
 
 //************************ capturing frames for a movie ************************
