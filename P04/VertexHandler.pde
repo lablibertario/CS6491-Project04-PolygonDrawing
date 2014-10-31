@@ -48,12 +48,12 @@ public class VertexHandler {
 				ConnectExistingVerts(connectVertex, idOfExistingConnection, _mastVs, _mastCs);
 			} else {
 				if (_mastVs.size() == 0 || connectIndex == -1) {
-					//println("insert start vert ");
+					println("insert start vert ");
 				} else if (NumCorners(connectIndex, _mastVs) < 1) {
-					//println("insert second vert");
+					println("insert second vert");
 					InsertSecondVertex(_x, _y, _mastVs, _mastCs);
 				} else if (NumCorners(connectIndex, _mastVs) == 1) {
-					//println("adding to end of vert");
+					println("adding to end of vert");
 					connectVertex = GetVertexFromID(connectIndex, _mastVs);
 					AppendToEndOfVertex(connectVertex, _mastVs, _mastCs);
 

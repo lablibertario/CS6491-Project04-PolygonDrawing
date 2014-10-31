@@ -52,7 +52,6 @@ boolean mouseDragged, editMode;
 PVector mouseDragStart;
 
 int selectedVertexID = -1;
-pt mousePos;
 
 //**************************** initialization ****************************
 void setup() {               // executed once at the begining
@@ -75,9 +74,6 @@ void setup() {               // executed once at the begining
   vertexHandler.AddVertex(100, 300, 3, masterVs, masterCs, masterFs);
   // vertexHandler.AddVertex(300, 300, 0);
   // vertexHandler.AddVertex(100, 100, 2);
-
-  mousePos.x = 0;
-  mousePos.y = 0;
   
   //PVector temp = new PVector(-1,0);
   ////println("/////////" + temp.heading());
@@ -192,8 +188,6 @@ void draw() {      // executed at each frame
       CheckForVertexHover(masterVs, masterCs, masterFs, nextRedraw, prevRedraw, swingRedraw);
     }  
   } //end 2D drawing
-
-  mousePos = pick(mouseX, mouseY);
 
 }  // end of draw()
 

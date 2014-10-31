@@ -251,8 +251,9 @@ void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<C
     // Handle mouse hovering over edge
     fill(edgeColor);
     textSize(20);
-    //determine closest point based on mouse's 3D position
-    PVector closestPoint = GetClosestPointOnEdge(new PVector(mousePos.x, mousePos.y), startV.pos, endV.pos);
+   // pt mousepos;
+   // mousepos = pick(mouseX, mouseY);
+    PVector closestPoint = GetClosestPointOnEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos);
     showDisk(closestPoint.x, closestPoint.y, closestPoint.z, edgeThickness*2, true);
 
     if(addVert && mouseClicked) {
@@ -264,15 +265,15 @@ void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<C
 }
 
 public boolean mouseIsWithinCircle(PVector pos, float radius) {
-  pt mPos;
-  mPos = pick(mouseX, mouseY);
-  PVector mPosition = new PVector(mPos.x, mPos.y, mPos.z);
-  return (mPosition.dist(pos) <= radius);
+  pt mousepos;
+  mousepos = pick(mouseX, mouseY);
+  PVector mousePos = new PVector(mousepos.x, mousepos.y, mousepos.z);
+  return (mousePos.dist(pos) <= radius);
 }
 
 public boolean mouseIsWithinRectangle(PVector start, PVector end, int thickness) {
-  PVector mpos = new PVector(mouseX, mouseY);
-  float distance = abs(GetDistanceFromEdge(mpos, start, end));
+  PVector mousePos = new PVector(mouseX, mouseY);
+  float distance = abs(GetDistanceFromEdge(mousePos, start, end));
   return (distance <= thickness);
 }
 
@@ -378,6 +379,7 @@ public void CalculateSidewalkGeo() {
   //offset top verts in z
   for(Vertex v : _topVs){
     v.pos.z += 50;
+    v.pos.y += 200;
   }
 
   geo3DTopObject.geoCs = _topCs;
