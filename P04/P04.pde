@@ -16,7 +16,7 @@ import java.nio.*;
 //*************** text drawn on the canvas for name, title and help  *******************
 String title ="CS3451, Fall 2014, Project 05: Graph -> 3D Geo", name ="Miranda Bradley", // enter project number and your name
 menu="'q' drag new vertex from prev, 'w' connect two existing verts, 'e' delete vert, 'r' add vert", 
-guide="Press&drag mouse to move dot. 'x', 'y' restrict motion, 'p' toggle 2D/3D"; // help info
+guide="Press&drag mouse to move dot. 'x', 'y' restrict motion, 'p' toggle 2D/3D, 'f' focus"; // help info
 // velocityDisplay=Float.toString(velocity)
 
 //geo for the graph
@@ -40,6 +40,7 @@ boolean removeVert = false;
 boolean mouseClicked = false;
 boolean addVert = false;
 boolean in3D = false;
+boolean centered = true;
 int prevConnect = -1;
 float area3D = 0.0f;
 PVector center = new PVector(0,0);
@@ -54,6 +55,8 @@ boolean mouseDragged, editMode;
 PVector mouseDragStart;
 
 int selectedVertexID = -1;
+
+pt F = P(0,0,0); 
 
 //**************************** initialization ****************************
 void setup() {               // executed once at the begining
@@ -103,6 +106,7 @@ void draw() {      // executed at each frame
     displayFooter(); // shows title, menu, and my face & name 
 
   //rotate based on user input
+  if(centered) translate(-F.x,-F.y,-F.z);
   rotateX(rx); rotateY(ry); // rotates the model around the new origin (center of screen)
   //rotateX(PI/2); // rotates frame around X to make X and Y basis vectors parallel to the floor
 
@@ -313,6 +317,11 @@ void keyReleased() { // executed each time a key is released
 void mouseDragged() { // executed when mouse is pressed and moved
   change=true;
   mouseDragged = true;
+
+  if (keyPressed && key=='f') { // move focus point on plane
+    if(centered) F.sub(ToIJ(V((float)(mouseX-pmouseX),(float)(mouseY-pmouseY),0))); 
+    else F.add(ToIJ(V((float)(mouseX-pmouseX),(float)(mouseY-pmouseY),0))); 
+  }
 }
 
 void mouseMoved() { // when mouse is moved

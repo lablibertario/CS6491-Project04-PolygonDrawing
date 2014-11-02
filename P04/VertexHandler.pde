@@ -47,7 +47,7 @@ public class VertexHandler {
 				//println("idOfExistingConnection: "+idOfExistingConnection);
 				//connecting two existing verts
 				connectVertex = GetVertexFromID(connectIndex, _mastVs);
-				//println("connecting two existing");
+				println("connecting two existing");
 				ConnectExistingVerts(connectVertex, idOfExistingConnection, _mastVs, _mastCs);
 			} else {
 				if (_mastVs.size() == 0 || connectIndex == -1) {
