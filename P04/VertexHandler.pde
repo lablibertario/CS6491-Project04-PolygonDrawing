@@ -7,20 +7,23 @@ public class VertexHandler {
 	private boolean inserting = false;
 	private int insertionFarVert;
 
-	public boolean AddVertex(int _x, int _y, int connectIndex, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
+	public boolean AddVertex(int _x, int _y, int _z, int connectIndex, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
 
 		PVector insertionEdge, comparisonEdge;
-		newVertex = new Vertex(_x, _y, _mastVs.size());
+		newVertex = new Vertex(_x, _y, _z, _mastVs.size());
 		////println(_mastVs.size());
 
 		//check to see if we're connecting two existing vertices
 		int idOfExistingConnection = -1;
 		if(!editing) {
 			for(int i = 0; i < _mastVs.size(); i++){
-				PVector existingVertPos = new PVector(GetVertexFromID(i, _mastVs).pos.x, GetVertexFromID(i, _mastVs).pos.y);
-	            PVector tmpNewVert = new PVector(newVertex.pos.x, newVertex.pos.y);
-				existingVertPos.sub(tmpNewVert);
-				if((abs(existingVertPos.x) < distToConnect) && (abs(existingVertPos.y) < distToConnect)) {
+				Vertex tmpVert = GetVertexFromID(i, _mastVs);
+				PVector existingVertPos = new PVector(tmpVert.pos.x, tmpVert.pos.y, tmpVert.pos.z);//new PVector(GetVertexFromID(i, _mastVs).pos.x, GetVertexFromID(i, _mastVs).pos.y);
+	            PVector tmpNewVert = new PVector(newVertex.pos.x, newVertex.pos.y, newVertex.pos.z);
+				//existingVertPos.sub(tmpNewVert);
+				//if((abs(existingVertPos.x) < distToConnect) && (abs(existingVertPos.y) < distToConnect)) {
+				float dist = PVector.dist(existingVertPos, tmpNewVert);
+				if(abs(dist) < distToConnect) {
 					idOfExistingConnection = i;
 					//println("vert is on top of another at " + existingVertPos);
 					break;
@@ -81,7 +84,7 @@ public class VertexHandler {
 		inserting = true;
 		//println("inserting");
 		insertionFarVert = _endV;
-		AddVertex(_x, _y, _startV, v, c, f);
+		AddVertex(_x, _y, 0, _startV, v, c, f);
 	}
 
 	private void ConnectExistingVerts(Vertex IDToConnectFrom, int IDToConnectTo, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs){

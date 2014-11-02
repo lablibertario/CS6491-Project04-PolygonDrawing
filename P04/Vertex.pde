@@ -7,12 +7,12 @@ public class Vertex {
 
   }
 
-  public Vertex(int _x, int _y) {
-    pos = new PVector(_x, _y, 0);
+  public Vertex(int _x, int _y, int _z) {
+    pos = new PVector(_x, _y, _z);
   }
 
-  public Vertex(int _x, int _y, int vertexID) {
-    pos = new PVector(_x, _y, 0);
+  public Vertex(int _x, int _y, int _z, int vertexID) {
+    pos = new PVector(_x, _y, _z);
     id = vertexID;
   }
  
@@ -102,7 +102,7 @@ public class Vertex {
       //drag in new vert/edge
       if(editMode){
         if(editStart){
-          boolean added = vertexHandler.AddVertex(mouseX, mouseY, id, _mastVs, _mastCs, _mastFs);
+          boolean added = vertexHandler.AddVertex(mouseX, mouseY, 0, id, _mastVs, _mastCs, _mastFs);
           //rubberBand = GetVertexFromID(masterVs.size()-1);
           if(added){
             println("added a vert");

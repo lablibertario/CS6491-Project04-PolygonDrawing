@@ -7,13 +7,15 @@
 //left to do:
 //smooth corners
 //extrusion walls
+//    figure out why connections aren't working properly
+//    draw walls
 //insert new corners w/ extrusion
-//add rotation/movement stuff from yarick's code
-//get pt on edge working more smoothly in 3d
-
+//    make sure corners displaying in correct place
+//polish rotation/movement stuff from yarick's code
+//fix 3d pick
+//
 //3d coversion breaks when inserting vert?
-//mouse over pos isn't exactly aligned w/ 3D position
-//change the connection of two face edges to be a straight line (nearest pt has potential
+//change the bridge of two face edges to be a straight line (nearest pt has potential
 //  trouble of going outside shape)
 ////////////////
 
@@ -43,6 +45,8 @@ PVector cornerTextOffset = new PVector(7, -15);
 
 int areaTextSize = 30;
 color areaColor = blue;
+
+int extrusionHeight = 50;
 
 // ************************************************************************ GRAPHICS 
 void pen(color c, float w) {
@@ -371,15 +375,15 @@ public void CalculateSidewalkGeo() {
   ArrayList<Integer> _topFs = new ArrayList<Integer>();
 
   int connectVert = -1;
- for (int i = 0; i < masterFs.size(); i++) {
+  for (int i = 0; i < masterFs.size(); i++) {
     //walk through the existing faces from the master(graph) arrays
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
     Corner currentC = startC;
     //get position of start corner
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, connectVert, _geoVs, _geoCs, _geoFs);
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, connectVert, _topVs, _topCs, _topFs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, 0, connectVert, _geoVs, _geoCs, _geoFs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _geoVs, _geoCs, _geoFs);
 
     int connectPos;
     if(_geoVs.size() > 0) connectPos = _geoVs.size()-1;
@@ -388,8 +392,8 @@ public void CalculateSidewalkGeo() {
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
         //assign startC to a new vertex
-        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, connectPos, _geoVs, _geoCs, _geoFs);
-        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, connectPos, _topVs, _topCs, _topFs);
+        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, 0, connectPos, _geoVs, _geoCs, _geoFs);
+        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _geoVs, _geoCs, _geoFs);
         //assign each next to a new vertex
         currentC = nextC;
         connectPos++;
@@ -404,7 +408,7 @@ public void CalculateSidewalkGeo() {
   geo3DObject.geoFs = _geoFs;
 
   //offset top verts in z
-  for(Vertex v : _topVs){
+  /*for(Vertex v : _topVs){
     v.pos.z += 50;
     v.pos.y += 50;
   }
@@ -412,14 +416,15 @@ public void CalculateSidewalkGeo() {
   geo3DTopObject.geoCs = _topCs;
   geo3DTopObject.geoVs = _topVs;
   geo3DTopObject.geoFs = _topFs;
-  geo3DTopObject.planeBelongsTo = 1;
+  geo3DTopObject.planeBelongsTo = 1;*/
 
  // println("geo3DTopObject.geoFs: "+geo3DTopObject.geoFs);
+ //add the top object geo to the same object as the bottom one
 
   faces3D.add(geo3DObject);
-  faces3D.add(geo3DTopObject);
+  //faces3D.add(geo3DTopObject);
 
-  ConnectBottomToTop();
+  //ConnectBottomToTop();
 
   //ConnectAllSidewalks();
   //recalculate faces
@@ -472,16 +477,26 @@ void showWalls(){
 }
 
 void ConnectBottomToTop(){
-  Geo3D topBottom = (Geo3D)faces3D.get(0);
-  int half = topBottom.geoVs.size()/2;
+  Geo3D topObject = (Geo3D)faces3D.get(0);
+  Geo3D bottomObject = (Geo3D)faces3D.get(1);
+  int half = topObject.geoVs.size();///2;
 
+  //add in bottom object verts to top obj geo
+
+
+  //connect the like points
   for(int i = 0; i < half; i++){
-    Vertex startV = GetVertexFromID(i, topBottom.geoVs);
-    Vertex endV = GetVertexFromID(half+i, topBottom.geoVs);
+    Vertex startV = GetVertexFromID(i, topObject.geoVs);
+    Vertex endV = GetVertexFromID(i+1, topObject.geoVs);
     println("connecting: "+ startV.id + " to " + endV.id);
+    println("startV.pos: "+startV.pos);
+    println("endV.pos: "+endV.pos);
 
-    vertexHandler.AddVertex((int)startV.pos.x, (int)startV.pos.y, endV.id, topBottom.geoVs, topBottom.geoCs, topBottom.geoFs);
+    //vertexHandler.AddVertex((int)startV.pos.x, (int)startV.pos.y, endV.id, topObject.geoVs, topObject.geoCs, topObject.geoFs);
   }
+
+  //remove bottom Object from faces array
+  faces3D.remove(1);
 }
 
 //************************ capturing frames for a movie ************************

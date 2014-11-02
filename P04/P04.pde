@@ -68,12 +68,12 @@ void setup() {               // executed once at the begining
   swingRedraw = prevRedraw = nextRedraw = -1;
   
   //hard coded points! for testing
-  vertexHandler.AddVertex(50, 200, -1, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(50, 400, 0, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(250, 400, 1, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(250, 200, 2, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(250, 200, 0, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(50, 400, 3, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(50, 200, 0, -1, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(50, 400, 0, 0, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(250, 400, 0, 1, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(250, 200, 0, 2, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(250, 200, 0, 0, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(50, 400, 0, 3, masterVs, masterCs, masterFs);
   // vertexHandler.AddVertex(300, 300, 0);
   // vertexHandler.AddVertex(100, 100, 2);
   
@@ -169,10 +169,10 @@ void draw() {      // executed at each frame
           if((selectedVertexID != prevConnect) && notDrawn){
             //println("connected to : "+ selectedVertexID );
             v = GetVertexFromID(prevConnect, masterVs);
-            notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, selectedVertexID, masterVs, masterCs, masterFs);
+            notDrawn = vertexHandler.AddVertex((int)v.pos.x, (int)v.pos.y, 0, selectedVertexID, masterVs, masterCs, masterFs);
             if(notDrawn == false) {
               Vertex otherVert = GetVertexFromID(selectedVertexID, masterVs);
-              notDrawn = vertexHandler.AddVertex((int)otherVert.pos.x, (int)otherVert.pos.y, v.id, masterVs, masterCs, masterFs);
+              notDrawn = vertexHandler.AddVertex((int)otherVert.pos.x, (int)otherVert.pos.y, 0, v.id, masterVs, masterCs, masterFs);
             }
             notDrawn = !notDrawn;
           }
