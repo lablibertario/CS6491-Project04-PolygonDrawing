@@ -1,5 +1,5 @@
 public class Geo3D{
-	//int planeBelongsTo = 0;
+	int planeBelongsTo = 0;
 	int outerFace = 1;
 	int nextRedraw = -1;
 	int swingRedraw = -1;

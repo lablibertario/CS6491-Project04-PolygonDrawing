@@ -12,8 +12,8 @@
 //    make sure corners displaying in correct place
 //fix 3d pick
 //
-//3d coversion breaks when inserting vert?
 //change the bridge of two face edges to be a straight line (nearest pt has potential
+//3d coversion breaks when inserting vert?
 //  trouble of going outside shape)
 ////////////////
 
@@ -381,15 +381,14 @@ public void CalculateSidewalkGeo() {
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, 0, connectVert, _geoVs, _geoCs, _geoFs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _topVs, _topCs, _topFs);
     connectVert++;
-    //NEED TO SWITCH BELOW CONNECTVERT TO BE THE VERT IMMEDIATELY BELOW
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, _geoVs.size()-1, _geoVs, _geoCs, _geoFs);
 
-    int connectPos;
+    int connectPos = _geoVs.size()-1;
     println("_geoVs.size(): "+_geoVs.size());
     //NEED TO CHANGE THIS TO THE COMMENTED LINE ONCE SECOND SET OF VERTS ADDING
-    if(_geoVs.size() > 0) connectPos = _geoVs.size()-1;
-    else connectPos = 0;
+    //if(_geoVs.size() > 0) connectPos = _geoVs.size()-1;
+   // else connectPos = 0;
     //println("_geoVs.size()/2 -1: "+(_geoVs.size()/2 -1));
     //connectPos = _geoVs.size()/2 -1;
 
@@ -399,7 +398,7 @@ public void CalculateSidewalkGeo() {
         println("cNextPos: "+cNextPos);
         //assign startC to a new vertex
         vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, 0, connectPos, _geoVs, _geoCs, _geoFs);
-      //  vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _geoVs, _geoCs, _geoFs);
+        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _topVs, _topCs, _topFs);
         //assign each next to a new vertex
         currentC = nextC;
         connectPos++;
@@ -414,21 +413,21 @@ public void CalculateSidewalkGeo() {
   geo3DObject.geoFs = _geoFs;
 
   //offset top verts in z
-  /*for(Vertex v : _topVs){
+  for(Vertex v : _topVs){
     v.pos.z += 50;
-    v.pos.y += 50;
+    //v.pos.y += 50;
   }
 
   geo3DTopObject.geoCs = _topCs;
   geo3DTopObject.geoVs = _topVs;
   geo3DTopObject.geoFs = _topFs;
-  geo3DTopObject.planeBelongsTo = 1;*/
+  geo3DTopObject.planeBelongsTo = 1;
 
  // println("geo3DTopObject.geoFs: "+geo3DTopObject.geoFs);
  //add the top object geo to the same object as the bottom one
 
   faces3D.add(geo3DObject);
-  //faces3D.add(geo3DTopObject);
+  faces3D.add(geo3DTopObject);
 
   //ConnectBottomToTop();
 
@@ -455,9 +454,9 @@ int determineNearestVert(int i, ArrayList<Vertex> geoVs) {
     if(distFromNextPt < shortestDist) {
       shortestDist = distFromNextPt;
       nearestVertIndex = j;
+
     }
   }
-
   //println("closest to vert: "+nearestVertIndex);
 
   return nearestVertIndex;
