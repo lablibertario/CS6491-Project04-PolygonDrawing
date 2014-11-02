@@ -381,15 +381,15 @@ public void CalculateSidewalkGeo() {
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, 0, connectVert, _geoVs, _geoCs, _geoFs);
-    int connectPos = _geoVs.size()-1;
     connectVert++;
     //NEED TO SWITCH BELOW CONNECTVERT TO BE THE VERT IMMEDIATELY BELOW
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, _geoVs.size()-1, _geoVs, _geoCs, _geoFs);
 
-    //int connectPos;
+    int connectPos;
+    println("_geoVs.size(): "+_geoVs.size());
     //NEED TO CHANGE THIS TO THE COMMENTED LINE ONCE SECOND SET OF VERTS ADDING
-   // if(_geoVs.size() > 0) connectPos = _geoVs.size()-1;
-    //else connectPos = 0;
+    if(_geoVs.size() > 0) connectPos = _geoVs.size()-1;
+    else connectPos = 0;
     //println("_geoVs.size()/2 -1: "+(_geoVs.size()/2 -1));
     //connectPos = _geoVs.size()/2 -1;
 
