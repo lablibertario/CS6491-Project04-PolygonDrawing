@@ -7,11 +7,9 @@
 //left to do:
 //smooth corners
 //extrusion walls
-//    figure out why connections aren't working properly
 //    draw walls
 //insert new corners w/ extrusion
 //    make sure corners displaying in correct place
-//polish rotation/movement stuff from yarick's code
 //fix 3d pick
 //
 //3d coversion breaks when inserting vert?
@@ -383,13 +381,15 @@ public void CalculateSidewalkGeo() {
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, 0, connectVert, _geoVs, _geoCs, _geoFs);
+    int connectPos = _geoVs.size()-1;
     connectVert++;
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _geoVs, _geoCs, _geoFs);
+    //NEED TO SWITCH BELOW CONNECTVERT TO BE THE VERT IMMEDIATELY BELOW
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, _geoVs.size()-1, _geoVs, _geoCs, _geoFs);
 
-    int connectPos;
+    //int connectPos;
     //NEED TO CHANGE THIS TO THE COMMENTED LINE ONCE SECOND SET OF VERTS ADDING
-    if(_geoVs.size() > 0) connectPos = _geoVs.size()-1;
-    else connectPos = 0;
+   // if(_geoVs.size() > 0) connectPos = _geoVs.size()-1;
+    //else connectPos = 0;
     //println("_geoVs.size()/2 -1: "+(_geoVs.size()/2 -1));
     //connectPos = _geoVs.size()/2 -1;
 
@@ -450,7 +450,8 @@ int determineNearestVert(int i, ArrayList<Vertex> geoVs) {
   float shortestDist = 9001f;
   for (int j = 0; j < geoVs.size(); j++){
     Vertex v = (Vertex)geoVs.get(j);
-    float distFromNextPt = sqrt(sq(cPos.x - v.pos.x) + sq(cPos.y - v.pos.y) + sq(cPos.z - v.pos.z));
+    PVector vPos = new PVector(v.pos.x, v.pos.y, v.pos.z);
+    float distFromNextPt = PVector.dist(cPos, vPos);
     if(distFromNextPt < shortestDist) {
       shortestDist = distFromNextPt;
       nearestVertIndex = j;
