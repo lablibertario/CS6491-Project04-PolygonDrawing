@@ -101,7 +101,7 @@ void draw() {      // executed at each frame
 
   displayHeader();
   if (!mousePressed && !keyPressed)
-    scribeMouseCoordinates(); // writes current mouse coordinates if nothing pressed
+    //scribeMouseCoordinates(); // writes current mouse coordinates if nothing pressed
   if (scribeText && !filming)
     displayFooter(); // shows title, menu, and my face & name 
 

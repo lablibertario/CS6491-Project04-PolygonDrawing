@@ -39,9 +39,9 @@ PVector vertexTextOffset = new PVector(7, -15);
 
 int cornerRadius = 6;
 color cornerColor = black;
-color swingColor = color(213, 162, 222);
-color nextColor = color(255, 168, 138);
-color prevColor = color(100, 185, 144);
+color swingColor = color(213, 162, 222); //orange
+color nextColor = color(255, 168, 138); //pink
+color prevColor = color(100, 185, 144); //green
 PVector cornerTextOffset = new PVector(7, -15);
 
 int areaTextSize = 30;

@@ -123,6 +123,7 @@ public class Corner{
 
   public void DrawInformation() {
     // draw vertex information
+    println("corner number: "+this.id);
     fill(cornerColor);
     textSize(20);
     text(this.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);

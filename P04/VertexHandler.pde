@@ -55,21 +55,26 @@ public class VertexHandler {
 				ConnectExistingVerts(connectVertex, idOfExistingConnection, _mastVs, _mastCs);
 			} else {
 				if (_mastVs.size() == 0 || connectIndex == -1) {
-					//println("insert start vert ");
+					println("insert start vert ");
 				} else if (NumCorners(connectIndex, _mastVs) < 1) {
-					//println("insert second vert");
+					println("insert second vert");
 					InsertSecondVertex(_x, _y, _mastVs, _mastCs);
 				} else if (NumCorners(connectIndex, _mastVs) == 1) {
-					//println("adding to end of vert");
+					println("adding to end of vert");
 					connectVertex = GetVertexFromID(connectIndex, _mastVs);
 					AppendToEndOfVertex(connectVertex, _mastVs, _mastCs);
 
 				} else {
 					//adding edge between two existing edges
-					////println("squeezing between verts");
+					println("squeezing between verts");
 					connectVertex = GetVertexFromID(connectIndex, _mastVs);
 					Corner splitCorner = FindEdgesBetween(connectVertex, newVertex, _mastVs, _mastCs);
-					CornerSplit(splitCorner, _mastVs, _mastCs);
+					Vertex splitVert = GetVertexFromCornerID(splitCorner.id, _mastVs, _mastCs);
+					if(splitVert.pos.z != _z) {
+						ExtrusionSplit(splitCorner, _mastVs, _mastCs);
+					} else {
+						CornerSplit(splitCorner, _mastVs, _mastCs);
+					}
 				}
 			}
 		}
@@ -292,6 +297,68 @@ public class VertexHandler {
 	}
 
 	private void CornerSplit(Corner splitCorner, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs){
+		println("corner split");
+		//println("insert at " + splitCorner.id);
+		if(splitCorner.id == -1) {
+			println("corner split id -1 ");
+			successfulCreation = false;
+			return;
+		}
+
+		//println("at corner " + splitCorner.id + " and still adding new corners");
+		Vertex connectVertex = GetVertexFromCornerID(splitCorner.id, _mastVs, _mastCs);
+
+		Corner newCorner = new Corner(_mastCs.size()+1, newVertex.id);
+		Corner addedCorner = new Corner(_mastCs.size(), connectVertex.id);
+
+		Corner splitPrevCorner = GetCornerFromID(splitCorner.prev, _mastCs);
+		Corner splitNextCorner =  GetCornerFromID(splitCorner.next, _mastCs);
+
+		Vertex prevVertex = GetVertexFromCornerID(splitCorner.prev, _mastVs, _mastCs);
+		Vertex nextVertex = GetVertexFromCornerID(splitCorner.next, _mastVs, _mastCs);
+
+		PVector prevEdge = new PVector(prevVertex.pos.x - connectVertex.pos.x, prevVertex.pos.y - connectVertex.pos.y);
+		PVector nextEdge = new PVector(nextVertex.pos.x - connectVertex.pos.x, nextVertex.pos.y - connectVertex.pos.y);
+		PVector newEdge = new PVector(newVertex.pos.x - connectVertex.pos.x, newVertex.pos.y - connectVertex.pos.y);
+
+		if (closestToPrevEdge) {
+			//println("closest to prev edge");
+			splitPrevCorner.next = addedCorner.id;
+			addedCorner.prev = splitPrevCorner.prev;
+			addedCorner.next = newCorner.id;
+			newCorner.prev = addedCorner.id;
+			newCorner.next = splitCorner.id;
+			splitCorner.prev = newCorner.id;
+
+
+			addedCorner.swing = splitCorner.id;
+			Corner unSwingCorner = splitCorner.FindUnswing(_mastCs);
+			unSwingCorner.swing = addedCorner.id;
+		} else {
+			//println("closest to next edge");
+			splitCorner.next = newCorner.id;
+			newCorner.prev = splitCorner.id;
+			newCorner.next = addedCorner.id;
+			addedCorner.prev = newCorner.id;
+			addedCorner.next = splitNextCorner.id;
+			splitNextCorner.prev = addedCorner.id;
+
+
+			addedCorner.swing = splitCorner.swing;
+			//Corner unSwingCorner = splitCorner.FindUnswing(_mastCs);
+			splitCorner.swing = addedCorner.id;
+		}
+
+		AddToMaster(addedCorner, _mastCs);
+		AddToMaster(newCorner, _mastCs);
+		connectVertex.AddCorner(addedCorner.id);
+		newVertex.AddCorner(newCorner.id);
+
+		//println("done splitting corner");
+	}
+
+	private void ExtrusionSplit(Corner splitCorner, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs){
+		println("extrusion split");
 		//println("insert at " + splitCorner.id);
 		if(splitCorner.id == -1) {
 			println("corner split id -1 ");
