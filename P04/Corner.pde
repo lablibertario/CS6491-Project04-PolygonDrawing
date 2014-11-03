@@ -126,7 +126,7 @@ public class Corner{
     displayPos = GetDisplayPosition(_masterVs, _masterCs, true);
     showDisk(displayPos.x, displayPos.y, displayPos.z, 2, true); 
 
-    //DrawInformation();
+    DrawInformation();
 
     if(isHovered(_masterVs, _masterCs)) {
       _swingRedraw = swing;

@@ -460,6 +460,10 @@ public void CalculateSidewalkGeo() {
   geo3DObject.geoVs = _geoVs;
   geo3DObject.geoFs = _geoFs;
 
+  for(Corner c : geo3DObject.geoCs) {
+    println("prev, next, swing: "+ c.prev +", " + c.next + ", " + c.swing);
+  }
+
  //add the top object geo to the same object as the bottom one
 
   faces3D.add(geo3DObject);
