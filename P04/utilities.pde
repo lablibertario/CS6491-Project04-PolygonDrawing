@@ -416,7 +416,7 @@ public void CalculateSidewalkGeo() {
     //if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
   }
 
- /* connectVert = -1;
+  connectVert = -1;
   println("_geoVs.size() when starting extrusion: "+_geoVs.size());
   //create top faces and add them to the end of the previous ones
   for (int i = 0; i < 1; i++) {
@@ -439,11 +439,11 @@ public void CalculateSidewalkGeo() {
         currentC = nextC;
         connectPos++;
         //connectVert++;
-    } while (currentC.next != startC.id && currentC.next != -1);
+    } while (currentC.id != startC.id && currentC.next != -1);
 
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
     println("connectVert: "+connectVert);
-  }*/
+  }
 
   //assign our determined arrays to the faces3D Array
   geo3DObject.geoCs = _geoCs;
@@ -518,7 +518,7 @@ void ConnectBottomToTop(){
   int half = topObject.geoVs.size()/2; 
 
   //connect the like points
-  for(int i = 0; i < half; i++){
+  for(int i = 1; i < half; i++){
     Vertex startV = GetVertexFromID(i, topObject.geoVs);
     Vertex endV = GetVertexFromID(i+half, topObject.geoVs);
     println("connecting: "+ startV.id + " to " + endV.id);

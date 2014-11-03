@@ -138,5 +138,11 @@ public class Vertex {
     fill(vertexColor);
     textSize(20);
     text(this.id, pos.x + vertexTextOffset.x, pos.y + vertexTextOffset.y, pos.z + vertexTextOffset.z);
+    String cornersList = "";
+    for(Integer c : corners) {
+      cornersList += "" + c + "";
+      cornersList += ", ";
+    }
+    text(cornersList, pos.x + vertexTextOffset.x + 20, pos.y + vertexTextOffset.y + 20, pos.z + vertexTextOffset.z +20);
   }
 }

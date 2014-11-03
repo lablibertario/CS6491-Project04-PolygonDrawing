@@ -115,7 +115,7 @@ public class Corner{
     displayPos = GetDisplayPosition(_masterVs, _masterCs);
     showDisk(displayPos.x, displayPos.y, displayPos.z, 2, true); 
 
-    DrawInformation();
+    //DrawInformation();
 
     if(isHovered(_masterVs, _masterCs)) {
       _swingRedraw = swing;
@@ -127,8 +127,8 @@ public class Corner{
   public void DrawInformation() {
     // draw vertex information
     //println("corner number: "+this.id);
-    fill(cornerColor);
+    fill(nextColor);
     textSize(20);
-    text(this.id, displayPos.x + vertexTextOffset.x, displayPos.y + vertexTextOffset.y, displayPos.z + vertexTextOffset.z);
+    text(this.id, displayPos.x - vertexTextOffset.x, displayPos.y + vertexTextOffset.y, displayPos.z + vertexTextOffset.z);
   }
 }

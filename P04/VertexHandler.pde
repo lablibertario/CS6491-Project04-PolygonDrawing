@@ -70,13 +70,13 @@ public class VertexHandler {
 					connectVertex = GetVertexFromID(connectIndex, _mastVs);
 					Corner splitCorner = FindEdgesBetween(connectVertex, newVertex, _mastVs, _mastCs);
 					Vertex splitVert = GetVertexFromCornerID(splitCorner.id, _mastVs, _mastCs);
-					if(splitVert.pos.z != _z) {
+					/*if(splitVert.pos.z != _z) {
 						println("getting to extrusion split");
 						ExtrusionSplit(splitCorner, _mastVs, _mastCs);
-					} else {
+					} else {*/
 						println("getting to corner split");
 						CornerSplit(splitCorner, _mastVs, _mastCs);
-					}
+					//}
 				}
 			}
 		}
