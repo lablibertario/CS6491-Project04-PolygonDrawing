@@ -6,6 +6,7 @@ public class VertexHandler {
 	private boolean successfulCreation = true;
 	private boolean inserting = false;
 	private int insertionFarVert;
+	private float zDiffRot = 9000f;
 
 	public boolean AddVertex(int _x, int _y, int _z, int connectIndex, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
 
@@ -417,7 +418,14 @@ public class VertexHandler {
 		println("newNextRot: "+newNextRot);
 		println("newNewRot: "+newNewRot);
 
-		return (newNextRot  < newNewRot || (newNextRot == newNewRot && prevEdge.z != newEdge.z));
+		if(prevEdge.z != newEdge.z) {
+			println("different z plane!");
+			if(newNextRot < zDiffRot) {
+				return true;
+			}
+		}
+
+		return (newNextRot  <= newNewRot);
 	}
 
 	float round(float val, int dp) {

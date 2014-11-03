@@ -415,7 +415,7 @@ public void CalculateSidewalkGeo() {
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
     println("drawing extruded point");
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, 1, _geoVs, _geoCs, _geoFs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, 0, _geoVs, _geoCs, _geoFs);
   }
 
   //assign our determined arrays to the faces3D Array
