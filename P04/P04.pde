@@ -115,17 +115,21 @@ void draw() {      // executed at each frame
     //draw verts/edges for each face
     for(Geo3D c: faces3D) {
       DrawAllGeo(c.geoVs, c.geoCs, c.geoFs, c.nextRedraw, c.prevRedraw, c.swingRedraw);
+      //println("finished draw all geo");
       if (c.geoFs.size() > 1) {
         int faceToDraw = MouseIsWithinFace(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
         if (faceToDraw != -1) {
           DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
         } else {
-          DrawFaceSidewalks(outerFace, c.geoVs, c.geoCs, c.geoFs);
+          DrawFaceSidewalks(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
+          //println("finished drawing face sidewalks");
         }
       }
       if(c.geoFs.size() > 1)area3D += Calculate3DArea(c.geoVs, c.geoCs, c.geoFs);
+      //println("finished Calculate3DArea");
 
       CheckForVertexHover(c.geoVs, c.geoCs, c.geoFs, c.nextRedraw, c.prevRedraw, c.swingRedraw);
+      //println("finished CheckForVertexHover");
 
     }
     //println("area3D: "+area3D);

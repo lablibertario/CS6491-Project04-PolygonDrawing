@@ -514,6 +514,7 @@ void ConnectBottomToTop(){
 
     if(startV.pos.z != endV.pos.z)
     vertexHandler.AddVertex((int)endV.pos.x, (int)endV.pos.y, (int)endV.pos.z, startV.id, topObject.geoVs, topObject.geoCs, topObject.geoFs);
+    println("finished adding extruded vert");
   }
 }
 

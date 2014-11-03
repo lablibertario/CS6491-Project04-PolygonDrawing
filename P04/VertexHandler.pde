@@ -71,8 +71,10 @@ public class VertexHandler {
 					Corner splitCorner = FindEdgesBetween(connectVertex, newVertex, _mastVs, _mastCs);
 					Vertex splitVert = GetVertexFromCornerID(splitCorner.id, _mastVs, _mastCs);
 					if(splitVert.pos.z != _z) {
+						println("getting to extrusion split");
 						ExtrusionSplit(splitCorner, _mastVs, _mastCs);
 					} else {
+						println("getting to corner split");
 						CornerSplit(splitCorner, _mastVs, _mastCs);
 					}
 				}
@@ -367,52 +369,20 @@ public class VertexHandler {
 		}
 
 		//println("at corner " + splitCorner.id + " and still adding new corners");
-		Vertex connectVertex = GetVertexFromCornerID(splitCorner.id, _mastVs, _mastCs);
+		//Vertex connectVertex = GetVertexFromCornerID(splitCorner.id, _mastVs, _mastCs);
 
-		Corner newCorner = new Corner(_mastCs.size()+1, newVertex.id);
-		Corner addedCorner = new Corner(_mastCs.size(), connectVertex.id);
+		Corner newCorner = new Corner(_mastCs.size(), newVertex.id);
+		Corner splitsNext = GetCornerFromID(splitCorner.next, _mastCs);
 
-		Corner splitPrevCorner = GetCornerFromID(splitCorner.prev, _mastCs);
-		Corner splitNextCorner =  GetCornerFromID(splitCorner.next, _mastCs);
-
-		Vertex prevVertex = GetVertexFromCornerID(splitCorner.prev, _mastVs, _mastCs);
-		Vertex nextVertex = GetVertexFromCornerID(splitCorner.next, _mastVs, _mastCs);
-
-		PVector prevEdge = new PVector(prevVertex.pos.x - connectVertex.pos.x, prevVertex.pos.y - connectVertex.pos.y);
-		PVector nextEdge = new PVector(nextVertex.pos.x - connectVertex.pos.x, nextVertex.pos.y - connectVertex.pos.y);
-		PVector newEdge = new PVector(newVertex.pos.x - connectVertex.pos.x, newVertex.pos.y - connectVertex.pos.y);
-
-		if (closestToPrevEdge) {
-			//println("closest to prev edge");
-			splitPrevCorner.next = addedCorner.id;
-			addedCorner.prev = splitPrevCorner.prev;
-			addedCorner.next = newCorner.id;
-			newCorner.prev = addedCorner.id;
-			newCorner.next = splitCorner.id;
-			splitCorner.prev = newCorner.id;
+		splitsNext.prev = newCorner.id;
+		splitCorner.next = newCorner.id;
+		newCorner.next = splitsNext.id;
+		newCorner.prev = splitCorner.id;
 
 
-			addedCorner.swing = splitCorner.id;
-			Corner unSwingCorner = splitCorner.FindUnswing(_mastCs);
-			unSwingCorner.swing = addedCorner.id;
-		} else {
-			//println("closest to next edge");
-			splitCorner.next = newCorner.id;
-			newCorner.prev = splitCorner.id;
-			newCorner.next = addedCorner.id;
-			addedCorner.prev = newCorner.id;
-			addedCorner.next = splitNextCorner.id;
-			splitNextCorner.prev = addedCorner.id;
-
-
-			addedCorner.swing = splitCorner.swing;
-			//Corner unSwingCorner = splitCorner.FindUnswing(_mastCs);
-			splitCorner.swing = addedCorner.id;
-		}
-
-		AddToMaster(addedCorner, _mastCs);
+		//AddToMaster(addedCorner, _mastCs);
 		AddToMaster(newCorner, _mastCs);
-		connectVertex.AddCorner(addedCorner.id);
+		//connectVertex.AddCorner(addedCorner.id);
 		newVertex.AddCorner(newCorner.id);
 
 		//println("done splitting corner");
