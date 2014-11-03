@@ -498,17 +498,17 @@ void showWalls(){
 
   for(int i = 0; i < half-2; i++){
     //need to do this for faces instead (sidewalks)
-    /*PVector v1Pos = GetVertexFromID(i, topBottom.geoVs).pos;
-    PVector v2Pos = GetVertexFromID(i+1, topBottom.geoVs).pos;
-    PVector v3Pos = GetVertexFromID(half+i, topBottom.geoVs).pos;
-    PVector v4Pos = GetVertexFromID(half+i+1, topBottom.geoVs).pos;
+    PVector v1Pos = GetVertexFromID(i, topBottom.geoVs).pos;
+    PVector v4Pos = GetVertexFromID(i+1, topBottom.geoVs).pos;
+    PVector v3Pos = GetVertexFromID(half+i+1, topBottom.geoVs).pos;
+    PVector v2Pos = GetVertexFromID(half+i, topBottom.geoVs).pos;
 
     beginShape(); 
     vertex(v1Pos.x, v1Pos.y, v1Pos.z);
     vertex(v2Pos.x, v2Pos.y, v2Pos.z);
     vertex(v3Pos.x, v3Pos.y, v3Pos.z);
     vertex(v4Pos.x, v4Pos.y, v4Pos.z);
-    endShape(CLOSE);*/
+    endShape(CLOSE);
   }
 }
 
