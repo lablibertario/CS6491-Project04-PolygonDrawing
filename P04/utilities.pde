@@ -392,6 +392,13 @@ public void CalculateSidewalkGeo() {
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
         println("cNextPos: "+cNextPos);
+        //check angle between next and prev to determine if smoothing needed
+        PVector cPrevPos = GetCornerFromID(nextC.prev, masterCs).GetDisplayPosition(masterVs, masterCs);
+        PVector cNextNextPos = GetCornerFromID(nextC.next, masterCs).GetDisplayPosition(masterVs, masterCs);
+        PVector prevVector = new PVector(cPrevPos.x - cNextPos.x, cPrevPos.y - cNextPos.y, cPrevPos.z - cNextPos.z);
+        PVector nextVector = new PVector(cNextNextPos.z - cNextPos.z, cNextNextPos.y - cNextPos.y, cNextNextPos.z - cNextPos.z);
+        println("angle between prev, next: " + GetAngle(prevVector, nextVector));
+
         //assign startC to a new vertex
         vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, 0, connectPos, _geoVs, _geoCs, _geoFs);
        // vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _topVs, _topCs, _topFs);
