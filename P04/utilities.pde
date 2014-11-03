@@ -37,8 +37,8 @@ PVector vertexTextOffset = new PVector(7, -15, 7);
 
 int cornerRadius = 6;
 color cornerColor = black;
-color swingColor = color(213, 162, 222); //orange
-color nextColor = color(255, 168, 138); //pink
+color swingColor = color(213, 162, 222); //pink
+color nextColor = color(255, 168, 138); //orange
 color prevColor = color(100, 185, 144); //green
 PVector cornerTextOffset = new PVector(7, -15);
 
@@ -426,7 +426,7 @@ public void CalculateSidewalkGeo() {
     //if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
   }
 
-  connectVert = 0;
+  /*connectVert = 0;
   println("_geoVs.size() when starting extrusion: "+_geoVs.size());
   //create top faces and add them to the end of the previous ones
   for (int i = 0; i < masterFs.size(); i++) {
@@ -452,7 +452,7 @@ public void CalculateSidewalkGeo() {
     } while (currentC.id != startC.id && currentC.next != -1);
 
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
-  }
+  }*/
 
   //assign our determined arrays to the faces3D Array
   geo3DObject.geoCs = _geoCs;
@@ -468,7 +468,7 @@ public void CalculateSidewalkGeo() {
   faces3D.add(geo3DObject);
   //faces3D.add(geo3DTopObject);
 
-  ConnectBottomToTop();
+  //ConnectBottomToTop();
   DetermineProperSwings();
 
   //ConnectAllSidewalks();
@@ -520,14 +520,17 @@ void showWalls(){
   //println("topBottom.geoFs: "+topBottom.geoFs);
   for(Integer face : topBottom.geoFs) {
     beginShape();
+    fill(color(70, 70, 200));
     //println("face: "+face);
     Corner startC = GetCornerFromID(0, topBottom.geoCs);
     Vertex startCVert = GetVertexFromCornerID(startC.id, topBottom.geoVs, topBottom.geoCs);
     Corner currentC = startC;
+    //println("startC.id sidewalk vert: "+startC.id);
     do {
         Corner nextC = GetCornerFromID(currentC.next, topBottom.geoCs);
         Vertex nextCVert = GetVertexFromCornerID(nextC.id, topBottom.geoVs, topBottom.geoCs);
         //DrawSidewalk(currentC, nextC, _mastVs, _mastCs);
+        //println("next sidewalk vert: "+ nextC.id);
         vertex(nextCVert.pos.x, nextCVert.pos.y, nextCVert.pos.z);
         currentC = nextC;
     } while (currentC.id != startC.id && currentC.next != -1);
@@ -545,9 +548,9 @@ void ConnectBottomToTop(){
   for(int i = 1; i < half; i++){
     Vertex startV = GetVertexFromID(i, topObject.geoVs);
     Vertex endV = GetVertexFromID(i+half, topObject.geoVs);
-    println("connecting: "+ startV.id + " to " + endV.id);
+   /* println("connecting: "+ startV.id + " to " + endV.id);
     println("startV.pos: "+startV.pos);
-    println("endV.pos: "+endV.pos);
+    println("endV.pos: "+endV.pos);*/
 
     if(startV.pos.z != endV.pos.z)
     vertexHandler.AddVertex((int)endV.pos.x, (int)endV.pos.y, (int)endV.pos.z, startV.id, topObject.geoVs, topObject.geoCs, topObject.geoFs);

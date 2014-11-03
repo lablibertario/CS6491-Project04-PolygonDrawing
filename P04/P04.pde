@@ -117,7 +117,7 @@ void draw() {      // executed at each frame
       if (c.geoFs.size() > 1) {
         int faceToDraw = MouseIsWithinFace(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
         if (faceToDraw != -1) {
-          //DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
+         // DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
         } else {
           //DrawFaceSidewalks(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
           //println("finished drawing face sidewalks");
