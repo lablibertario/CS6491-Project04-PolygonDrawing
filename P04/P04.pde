@@ -73,10 +73,10 @@ void setup() {               // executed once at the begining
   //hard coded points! for testing
   vertexHandler.AddVertex(50, 200, 0, -1, masterVs, masterCs, masterFs);
   vertexHandler.AddVertex(50, 400, 0, 0, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(250, 400, 0, 1, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(250, 200, 0, 2, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(250, 200, 0, 0, masterVs, masterCs, masterFs);
-  vertexHandler.AddVertex(50, 400, 0, 3, masterVs, masterCs, masterFs);
+  //vertexHandler.AddVertex(250, 400, 0, 1, masterVs, masterCs, masterFs);
+  //vertexHandler.AddVertex(250, 200, 0, 2, masterVs, masterCs, masterFs);
+  //vertexHandler.AddVertex(250, 200, 0, 0, masterVs, masterCs, masterFs);
+  //vertexHandler.AddVertex(50, 400, 0, 3, masterVs, masterCs, masterFs);
   // vertexHandler.AddVertex(300, 300, 0);
   // vertexHandler.AddVertex(100, 100, 2);
   
@@ -123,7 +123,7 @@ void draw() {      // executed at each frame
           DrawFaceSidewalks(outerFace, c.geoVs, c.geoCs, c.geoFs);
         }
       }
-      area3D += Calculate3DArea(c.geoVs, c.geoCs, c.geoFs);
+      if(c.geoFs.size() > 1)area3D += Calculate3DArea(c.geoVs, c.geoCs, c.geoFs);
 
       CheckForVertexHover(c.geoVs, c.geoCs, c.geoFs, c.nextRedraw, c.prevRedraw, c.swingRedraw);
 

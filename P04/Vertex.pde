@@ -128,6 +128,7 @@ public class Vertex {
     // draw the vertex itself
     stroke(vertexColor);
     noFill();
+    //DrawInformation();
 
     showDisk(pos.x, pos.y, pos.z, vertexRadius, false);
   }

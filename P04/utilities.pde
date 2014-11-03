@@ -17,6 +17,9 @@
 //3d coversion breaks when inserting vert?
 ////////////////
 
+//display vert nums, print next/prev/swing
+//add new fn for raising that only inserts one new corner
+
 // ************************************************************************ COLORS 
 color black=#000000, white=#FFFFFF, // set more colors using Menu >  Tools > Color Selector
 red=#FF0000, green=#00FF01, blue=#0300FF, yellow=#FEFF00, cyan=#00FDFF, magenta=#FF00FB;
@@ -363,17 +366,12 @@ public void CalculateSidewalkGeo() {
 
   //set up geo3D objects
   Geo3D geo3DObject = new Geo3D();
-  Geo3D geo3DTopObject = new Geo3D();
   ArrayList<Corner> _geoCs = new ArrayList<Corner>();
   ArrayList<Vertex> _geoVs = new ArrayList<Vertex>();
   ArrayList<Integer> _geoFs = new ArrayList<Integer>();
-  //store top face values
-  ArrayList<Corner> _topCs = new ArrayList<Corner>();
-  ArrayList<Vertex> _topVs = new ArrayList<Vertex>();
-  ArrayList<Integer> _topFs = new ArrayList<Integer>();
 
   int connectVert = -1;
-  for (int i = 0; i < masterFs.size(); i++) {
+  for (int i = 0; i <  masterFs.size(); i++) {
     //walk through the existing faces from the master(graph) arrays
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
     Corner currentC = startC;
@@ -381,6 +379,7 @@ public void CalculateSidewalkGeo() {
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, 0, connectVert, _geoVs, _geoCs, _geoFs);
+    connectVert++;
     //vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _topVs, _topCs, _topFs);
 
     int connectPos = _geoVs.size()-1;
@@ -403,20 +402,20 @@ public void CalculateSidewalkGeo() {
         connectPos++;
     } while (currentC.id != startC.id && currentC.next != -1);
 
-    if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
+    //if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
   }
 
   connectVert = 0;
   println("_geoVs.size() when starting extrusion: "+_geoVs.size());
   //create top faces and add them to the end of the previous ones
-  for (int i = 0; i < masterFs.size(); i++) {
+  for (int i = 0; i < 1; i++) {
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
     Corner currentC = startC;
     //get position of start corner
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
     println("drawing extruded point");
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _geoVs, _geoCs, _geoFs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, 0, _geoVs, _geoCs, _geoFs);
     connectVert ++;
 
     int connectPos = _geoVs.size()-1;
@@ -424,7 +423,7 @@ public void CalculateSidewalkGeo() {
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
         println("cNextPos: "+cNextPos);
-        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _geoVs, _geoCs, _geoFs);
+       // vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _geoVs, _geoCs, _geoFs);
         //assign each next to a new vertex
         currentC = nextC;
         connectPos++;
@@ -513,6 +512,7 @@ void ConnectBottomToTop(){
     println("startV.pos: "+startV.pos);
     println("endV.pos: "+endV.pos);
 
+    if(startV.pos.z != endV.pos.z)
     vertexHandler.AddVertex((int)endV.pos.x, (int)endV.pos.y, (int)endV.pos.z, startV.id, topObject.geoVs, topObject.geoCs, topObject.geoFs);
   }
 }
