@@ -30,7 +30,10 @@ public class VertexHandler {
 				} 
 
 				//if this vertex is on top of another existing one, don't create it
-				if(existingVertPos == newVertex.pos) return false;
+				if(existingVertPos == newVertex.pos) {
+					println("on top of another, not drawing");
+					return false;
+				}
 			}
 		}
 
@@ -220,9 +223,9 @@ public class VertexHandler {
 			Vertex vNext = GetVertexFromCornerID(c.next, _mastVs, _mastCs);
 			Vertex vPrev = GetVertexFromCornerID(c.prev, _mastVs, _mastCs);
 
-			PVector prevEdge = new PVector(vPrev.pos.x - v.pos.x, vPrev.pos.y - v.pos.y);
-			PVector nextEdge = new PVector(vNext.pos.x - v.pos.x, vNext.pos.y - v.pos.y);
-			PVector newEdge = new PVector(_newVertex.pos.x - v.pos.x, _newVertex.pos.y - v.pos.y);
+			PVector prevEdge = new PVector(vPrev.pos.x - v.pos.x, vPrev.pos.y - v.pos.y, vPrev.pos.z - v.pos.z);
+			PVector nextEdge = new PVector(vNext.pos.x - v.pos.x, vNext.pos.y - v.pos.y, vNext.pos.z - v.pos.z);
+			PVector newEdge = new PVector(_newVertex.pos.x - v.pos.x, _newVertex.pos.y - v.pos.y, _newVertex.pos.z - v.pos.z);
 
 			//println("check if between corner " + c.id);
 			if (IsBetween(prevEdge, newEdge, nextEdge)) {
@@ -290,6 +293,7 @@ public class VertexHandler {
 	private void CornerSplit(Corner splitCorner, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs){
 		//println("insert at " + splitCorner.id);
 		if(splitCorner.id == -1) {
+			println("corner split id -1 ");
 			successfulCreation = false;
 			return;
 		}
@@ -375,9 +379,9 @@ public class VertexHandler {
 	}
 
 	private boolean IsBetween(PVector prevEdge, PVector newEdge, PVector nextEdge) {
-		PVector prevE1 = new PVector(prevEdge.x, prevEdge.y);
-		PVector newE1 = new PVector(newEdge.x, newEdge.y);
-		PVector nextE1 = new PVector(nextEdge.x, nextEdge.y);
+		PVector prevE1 = new PVector(prevEdge.x, prevEdge.y, prevEdge.z);
+		PVector newE1 = new PVector(newEdge.x, newEdge.y, newEdge.z);
+		PVector nextE1 = new PVector(nextEdge.x, nextEdge.y, newEdge.z);
 
 		float oldPrevRot = GetPosAngle(prevEdge);
 		float oldNewRot = GetPosAngle(newEdge);
@@ -410,7 +414,10 @@ public class VertexHandler {
 		PVector fromPrev = new PVector(-prevEdge.x, -prevEdge.y);
 		PVector toNext = new PVector(nextEdge.x, nextEdge.y);
 
-		return (newNextRot  < newNewRot);
+		println("newNextRot: "+newNextRot);
+		println("newNewRot: "+newNewRot);
+
+		return (newNextRot  < newNewRot || (newNextRot == newNewRot && prevEdge.z != newEdge.z));
 	}
 
 	float round(float val, int dp) {

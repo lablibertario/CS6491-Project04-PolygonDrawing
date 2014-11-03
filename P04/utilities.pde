@@ -381,11 +381,11 @@ public void CalculateSidewalkGeo() {
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, 0, connectVert, _geoVs, _geoCs, _geoFs);
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _topVs, _topCs, _topFs);
+    //vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _topVs, _topCs, _topFs);
     connectVert++;
 
     int connectPos = _geoVs.size()-1;
-    println("_geoVs.size(): "+_geoVs.size());
+    //println("_geoVs.size(): "+_geoVs.size());
     //NEED TO CHANGE THIS TO THE COMMENTED LINE ONCE SECOND SET OF VERTS ADDING
     //if(_geoVs.size() > 0) connectPos = _geoVs.size()-1;
    // else connectPos = 0;
@@ -398,7 +398,7 @@ public void CalculateSidewalkGeo() {
         println("cNextPos: "+cNextPos);
         //assign startC to a new vertex
         vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, 0, connectPos, _geoVs, _geoCs, _geoFs);
-        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _topVs, _topCs, _topFs);
+       // vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _topVs, _topCs, _topFs);
         //assign each next to a new vertex
         currentC = nextC;
         connectPos++;
@@ -407,13 +407,24 @@ public void CalculateSidewalkGeo() {
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs);
   }
 
+  //create top faces and add them to the end of the previous ones
+  for (int i = 0; i < 1; i++) {
+    Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
+    Corner currentC = startC;
+    //get position of start corner
+    PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
+    //assign startC to a new vertex
+    println("drawing extruded point");
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, 1, _geoVs, _geoCs, _geoFs);
+  }
+
   //assign our determined arrays to the faces3D Array
   geo3DObject.geoCs = _geoCs;
   geo3DObject.geoVs = _geoVs;
   geo3DObject.geoFs = _geoFs;
 
   //offset top verts in z
-  for(Vertex v : _topVs){
+  /*for(Vertex v : _topVs){
     v.pos.z += 50;
     //v.pos.y += 50;
   }
@@ -422,12 +433,12 @@ public void CalculateSidewalkGeo() {
   geo3DTopObject.geoVs = _topVs;
   geo3DTopObject.geoFs = _topFs;
   geo3DTopObject.planeBelongsTo = 1;
-
+*/
  // println("geo3DTopObject.geoFs: "+geo3DTopObject.geoFs);
  //add the top object geo to the same object as the bottom one
 
   faces3D.add(geo3DObject);
-  faces3D.add(geo3DTopObject);
+  //faces3D.add(geo3DTopObject);
 
   //ConnectBottomToTop();
 
