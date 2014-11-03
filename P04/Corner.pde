@@ -138,7 +138,7 @@ public class Corner{
   public void DrawInformation() {
     // draw vertex information
     //println("corner number: "+this.id);
-    fill(nextColor);
+    fill(color(188, 31, 31));
     textSize(20);
     text(this.id, displayPos.x - vertexTextOffset.x, displayPos.y + vertexTextOffset.y, displayPos.z + vertexTextOffset.z);
   }

@@ -426,17 +426,17 @@ public void CalculateSidewalkGeo() {
     //if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
   }
 
-  connectVert = -1;
+  connectVert = 0;
   println("_geoVs.size() when starting extrusion: "+_geoVs.size());
   //create top faces and add them to the end of the previous ones
-  for (int i = 0; i < 1; i++) {
+  for (int i = 0; i < masterFs.size(); i++) {
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
     Corner currentC = startC;
     //get position of start corner
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs, false);
     //assign startC to a new vertex
     println("drawing extruded point");
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, 0, _geoVs, _geoCs, _geoFs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _geoVs, _geoCs, _geoFs);
     connectVert ++;
 
     int connectPos = _geoVs.size()-1;
@@ -452,7 +452,6 @@ public void CalculateSidewalkGeo() {
     } while (currentC.id != startC.id && currentC.next != -1);
 
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
-    println("connectVert: "+connectVert);
   }
 
   //assign our determined arrays to the faces3D Array
@@ -461,7 +460,7 @@ public void CalculateSidewalkGeo() {
   geo3DObject.geoFs = _geoFs;
 
   for(Corner c : geo3DObject.geoCs) {
-    println("prev, next, swing: "+ c.prev +", " + c.next + ", " + c.swing);
+    //println("prev, next, swing: "+ c.prev +", " + c.next + ", " + c.swing);
   }
 
  //add the top object geo to the same object as the bottom one
@@ -469,7 +468,7 @@ public void CalculateSidewalkGeo() {
   faces3D.add(geo3DObject);
   //faces3D.add(geo3DTopObject);
 
- // ConnectBottomToTop();
+  ConnectBottomToTop();
 
   //ConnectAllSidewalks();
   //recalculate faces
