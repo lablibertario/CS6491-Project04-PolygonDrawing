@@ -460,7 +460,7 @@ public void CalculateSidewalkGeo() {
   geo3DObject.geoFs = _geoFs;
 
   for(Corner c : geo3DObject.geoCs) {
-    //println("prev, next, swing: "+ c.prev +", " + c.next + ", " + c.swing);
+    println("id: " + c.id + " has prev, next, swing: "+ c.prev +", " + c.next + ", " + c.swing);
   }
 
  //add the top object geo to the same object as the bottom one
@@ -469,11 +469,21 @@ public void CalculateSidewalkGeo() {
   //faces3D.add(geo3DTopObject);
 
   ConnectBottomToTop();
+  DetermineProperSwings();
 
   //ConnectAllSidewalks();
   //recalculate faces
 
   //handle drawing of these in p04
+}
+
+void DetermineProperSwings() {
+  Geo3D topBottom = (Geo3D)faces3D.get(0);
+  for(Vertex v: topBottom.geoVs) {
+    //collect all corners
+    //reasign swings by finding out whose prev.v == other.next.v
+
+  }
 }
 
 int determineNearestVert(int i, ArrayList<Vertex> geoVs, int zHeight) {
@@ -507,6 +517,7 @@ void showWalls(){
   Geo3D topBottom = (Geo3D)faces3D.get(0);
   int half = topBottom.geoVs.size()/2;
 
+  //println("topBottom.geoFs: "+topBottom.geoFs);
   for(Integer face : topBottom.geoFs) {
     beginShape();
     //println("face: "+face);

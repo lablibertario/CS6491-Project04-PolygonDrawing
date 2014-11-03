@@ -45,6 +45,7 @@ int prevConnect = -1;
 float area3D = 0.0f;
 PVector center = new PVector(0,0);
 float rx=-0.06*TWO_PI, ry=-0.04*TWO_PI; 
+float dz=0;
 //float rx = 0f, ry = 0f; 
 
 int swingRedraw, prevRedraw, nextRedraw;
@@ -104,6 +105,7 @@ void draw() {      // executed at each frame
   //rotate based on user input
   if(centered) translate(-F.x,-F.y,-F.z);
   rotateX(rx); rotateY(ry); // rotates the model around the new origin (center of screen)
+  translate(width/2,height/2,dz); // puts origin of model at screen center and moves forward/away by dz
   //rotateX(PI/2); // rotates frame around X to make X and Y basis vectors parallel to the floor
 
   if(in3D) {
@@ -115,9 +117,9 @@ void draw() {      // executed at each frame
       if (c.geoFs.size() > 1) {
         int faceToDraw = MouseIsWithinFace(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
         if (faceToDraw != -1) {
-          DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
+          //DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
         } else {
-          DrawFaceSidewalks(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
+          //DrawFaceSidewalks(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
           //println("finished drawing face sidewalks");
         }
       }
@@ -138,7 +140,7 @@ void draw() {      // executed at each frame
     text(areaText, center.x, center.y+10);
     textAlign(LEFT);
 
-    showWalls();
+    //showWalls();
     //interactive corner drawing
 
     //need to handle interactivity differently here since cycling through multiple faces
@@ -284,6 +286,8 @@ void keyPressed() { // executed each time a key is pressed: the "key" variable c
 //rotation stuff
   if (keyPressed && key==' ') {rx-=PI*(mouseY-pmouseY)/height; ry+=PI*(mouseX-pmouseX)/width;};
 }
+
+void mouseWheel(MouseEvent event) {dz -= event.getAmount(); change=true;}
 
 void keyReleased() { // executed each time a key is released
   if (key=='b') {
