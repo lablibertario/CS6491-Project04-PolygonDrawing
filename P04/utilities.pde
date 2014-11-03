@@ -5,12 +5,10 @@
 
 ///////////////
 //left to do:
-//extrusion walls
-//    draw walls
-//insert new corners w/ extrusion
-//    make sure corners displaying in correct place
-//fix 3d pick
+//make sure corners displaying in correct place
+//draw walls
 //smooth corners
+//fix 3d pick?
 //
 //change the bridge of two face edges to be a straight line (nearest pt has potential
 //  trouble of going outside shape)
@@ -405,7 +403,7 @@ public void CalculateSidewalkGeo() {
     //if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
   }
 
-  connectVert = 0;
+  connectVert = -1;
   println("_geoVs.size() when starting extrusion: "+_geoVs.size());
   //create top faces and add them to the end of the previous ones
   for (int i = 0; i < 1; i++) {
@@ -501,6 +499,8 @@ void showWalls(){
 }
 
 void ConnectBottomToTop(){
+  //FIRST TWO VERTS ALREADY CONNECTED, SKIP THOSE OR ADD A CHECK IN HANDLER FOR CONNECTING
+  //  TWO ALREADY CONNCTED THINGS
   Geo3D topObject = (Geo3D)faces3D.get(0);
   int half = topObject.geoVs.size()/2; 
 
