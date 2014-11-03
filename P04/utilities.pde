@@ -416,21 +416,18 @@ public void CalculateSidewalkGeo() {
     //assign startC to a new vertex
     println("drawing extruded point");
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _geoVs, _geoCs, _geoFs);
+    connectVert ++;
 
     int connectPos = _geoVs.size()-1;
-    /*do {
+    do {
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
         println("cNextPos: "+cNextPos);
-        //assign startC to a new vertex
-        //vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, 0, connectPos, _geoVs, _geoCs, _geoFs);
         vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _topVs, _topCs, _topFs);
-        //assign each next to a new vertex
         currentC = nextC;
         connectPos++;
-    } while (currentC.id != startC.id && currentC.next != -1);*/
-
-    if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs);
+        connectVert++;
+    } while (currentC.id != startC.id && currentC.next != -1);
   }
 
   //assign our determined arrays to the faces3D Array
@@ -468,7 +465,6 @@ int determineNearestVert(int i, ArrayList<Vertex> geoVs) {
 
   //take the first vert of the next sidewal/geo set
   Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
-  Corner currentC = startC;
   PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
 
   //figure out which of the previous set is closest to this point
