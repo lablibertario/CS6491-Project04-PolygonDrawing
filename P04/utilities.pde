@@ -70,6 +70,15 @@ float det(PVector a, PVector b) { //may be a terrible terrible thing
   return aRot.dot(b);
 }
 
+float det3D(PVector a, PVector b) { 
+  //get the norm 
+  PVector normOfVectors = a.cross(b);
+  normOfVectors.mult(-1);
+
+  float result = sqrt(sq(normOfVectors.x) + sq(normOfVectors.y) + sq(normOfVectors.z));
+  return result;
+}
+
 boolean isToRightOf(PVector a, PVector b){
   float check = det(a, b);
   return check > 0;
@@ -225,8 +234,8 @@ void DrawLine(PVector start, PVector end, float thickness, color rgb) {
 }
 
 void DrawSidewalk(Corner startC, Corner endC, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
-  PVector start = startC.GetDisplayPosition(_mastVs, _mastCs);
-  PVector end = endC.GetDisplayPosition(_mastVs, _mastCs);
+  PVector start = startC.GetDisplayPosition(_mastVs, _mastCs, false);
+  PVector end = endC.GetDisplayPosition(_mastVs, _mastCs, false);
 
   ////println("sidewalk: " + startC.vertex + " -> " + endC.vertex);
 
@@ -374,7 +383,7 @@ public void CalculateSidewalkGeo() {
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
     Corner currentC = startC;
     //get position of start corner
-    PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
+    PVector cPos = startC.GetDisplayPosition(masterVs, masterCs, false);
     //assign startC to a new vertex
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, 0, connectVert, _geoVs, _geoCs, _geoFs);
     connectVert++;
@@ -390,7 +399,7 @@ public void CalculateSidewalkGeo() {
       //radius is 1/2 dist between the starting points of these lines
       //move the points to be at that distance from each other, then add x connections around the circle
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
-        PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
+        PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs, false);
         println("cNextPos: "+cNextPos);
         //check angle between next and prev to determine if smoothing needed
         //SMOOTHING PROGRESS BELOW
@@ -400,6 +409,7 @@ public void CalculateSidewalkGeo() {
         PVector nextVector = new PVector(cNextNextPos.z - cNextPos.z, cNextNextPos.y - cNextPos.y, cNextNextPos.z - cNextPos.z);
         println("prevVector: "+prevVector);
         println("nextVector: "+nextVector);
+        //GET ANGLE USES DET
         println("angle between prev, next: " + GetAngle(prevVector, nextVector));
         if(GetAngle(prevVector, nextVector) < 1.5) {
           println("less than 90, insert smoothing verts");
@@ -423,7 +433,7 @@ public void CalculateSidewalkGeo() {
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
     Corner currentC = startC;
     //get position of start corner
-    PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
+    PVector cPos = startC.GetDisplayPosition(masterVs, masterCs, false);
     //assign startC to a new vertex
     println("drawing extruded point");
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, 0, _geoVs, _geoCs, _geoFs);
@@ -432,7 +442,7 @@ public void CalculateSidewalkGeo() {
     int connectPos = _geoVs.size()-1;
     do {
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
-        PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
+        PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs, false);
         println("cNextPos: "+cNextPos);
         vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _geoVs, _geoCs, _geoFs);
         //assign each next to a new vertex
@@ -468,7 +478,7 @@ int determineNearestVert(int i, ArrayList<Vertex> geoVs, int zHeight) {
 
   //take the first vert of the next sidewal/geo set
   Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
-  PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
+  PVector cPos = startC.GetDisplayPosition(masterVs, masterCs, false);
   cPos.z = zHeight;
 
   //figure out which of the previous set is closest to this point

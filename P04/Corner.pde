@@ -47,7 +47,7 @@ public class Corner{
     return (id > -1);
   }
 
-  public PVector GetDisplayPosition(ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs) {
+  public PVector GetDisplayPosition(ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs, boolean extruding) {
     float d = 30;
     PVector thisPos = GetVertexFromCornerID(id, _masterVs, _masterCs).pos;
     PVector prevPos = GetVertexFromCornerID(prev, _masterVs, _masterCs).pos;
@@ -69,12 +69,23 @@ public class Corner{
 
     toPrev.add(toNext);
     toPrev.normalize();
-    if (det(fromPrev, toNext) > 0) {
-      // clockwise, inside of face
-      toPrev.mult(s);
+
+    if(extruding) {
+      if (det3D(fromPrev, toNext) > 0) {
+        // clockwise, inside of face
+        toPrev.mult(s);
+      } else {
+        // counter-clockwise, outside of face
+        toPrev.mult(-s);
+      }
     } else {
-      // counter-clockwise, outside of face
-      toPrev.mult(-s);
+      if (det(fromPrev, toNext) > 0) {
+      // clockwise, inside of face
+        toPrev.mult(s);
+      } else {
+        // counter-clockwise, outside of face
+        toPrev.mult(-s);
+      }
     }
 
     result.add(toPrev);
@@ -93,7 +104,7 @@ public class Corner{
   }
 
   public boolean isHovered(ArrayList<Vertex> _masterVs, ArrayList<Corner> _masterCs) {
-    boolean result = mouseIsWithinCircle(this.GetDisplayPosition(_masterVs, _masterCs), cornerRadius);
+    boolean result = mouseIsWithinCircle(this.GetDisplayPosition(_masterVs, _masterCs, false), cornerRadius);
     return result;
   }
 
@@ -112,7 +123,7 @@ public class Corner{
     Corner tmp = _masterCs.get(id);
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
     // println("stored next " + next + "stored prev: " + prev);
-    displayPos = GetDisplayPosition(_masterVs, _masterCs);
+    displayPos = GetDisplayPosition(_masterVs, _masterCs, true);
     showDisk(displayPos.x, displayPos.y, displayPos.z, 2, true); 
 
     //DrawInformation();

@@ -388,17 +388,6 @@ public class VertexHandler {
 		//println("done splitting corner");
 	}
 
-	private Direction VertexDirection(PVector comparison, PVector insertion) {
-		float thing = det(comparison, insertion);
-		if (thing > 0) {
-			return Direction.RIGHT;
-		} else if (thing == 0) {
-			return null;
-		} else {
-			return Direction.LEFT;
-		}
-	}
-
 	private void InsertSecondVertex(int _x, int _y, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs) {
 		Vertex firstVertex = GetVertexFromID(0, _mastVs);
 		Corner firstCorner = new Corner(0, firstVertex.id);
