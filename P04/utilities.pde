@@ -393,11 +393,17 @@ public void CalculateSidewalkGeo() {
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
         println("cNextPos: "+cNextPos);
         //check angle between next and prev to determine if smoothing needed
-        PVector cPrevPos = GetCornerFromID(nextC.prev, masterCs).GetDisplayPosition(masterVs, masterCs);
+        //SMOOTHING PROGRESS BELOW
+       /* PVector cPrevPos = GetCornerFromID(nextC.prev, masterCs).GetDisplayPosition(masterVs, masterCs);
         PVector cNextNextPos = GetCornerFromID(nextC.next, masterCs).GetDisplayPosition(masterVs, masterCs);
         PVector prevVector = new PVector(cPrevPos.x - cNextPos.x, cPrevPos.y - cNextPos.y, cPrevPos.z - cNextPos.z);
         PVector nextVector = new PVector(cNextNextPos.z - cNextPos.z, cNextNextPos.y - cNextPos.y, cNextNextPos.z - cNextPos.z);
+        println("prevVector: "+prevVector);
+        println("nextVector: "+nextVector);
         println("angle between prev, next: " + GetAngle(prevVector, nextVector));
+        if(GetAngle(prevVector, nextVector) < 1.5) {
+          println("less than 90, insert smoothing verts");
+        }*/
 
         //assign startC to a new vertex
         vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, 0, connectPos, _geoVs, _geoCs, _geoFs);
@@ -405,12 +411,12 @@ public void CalculateSidewalkGeo() {
         //assign each next to a new vertex
         currentC = nextC;
         connectPos++;
-    } while (currentC.next != startC.id && currentC.next != -1);
+    } while (currentC.id != startC.id && currentC.next != -1);
 
     //if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
   }
 
-  connectVert = -1;
+ /* connectVert = -1;
   println("_geoVs.size() when starting extrusion: "+_geoVs.size());
   //create top faces and add them to the end of the previous ones
   for (int i = 0; i < 1; i++) {
@@ -437,7 +443,7 @@ public void CalculateSidewalkGeo() {
 
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
     println("connectVert: "+connectVert);
-  }
+  }*/
 
   //assign our determined arrays to the faces3D Array
   geo3DObject.geoCs = _geoCs;
