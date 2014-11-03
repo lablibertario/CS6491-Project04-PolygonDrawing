@@ -44,7 +44,7 @@ PVector cornerTextOffset = new PVector(7, -15);
 int areaTextSize = 30;
 color areaColor = blue;
 
-int extrusionHeight = 50;
+int extrusionHeight = 100;
 
 // ************************************************************************ GRAPHICS 
 void pen(color c, float w) {
@@ -382,7 +382,6 @@ public void CalculateSidewalkGeo() {
     //assign startC to a new vertex
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, 0, connectVert, _geoVs, _geoCs, _geoFs);
     //vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _topVs, _topCs, _topFs);
-    connectVert++;
 
     int connectPos = _geoVs.size()-1;
     //println("_geoVs.size(): "+_geoVs.size());
@@ -407,15 +406,31 @@ public void CalculateSidewalkGeo() {
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs);
   }
 
+  connectVert = 0;
   //create top faces and add them to the end of the previous ones
-  for (int i = 0; i < 1; i++) {
+  for (int i = 0; i < masterFs.size(); i++) {
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
     Corner currentC = startC;
     //get position of start corner
     PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
     //assign startC to a new vertex
     println("drawing extruded point");
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, 0, _geoVs, _geoCs, _geoFs);
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _geoVs, _geoCs, _geoFs);
+
+    int connectPos = _geoVs.size()-1;
+    /*do {
+        Corner nextC = GetCornerFromID(currentC.next, masterCs);
+        PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
+        println("cNextPos: "+cNextPos);
+        //assign startC to a new vertex
+        //vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, 0, connectPos, _geoVs, _geoCs, _geoFs);
+        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _topVs, _topCs, _topFs);
+        //assign each next to a new vertex
+        currentC = nextC;
+        connectPos++;
+    } while (currentC.id != startC.id && currentC.next != -1);*/
+
+    if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs);
   }
 
   //assign our determined arrays to the faces3D Array

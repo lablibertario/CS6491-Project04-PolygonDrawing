@@ -415,11 +415,9 @@ public class VertexHandler {
 		PVector fromPrev = new PVector(-prevEdge.x, -prevEdge.y);
 		PVector toNext = new PVector(nextEdge.x, nextEdge.y);
 
-		println("newNextRot: "+newNextRot);
-		println("newNewRot: "+newNewRot);
 
 		if(prevEdge.z != newEdge.z) {
-			println("different z plane!");
+			//println("different z plane!");
 			if(newNextRot < zDiffRot) {
 				return true;
 			}
