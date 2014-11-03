@@ -457,7 +457,7 @@ public void CalculateSidewalkGeo() {
   faces3D.add(geo3DObject);
   //faces3D.add(geo3DTopObject);
 
-  //ConnectBottomToTop();
+  ConnectBottomToTop();
 
   //ConnectAllSidewalks();
   //recalculate faces
@@ -514,25 +514,18 @@ void showWalls(){
 
 void ConnectBottomToTop(){
   Geo3D topObject = (Geo3D)faces3D.get(0);
-  Geo3D bottomObject = (Geo3D)faces3D.get(1);
-  int half = topObject.geoVs.size();///2;
-
-  //add in bottom object verts to top obj geo
-
+  int half = topObject.geoVs.size()/2; 
 
   //connect the like points
   for(int i = 0; i < half; i++){
     Vertex startV = GetVertexFromID(i, topObject.geoVs);
-    Vertex endV = GetVertexFromID(i+1, topObject.geoVs);
+    Vertex endV = GetVertexFromID(i+half, topObject.geoVs);
     println("connecting: "+ startV.id + " to " + endV.id);
     println("startV.pos: "+startV.pos);
     println("endV.pos: "+endV.pos);
 
-    //vertexHandler.AddVertex((int)startV.pos.x, (int)startV.pos.y, endV.id, topObject.geoVs, topObject.geoCs, topObject.geoFs);
+    vertexHandler.AddVertex((int)endV.pos.x, (int)endV.pos.y, (int)endV.pos.z, startV.id, topObject.geoVs, topObject.geoCs, topObject.geoFs);
   }
-
-  //remove bottom Object from faces array
-  faces3D.remove(1);
 }
 
 //************************ capturing frames for a movie ************************
