@@ -400,7 +400,7 @@ public void CalculateSidewalkGeo() {
         //assign each next to a new vertex
         currentC = nextC;
         connectPos++;
-    } while (currentC.id != startC.id && currentC.next != -1);
+    } while (currentC.next != startC.id && currentC.next != -1);
 
     //if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
   }
@@ -428,7 +428,7 @@ public void CalculateSidewalkGeo() {
         currentC = nextC;
         connectPos++;
         //connectVert++;
-    } while (currentC.id != startC.id && currentC.next != -1);
+    } while (currentC.next != startC.id && currentC.next != -1);
 
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
     println("connectVert: "+connectVert);
@@ -444,7 +444,7 @@ public void CalculateSidewalkGeo() {
   faces3D.add(geo3DObject);
   //faces3D.add(geo3DTopObject);
 
-  ConnectBottomToTop();
+ // ConnectBottomToTop();
 
   //ConnectAllSidewalks();
   //recalculate faces
