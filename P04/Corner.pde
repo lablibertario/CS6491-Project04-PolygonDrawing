@@ -123,7 +123,11 @@ public class Corner{
     Corner tmp = _masterCs.get(id);
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
     // println("stored next " + next + "stored prev: " + prev);
-    displayPos = GetDisplayPosition(_masterVs, _masterCs, true);
+    if(in3D) {
+      displayPos = GetDisplayPosition(_masterVs, _masterCs, false);
+    } else {
+      displayPos = GetDisplayPosition(_masterVs, _masterCs, false);
+    }
     showDisk(displayPos.x, displayPos.y, displayPos.z, 2, true); 
 
 //    if(this.id == 0 || this.id == 2 || this.id == 9 || this.id == 11)
