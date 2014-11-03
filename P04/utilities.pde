@@ -403,7 +403,7 @@ public void CalculateSidewalkGeo() {
         connectPos++;
     } while (currentC.id != startC.id && currentC.next != -1);
 
-    if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs);
+    if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
   }
 
   connectVert = 0;
@@ -423,11 +423,14 @@ public void CalculateSidewalkGeo() {
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
         println("cNextPos: "+cNextPos);
-        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _topVs, _topCs, _topFs);
+        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _geoVs, _geoCs, _geoFs);
+        //assign each next to a new vertex
         currentC = nextC;
         connectPos++;
-        connectVert++;
+        //connectVert++;
     } while (currentC.id != startC.id && currentC.next != -1);
+
+    if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
   }
 
   //assign our determined arrays to the faces3D Array
@@ -460,7 +463,7 @@ public void CalculateSidewalkGeo() {
   //handle drawing of these in p04
 }
 
-int determineNearestVert(int i, ArrayList<Vertex> geoVs) {
+int determineNearestVert(int i, ArrayList<Vertex> geoVs, int zHeight) {
   int nearestVertIndex = 0;
 
   //take the first vert of the next sidewal/geo set
@@ -472,11 +475,13 @@ int determineNearestVert(int i, ArrayList<Vertex> geoVs) {
   for (int j = 0; j < geoVs.size(); j++){
     Vertex v = (Vertex)geoVs.get(j);
     PVector vPos = new PVector(v.pos.x, v.pos.y, v.pos.z);
-    float distFromNextPt = PVector.dist(cPos, vPos);
-    if(distFromNextPt < shortestDist) {
-      shortestDist = distFromNextPt;
-      nearestVertIndex = j;
+    if(v.pos.z - zHeight < 0.01f) { //if on the same plane
+      float distFromNextPt = PVector.dist (cPos, vPos);
+      if(distFromNextPt < shortestDist) {
+        shortestDist = distFromNextPt;
+        nearestVertIndex = j;
 
+      }
     }
   }
   //println("closest to vert: "+nearestVertIndex);
