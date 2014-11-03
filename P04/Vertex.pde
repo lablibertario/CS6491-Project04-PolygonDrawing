@@ -137,6 +137,6 @@ public class Vertex {
     // draw vertex information
     fill(vertexColor);
     textSize(20);
-    text(this.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
+    text(this.id, pos.x + vertexTextOffset.x, pos.y + vertexTextOffset.y, pos.z + vertexTextOffset.z);
   }
 }

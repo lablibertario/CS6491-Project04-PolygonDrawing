@@ -76,12 +76,8 @@ void setup() {               // executed once at the begining
   //vertexHandler.AddVertex(250, 400, 0, 1, masterVs, masterCs, masterFs);
   //vertexHandler.AddVertex(250, 200, 0, 2, masterVs, masterCs, masterFs);
   //vertexHandler.AddVertex(250, 200, 0, 0, masterVs, masterCs, masterFs);
-  //vertexHandler.AddVertex(50, 400, 0, 3, masterVs, masterCs, masterFs);
-  // vertexHandler.AddVertex(300, 300, 0);
-  // vertexHandler.AddVertex(100, 100, 2);
-  
-  //PVector temp = new PVector(-1,0);
-  ////println("/////////" + temp.heading());
+//  vertexHandler.AddVertex(50, 400, 0, 3, masterVs, masterCs, masterFs);
+
 }
 
 //**************************** display current frame ****************************
@@ -115,21 +111,21 @@ void draw() {      // executed at each frame
     //draw verts/edges for each face
     for(Geo3D c: faces3D) {
       DrawAllGeo(c.geoVs, c.geoCs, c.geoFs, c.nextRedraw, c.prevRedraw, c.swingRedraw);
-      //println("finished draw all geo");
+      /*println("finished draw all geo");
       if (c.geoFs.size() > 1) {
         int faceToDraw = MouseIsWithinFace(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
         if (faceToDraw != -1) {
           DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
         } else {
           DrawFaceSidewalks(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
-          //println("finished drawing face sidewalks");
+          println("finished drawing face sidewalks");
         }
       }
       if(c.geoFs.size() > 1)area3D += Calculate3DArea(c.geoVs, c.geoCs, c.geoFs);
-      //println("finished Calculate3DArea");
+      println("finished Calculate3DArea");
 
       CheckForVertexHover(c.geoVs, c.geoCs, c.geoFs, c.nextRedraw, c.prevRedraw, c.swingRedraw);
-      //println("finished CheckForVertexHover");
+      println("finished CheckForVertexHover");*/
 
     }
     //println("area3D: "+area3D);

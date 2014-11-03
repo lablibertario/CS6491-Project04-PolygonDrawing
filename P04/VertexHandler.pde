@@ -374,11 +374,11 @@ public class VertexHandler {
 		Corner newCorner = new Corner(_mastCs.size(), newVertex.id);
 		Corner splitsNext = GetCornerFromID(splitCorner.next, _mastCs);
 
-		splitsNext.prev = newCorner.id;
+		//splitsNext.prev = newCorner.id;
 		splitCorner.next = newCorner.id;
-		newCorner.next = splitsNext.id;
+		splitCorner.prev = newCorner.id;
+		newCorner.next = splitCorner.id;
 		newCorner.prev = splitCorner.id;
-
 
 		//AddToMaster(addedCorner, _mastCs);
 		AddToMaster(newCorner, _mastCs);

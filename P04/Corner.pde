@@ -2,6 +2,7 @@ public class Corner{
   int id;
   int next, prev, swing, vertex;
   boolean visited;
+  PVector displayPos;
 
   public Corner(){
     id = -1;
@@ -111,8 +112,10 @@ public class Corner{
     Corner tmp = _masterCs.get(id);
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
     // println("stored next " + next + "stored prev: " + prev);
-    PVector pos = GetDisplayPosition(_masterVs, _masterCs);
-    showDisk(pos.x, pos.y, pos.z, 2, true); 
+    displayPos = GetDisplayPosition(_masterVs, _masterCs);
+    showDisk(displayPos.x, displayPos.y, displayPos.z, 2, true); 
+
+    DrawInformation();
 
     if(isHovered(_masterVs, _masterCs)) {
       _swingRedraw = swing;
@@ -123,9 +126,9 @@ public class Corner{
 
   public void DrawInformation() {
     // draw vertex information
-    println("corner number: "+this.id);
+    //println("corner number: "+this.id);
     fill(cornerColor);
     textSize(20);
-    text(this.id, mouseX + vertexTextOffset.x, mouseY + vertexTextOffset.y);
+    text(this.id, displayPos.x + vertexTextOffset.x, displayPos.y + vertexTextOffset.y, displayPos.z + vertexTextOffset.z);
   }
 }

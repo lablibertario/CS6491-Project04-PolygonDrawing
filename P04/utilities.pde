@@ -35,7 +35,7 @@ PVector sidewalkTextOffset;
 
 int vertexRadius = 5;
 color vertexColor = black;
-PVector vertexTextOffset = new PVector(7, -15);
+PVector vertexTextOffset = new PVector(7, -15, 7);
 
 int cornerRadius = 6;
 color cornerColor = black;
