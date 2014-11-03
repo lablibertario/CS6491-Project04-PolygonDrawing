@@ -407,6 +407,7 @@ public void CalculateSidewalkGeo() {
   }
 
   connectVert = 0;
+  println("_geoVs.size() when starting extrusion: "+_geoVs.size());
   //create top faces and add them to the end of the previous ones
   for (int i = 0; i < masterFs.size(); i++) {
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
@@ -431,6 +432,7 @@ public void CalculateSidewalkGeo() {
     } while (currentC.id != startC.id && currentC.next != -1);
 
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
+    println("connectVert: "+connectVert);
   }
 
   //assign our determined arrays to the faces3D Array
@@ -469,6 +471,7 @@ int determineNearestVert(int i, ArrayList<Vertex> geoVs, int zHeight) {
   //take the first vert of the next sidewal/geo set
   Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
   PVector cPos = startC.GetDisplayPosition(masterVs, masterCs);
+  cPos.z = zHeight;
 
   //figure out which of the previous set is closest to this point
   float shortestDist = 9001f;
