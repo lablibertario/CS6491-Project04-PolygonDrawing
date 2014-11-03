@@ -5,16 +5,16 @@
 
 ///////////////
 //left to do:
-//smooth corners
 //extrusion walls
 //    draw walls
 //insert new corners w/ extrusion
 //    make sure corners displaying in correct place
 //fix 3d pick
+//smooth corners
 //
 //change the bridge of two face edges to be a straight line (nearest pt has potential
-//3d coversion breaks when inserting vert?
 //  trouble of going outside shape)
+//3d coversion breaks when inserting vert?
 ////////////////
 
 // ************************************************************************ COLORS 
