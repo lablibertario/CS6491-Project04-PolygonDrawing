@@ -423,7 +423,7 @@ public void CalculateSidewalkGeo() {
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs);
         println("cNextPos: "+cNextPos);
-       // vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _geoVs, _geoCs, _geoFs);
+        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _geoVs, _geoCs, _geoFs);
         //assign each next to a new vertex
         currentC = nextC;
         connectPos++;
