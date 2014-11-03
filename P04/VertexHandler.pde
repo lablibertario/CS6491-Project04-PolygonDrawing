@@ -443,22 +443,22 @@ public class VertexHandler {
 		newNewRot = round(newNewRot, 2);
 		newNextRot = round(newNextRot, 2);
 
-		/*println("newPrevRot: "+newPrevRot);
-		println("newNewRot: " + newNewRot);
-		println("newNextRot: "+newNextRot);*/
+		// //println("newPrevRot: "+newPrevRot);
+		// //println("newNewRot: " + newNewRot);
+		// //println("newNextRot: "+newNextRot);
 
 		//closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
 
 		PVector fromPrev = new PVector(-prevEdge.x, -prevEdge.y);
 		PVector toNext = new PVector(nextEdge.x, nextEdge.y);
 
-		//DET PRODUCT BREAKING THIS, BELOW IF SHOULDN'T BE NEEDED
-		/*if(prevEdge.z != newEdge.z) {
+
+		if(prevEdge.z != newEdge.z) {
 			//println("different z plane!");
 			if(newNextRot < zDiffRot) {
 				return true;
 			}
-		}*/
+		}
 
 		return (newNextRot  <= newNewRot);
 	}

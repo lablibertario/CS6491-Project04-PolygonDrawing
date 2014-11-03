@@ -69,7 +69,7 @@ public class Corner{
 
     toPrev.add(toNext);
     toPrev.normalize();
-    if (det3D(fromPrev, toNext) > 0) {
+    if (det(fromPrev, toNext) > 0) {
       // clockwise, inside of face
       toPrev.mult(s);
     } else {

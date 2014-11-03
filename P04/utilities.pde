@@ -8,7 +8,7 @@
 //make sure corners displaying in correct place
 //draw walls
 //smooth corners
-//fix 3d pick (for verts/edges)
+//fix 3d pick?
 //
 //change the bridge of two face edges to be a straight line (nearest pt has potential
 //  trouble of going outside shape)
@@ -31,7 +31,7 @@ int sidewalkThickness = 1;
 color sidewalkColor = green;
 PVector sidewalkTextOffset;
 
-int vertexRadius = 6;
+int vertexRadius = 5;
 color vertexColor = black;
 PVector vertexTextOffset = new PVector(7, -15, 7);
 
@@ -65,18 +65,9 @@ void showDisk(float x, float y, float z, float r, boolean showStroke) {
   else ellipse(x, y, r*2, r*2);
 }
 
-float det(PVector a, PVector b) { 
+float det(PVector a, PVector b) { //may be a terrible terrible thing
   PVector aRot = new PVector(-a.y, a.x);
   return aRot.dot(b);
-}
-
-float det3D(PVector a, PVector b) { 
-  //get the norm 
-  PVector normOfVectors = a.cross(b);
-  normOfVectors.mult(-1);
-
-  float result = sqrt(sq(normOfVectors.x) + sq(normOfVectors.y) + sq(normOfVectors.z));
-  return result;
 }
 
 boolean isToRightOf(PVector a, PVector b){
@@ -292,8 +283,6 @@ void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<C
     textSize(20);
    // pt mousepos;
    // mousepos = pick(mouseX, mouseY);
-   //need to get 3d pick position and pass, then change
-   //dist from rect fn to consider 3d stuffs
     PVector closestPoint = GetClosestPointOnEdge(new PVector(mouseX, mouseY), startV.pos, endV.pos);
     showDisk(closestPoint.x, closestPoint.y, closestPoint.z, edgeThickness*2, true);
 
@@ -380,7 +369,7 @@ public void CalculateSidewalkGeo() {
   ArrayList<Integer> _geoFs = new ArrayList<Integer>();
 
   int connectVert = -1;
-  for (int i = 0; i <  1; i++) {
+  for (int i = 0; i <  masterFs.size(); i++) {
     //walk through the existing faces from the master(graph) arrays
     Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
     Corner currentC = startC;
@@ -405,14 +394,14 @@ public void CalculateSidewalkGeo() {
         println("cNextPos: "+cNextPos);
         //check angle between next and prev to determine if smoothing needed
         //SMOOTHING PROGRESS BELOW
-        /*PVector cPrevPos = GetCornerFromID(nextC.prev, masterCs).GetDisplayPosition(masterVs, masterCs);
+       /* PVector cPrevPos = GetCornerFromID(nextC.prev, masterCs).GetDisplayPosition(masterVs, masterCs);
         PVector cNextNextPos = GetCornerFromID(nextC.next, masterCs).GetDisplayPosition(masterVs, masterCs);
         PVector prevVector = new PVector(cPrevPos.x - cNextPos.x, cPrevPos.y - cNextPos.y, cPrevPos.z - cNextPos.z);
         PVector nextVector = new PVector(cNextNextPos.z - cNextPos.z, cNextNextPos.y - cNextPos.y, cNextNextPos.z - cNextPos.z);
         println("prevVector: "+prevVector);
         println("nextVector: "+nextVector);
         println("angle between prev, next: " + GetAngle(prevVector, nextVector));
-        if(GetAngle(prevVector, nextVector) > 4.7) {
+        if(GetAngle(prevVector, nextVector) < 1.5) {
           println("less than 90, insert smoothing verts");
         }*/
 
@@ -427,7 +416,7 @@ public void CalculateSidewalkGeo() {
     //if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
   }
 
-  /*connectVert = -1;
+  connectVert = -1;
   println("_geoVs.size() when starting extrusion: "+_geoVs.size());
   //create top faces and add them to the end of the previous ones
   for (int i = 0; i < 1; i++) {
@@ -454,7 +443,7 @@ public void CalculateSidewalkGeo() {
 
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
     println("connectVert: "+connectVert);
-  }*/
+  }
 
   //assign our determined arrays to the faces3D Array
   geo3DObject.geoCs = _geoCs;
