@@ -556,12 +556,13 @@ void showWalls(){
   int half = topBottom.geoVs.size()/2;
 
  // println("topBottom.geoFs: "+topBottom.geoFs);
-  for(Integer face : topBottom.geoFs) {
+  for(int i = 0; i <topBottom.geoFs.size(); i += 2) {
+    Integer face = topBottom.geoFs.get(i);
     println("drawing face that starts at corner " + face);
     beginShape();
     fill(color(70, 70, 200));
     //println("face: "+face);
-    Corner startC = GetCornerFromID(0, topBottom.geoCs);
+    Corner startC = GetCornerFromID(face, topBottom.geoCs);
     Vertex startCVert = GetVertexFromCornerID(startC.id, topBottom.geoVs, topBottom.geoCs);
     vertex(startCVert.pos.x, startCVert.pos.y, startCVert.pos.z);
     Corner currentC = startC;
@@ -575,6 +576,25 @@ void showWalls(){
         println("made vert at " + nextCVert.pos.x + ", " + nextCVert.pos.y + ", " +nextCVert.pos.z);
         currentC = nextC;
     } while (currentC.id != startC.id && currentC.next != -1);
+
+    //create inner boundary
+    /*face = topBottom.geoFs.get(i++);
+    startC = GetCornerFromID(face, topBottom.geoCs);
+    startCVert = GetVertexFromCornerID(startC.id, topBottom.geoVs, topBottom.geoCs);
+    vertex(startCVert.pos.x, startCVert.pos.y, startCVert.pos.z);
+    currentC = startC;
+
+    do {
+        Corner nextC = GetCornerFromID(currentC.next, topBottom.geoCs);
+        Vertex nextCVert = GetVertexFromCornerID(nextC.id, topBottom.geoVs, topBottom.geoCs);
+        //DrawSidewalk(currentC, nextC, _mastVs, _mastCs);
+        //println("next sidewalk vert: "+ nextC.id);
+        vertex(nextCVert.pos.x, nextCVert.pos.y, nextCVert.pos.z);
+        println("made vert at " + nextCVert.pos.x + ", " + nextCVert.pos.y + ", " +nextCVert.pos.z);
+        currentC = nextC;
+    } while (currentC.id != startC.id && currentC.next != -1);*/
+
+
     endShape();
   }
 }
