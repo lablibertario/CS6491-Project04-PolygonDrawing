@@ -306,8 +306,9 @@ void DrawEdge(Vertex startV, Vertex endV, ArrayList<Vertex> _mastVs, ArrayList<C
 public boolean mouseIsWithinCircle(PVector pos, float radius) {
   pt mousepos;
   mousepos = pick(mouseX, mouseY);
+//  println("mousepos: "+mousepos.x +", " + mousepos.y + ", " + mousepos.z);
   PVector mousePos = new PVector(mousepos.x, mousepos.y, mousepos.z);
-  return (mousePos.dist(pos) <= radius);
+  return (mousePos.dist(pos) <= radius*5);
 }
 
 public boolean mouseIsWithinRectangle(PVector start, PVector end, int thickness) {
@@ -482,6 +483,26 @@ void DetermineProperSwings() {
   for(Vertex v: topBottom.geoVs) {
     //collect all corners
     //reasign swings by finding out whose prev.v == other.next.v
+    /*ArrayList<Corner> thisVsCorners = new ArrayList<Corner>();
+    for (Integer i: v.corners){
+      thisVsCorners.add(GetCornerFromID(i, topBottom.geoCs));
+    }*/
+    ArrayList<Corner> thisVsCorners = topBottom.geoCs;
+
+    for(int i = 0; i < thisVsCorners.size(); i++) {
+      Corner iCorner = GetCornerFromID(i, topBottom.geoCs);
+      Corner v1 = GetCornerFromID(thisVsCorners.get(i).prev, topBottom.geoCs);
+      for(int j = 0; j < thisVsCorners.size(); j++){
+        Corner jCorner = GetCornerFromID(j, topBottom.geoCs);
+        Corner v2 = GetCornerFromID(thisVsCorners.get(j).next, topBottom.geoCs);
+        if(i != j) {
+          if(iCorner.vertex == jCorner.vertex && v1.vertex == v2.vertex) {
+            //we found a swing!
+            println("swing! ");
+          }
+        }
+      }
+    }
 
   }
 }
@@ -518,7 +539,7 @@ void showWalls(){
   int half = topBottom.geoVs.size()/2;
 
  // println("topBottom.geoFs: "+topBottom.geoFs);
-  //for(Integer face : topBottom.geoFs) {
+  for(Integer face : topBottom.geoFs) {
     beginShape();
     fill(color(70, 70, 200));
     //println("face: "+face);
@@ -536,7 +557,7 @@ void showWalls(){
         currentC = nextC;
     } while (currentC.id != startC.id && currentC.next != -1);
     endShape();
-  //}
+  }
 }
 
 void ConnectBottomToTop(){

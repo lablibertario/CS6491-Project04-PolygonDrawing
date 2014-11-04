@@ -143,7 +143,7 @@ public class Corner{
     }
     showDisk(displayPos.x, displayPos.y, displayPos.z, 2, true); 
 
-    if(this.id == 0 || this.id == 2 || this.id == 9 || this.id == 11)
+    //if(this.id == 14 || this.id == 12 || this.id == 9 || this.id == 11)
     DrawInformation();
 
     if(isHovered(_masterVs, _masterCs)) {
