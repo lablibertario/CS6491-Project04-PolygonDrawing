@@ -123,8 +123,21 @@ public class Corner{
     Corner tmp = _masterCs.get(id);
     // println("corner " + id + " has next: " + tmp.next + " and prev: " + tmp.prev);
     // println("stored next " + next + "stored prev: " + prev);
-    if(in3D) {
-      displayPos = GetDisplayPosition(_masterVs, _masterCs, false);
+
+    //if the plane this guy is not the XY, draw in 3D
+    boolean notOnXY = false;
+    if(in3D){
+      PVector thisPos = GetDisplayPosition(_masterVs, _masterCs, true);
+      Corner nextCorner = GetCornerFromID(this.next, _masterCs);
+      PVector nextPos = nextCorner.GetDisplayPosition(_masterVs, _masterCs, true);
+      //if norm isn't (0,0,1)
+      PVector result = thisPos.cross(nextPos);
+      //println("cross result: "+result);
+      if(result.x == 0 && result.y == 0) notOnXY = false;
+      else notOnXY = true;
+    }
+    if(in3D && notOnXY) {
+      displayPos = GetDisplayPosition(_masterVs, _masterCs, true);
     } else {
       displayPos = GetDisplayPosition(_masterVs, _masterCs, false);
     }
