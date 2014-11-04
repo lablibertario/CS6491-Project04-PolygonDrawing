@@ -169,6 +169,7 @@ public class VertexHandler {
 		originsNextC.prev = addedCorner.id;
 		farsPrevC.next = newCorner.id;
 
+		Corner farUnSwing = new Corner();
 		if(originCorner.swing == -1) {
 			addedCorner.swing = originCorner.id;
 		} else {
@@ -176,14 +177,38 @@ public class VertexHandler {
 		}
 		originCorner.swing = addedCorner.id;
 
-		if(farCorner.swing == -1) {
+		if(farCorner.swing == -1) { //if there are more than 1 corners to swing from on far attachment
 			farCorner.swing = newCorner.id;
 		} else {
-			Corner farUnSwing = farCorner.FindUnswing(_mastCs);
+			farUnSwing = farCorner.FindUnswing(_mastCs);
 			farUnSwing.swing = newCorner.id;
 		}
 		newCorner.swing = farCorner.id;
 		//println("finished splitting corner");
+
+		Vertex farSplitZ = GetVertexFromCornerID(newCorner.prev, _mastVs, _mastCs);
+		if(in3D && IDToConnectFrom.pos.z != farSplitZ.pos.z){ //connecting 2 different planes
+			println("******ADD CORRECTION STUFF****!!~~~");
+			println("farCorner: "+farCorner.id);
+			Corner newSwing = GetCornerFromID(newCorner.swing, _mastCs);
+			Corner newFixNext = GetCornerFromID(GetCornerFromID(newSwing.next, _mastCs).swing, _mastCs);
+			println("prepared to make corrections for newFixNext.id: "+newFixNext.id);
+			// newCorner.next = newFixNext.id;//swing's next's swing
+			// newFixNext.prev = newCorner.id;
+			println("farUnSwing: "+farUnSwing.id);
+			Corner farUnSwingUnswing = new Corner();
+			if(farUnSwing.swing == -1) {
+				println("nothing here");
+				//farUnSwingUnswing = farCorner.FindUnswing(_mastCs);
+			} else {
+				println("far's unswing: ");
+				farUnSwingUnswing = farUnSwing.FindUnswing(_mastCs);
+			}
+			//Corner farUnSwingPrev = GetCornerFromID(GetCornerFromID(farUnSwingUnswing.prev, _mastCs).swing, _mastCs);
+			//println("and farUnSwingPrev: "+farUnSwingPrev.id);
+			// farUnSwing.prev = farUnSwingPrev.id;//unswing's prev's swing
+			// farUnSwingPrev.next = farUnSwing.id;
+		}
 
         AddToMaster(addedCorner, _mastCs);
         AddToMaster(newCorner, _mastCs);
@@ -433,9 +458,9 @@ public class VertexHandler {
 		newNewRot = round(newNewRot, 2);
 		newNextRot = round(newNextRot, 2);
 
-		// //println("newPrevRot: "+newPrevRot);
-		// //println("newNewRot: " + newNewRot);
-		// //println("newNextRot: "+newNextRot);
+		// println("newPrevRot: "+newPrevRot);
+		// println("newNewRot: " + newNewRot);
+		// println("newNextRot: "+newNextRot);
 
 		//closestToPrevEdge = (newNewRot - newNextRot) > (2*PI - newNewRot);
 
@@ -444,7 +469,8 @@ public class VertexHandler {
 
 
 		if(prevEdge.z != newEdge.z) {
-			//println("different z plane!");
+			//taking the lesser of the angles
+			//doesn't seem to be returning the correct one
 			if(newNextRot < zDiffRot) {
 				return true;
 			}
