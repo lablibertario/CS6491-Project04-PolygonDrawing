@@ -481,7 +481,7 @@ public void CalculateSidewalkGeo() {
     }
     println("-----------------------");
 
-    /*do {
+    do {
       //DEBUG
         println("with corners ");
         for(int m = startSize; m < _geoCs.size(); m++) {
@@ -498,7 +498,7 @@ public void CalculateSidewalkGeo() {
         currentC = nextC;
         connectPos++;
         //connectVert++;
-    } while (currentC.id != startC.id && currentC.next != -1);*/
+    } while (currentC.id != startC.id && currentC.next != -1);
 
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
   }
@@ -517,8 +517,8 @@ public void CalculateSidewalkGeo() {
   faces3D.add(geo3DObject);
   //faces3D.add(geo3DTopObject);
 
-  //ConnectBottomToTop();
-  //DetermineProperSwings();
+  ConnectBottomToTop();
+  DetermineProperSwings();
 
   //ConnectAllSidewalks();
   //recalculate faces

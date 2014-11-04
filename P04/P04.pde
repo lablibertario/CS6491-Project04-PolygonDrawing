@@ -75,8 +75,8 @@ void setup() {               // executed once at the begining
   vertexHandler.AddVertex(50, 200, 0, -1, masterVs, masterCs, masterFs);
   vertexHandler.AddVertex(50, 400, 0, 0, masterVs, masterCs, masterFs);
   vertexHandler.AddVertex(250, 400, 0, 1, masterVs, masterCs, masterFs);
-  //vertexHandler.AddVertex(250, 200, 0, 2, masterVs, masterCs, masterFs);
-  //vertexHandler.AddVertex(250, 200, 0, 0, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(250, 200, 0, 2, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(250, 200, 0, 0, masterVs, masterCs, masterFs);
 //  vertexHandler.AddVertex(50, 400, 0, 3, masterVs, masterCs, masterFs);
 
 }
@@ -318,7 +318,7 @@ void keyReleased() { // executed each time a key is released
   }
 
   if(key == 'a') {
-    TmpDebugIterator();
+    //TmpDebugIterator();
   }
 }
 

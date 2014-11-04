@@ -191,25 +191,30 @@ public class VertexHandler {
 			println("******ADD CORRECTION STUFF****!!~~~");
 			println("farCorner: "+farCorner.id);
 			Corner newSwing = GetCornerFromID(newCorner.swing, _mastCs);
-			Corner newFixNext = GetCornerFromID(GetCornerFromID(newSwing.next, _mastCs).swing, _mastCs); //CORNER 12
-			println("prepared to make corrections for newFixNext.id: "+newFixNext.id);
-			// newCorner.next = newFixNext.id;//swing's next's swing
-			// newFixNext.prev = newCorner.id;
+			Corner newFixNext = GetCornerFromID(GetCornerFromID(newSwing.next, _mastCs).swing, _mastCs);
+			println("prepared to make corrections for newFixNext.id: "+newFixNext.id); //CORNER 12
 			println("farUnSwing: "+farUnSwing.id); //CORNER 10
 			println("newCorner.id: "+newCorner.id); //CORNER 17
 			println("addedCorner.id: "+addedCorner.id); //CORNER 16
-			//Corner farUnSwingUnswing = new Corner();
-			// if(farUnSwing.swing == -1) {
-			// 	println("nothing here");
-			// 	//farUnSwingUnswing = farCorner.FindUnswing(_mastCs);
-			// } else {
-			// 	println("far's unswing: ");
-			// 	//farUnSwingUnswing = farUnSwing.FindUnswing(_mastCs);
-			// }
-			//Corner farUnSwingPrev = GetCornerFromID(GetCornerFromID(farUnSwingUnswing.prev, _mastCs).swing, _mastCs);
-			//println("and farUnSwingPrev: "+farUnSwingPrev.id);
-			// farUnSwing.prev = farUnSwingPrev.id;//unswing's prev's swing
-			// farUnSwingPrev.next = farUnSwing.id;
+
+			// farUnSwing.prev = addedCorner.id;
+			// addedCorner.next = farUnSwing.id;
+			// newCorner.next = newFixNext.id;
+			// newFixNext.prev = newCorner.id;
+			//addedCorner.prev = newFixNext.id; //16
+			//newFixNext.next = addedCorner.id; //12
+
+			println("succesful reassignment");
+
+			println("corner 10 farUnSwing" + farUnSwing.id + "with prev/next/swing: " + farUnSwing.prev + "/ " +farUnSwing.next + "/ " + farUnSwing.swing);
+			println("corner 16 addedCorner" + addedCorner.id + "with prev/next/swing: " + addedCorner.prev + "/ " +addedCorner.next + "/ " + addedCorner.swing);
+			println("corner 17 newCorner" + newCorner.id + "with prev/next/swing: " + newCorner.prev + "/ " +newCorner.next + "/ " + newCorner.swing);
+			println("corner 12 newFixNext" + newFixNext.id + "with prev/next/swing: " + newFixNext.prev + "/ " +newFixNext.next + "/ " + newFixNext.swing);
+			for(int m = 0; m < _mastCs.size(); m++) {
+		      Corner tmp = GetCornerFromID(m, _mastCs);
+		      println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
+		    }
+
 		}
 
         AddToMaster(addedCorner, _mastCs);
