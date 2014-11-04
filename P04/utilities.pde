@@ -443,7 +443,7 @@ public void CalculateSidewalkGeo() {
     //if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
   }
 
-  /*connectVert = 0;
+  connectVert = 0;
   println("_geoVs.size() when starting extrusion: "+_geoVs.size());
   //create top faces and add them to the end of the previous ones
   for (int i = 0; i < masterFs.size(); i++) {
@@ -469,7 +469,7 @@ public void CalculateSidewalkGeo() {
     } while (currentC.id != startC.id && currentC.next != -1);
 
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
-  }*/
+  }
 
   //assign our determined arrays to the faces3D Array
   geo3DObject.geoCs = _geoCs;
@@ -485,7 +485,7 @@ public void CalculateSidewalkGeo() {
   faces3D.add(geo3DObject);
   //faces3D.add(geo3DTopObject);
 
-  //ConnectBottomToTop();
+  ConnectBottomToTop();
   DetermineProperSwings();
 
   //ConnectAllSidewalks();
@@ -514,7 +514,6 @@ void DetermineProperSwings() {
         if(i != j) {
           if(iCorner.vertex == jCorner.vertex && v1.vertex == v2.vertex) {
             //we found a swing!
-           // println("swing! ");
             iCorner.swing = j;
           }
         }
