@@ -474,6 +474,13 @@ public void CalculateSidewalkGeo() {
     int connectPos = _geoVs.size()-1;
     connectPosDebug = connectPos;
     currentCDebug = currentC;
+
+    for(int m = startSize; m < _geoCs.size(); m++) {
+      Corner tmp = GetCornerFromID(m, _geoCs);
+      println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
+    }
+    println("-----------------------");
+
     /*do {
       //DEBUG
         println("with corners ");
@@ -522,12 +529,6 @@ public void CalculateSidewalkGeo() {
 void TmpDebugIterator(){
   Geo3D debugObj = (Geo3D)faces3D.get(0);
   println("with corners ");
-        for(int m = startSize; m < debugObj.geoCs.size(); m++) {
-          Corner tmp = GetCornerFromID(m, debugObj.geoCs);
-          println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
-        }
-        println("-----------------------");
-
         Corner nextC = GetCornerFromID(currentCDebug.next, masterCs);
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs, false);
         println("cNextPos: "+cNextPos);
@@ -535,6 +536,11 @@ void TmpDebugIterator(){
         //assign each next to a new vertex
         currentCDebug = nextC;
         connectPosDebug++;
+        for(int m = startSize; m < debugObj.geoCs.size(); m++) {
+          Corner tmp = GetCornerFromID(m, debugObj.geoCs);
+          println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
+        }
+        println("-----------------------");
 }
 
 void DetermineProperSwings() {
