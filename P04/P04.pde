@@ -140,7 +140,7 @@ void draw() {      // executed at each frame
     text(areaText, center.x, center.y+10);
     textAlign(LEFT);
 
-    //showWalls();
+    showWalls();
     //interactive corner drawing
 
     //need to handle interactivity differently here since cycling through multiple faces

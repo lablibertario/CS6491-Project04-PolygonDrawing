@@ -144,7 +144,7 @@ public class Corner{
     showDisk(displayPos.x, displayPos.y, displayPos.z, 2, true); 
 
     //if(this.id == 14 || this.id == 12 || this.id == 9 || this.id == 11)
-    DrawInformation();
+    //DrawInformation();
 
     if(isHovered(_masterVs, _masterCs)) {
       _swingRedraw = swing;

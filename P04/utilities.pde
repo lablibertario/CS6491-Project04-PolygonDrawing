@@ -308,7 +308,7 @@ public boolean mouseIsWithinCircle(PVector pos, float radius) {
   mousepos = pick(mouseX, mouseY);
 //  println("mousepos: "+mousepos.x +", " + mousepos.y + ", " + mousepos.z);
   PVector mousePos = new PVector(mousepos.x, mousepos.y, mousepos.z);
-  return (mousePos.dist(pos) <= radius*5);
+  return (mousePos.dist(pos) <= radius);
 }
 
 public boolean mouseIsWithinRectangle(PVector start, PVector end, int thickness) {
@@ -498,7 +498,8 @@ void DetermineProperSwings() {
         if(i != j) {
           if(iCorner.vertex == jCorner.vertex && v1.vertex == v2.vertex) {
             //we found a swing!
-            println("swing! ");
+           // println("swing! ");
+            iCorner.swing = j;
           }
         }
       }
@@ -540,6 +541,7 @@ void showWalls(){
 
  // println("topBottom.geoFs: "+topBottom.geoFs);
   for(Integer face : topBottom.geoFs) {
+    println("drawing face that starts at corner " + face);
     beginShape();
     fill(color(70, 70, 200));
     //println("face: "+face);
@@ -554,6 +556,7 @@ void showWalls(){
         //DrawSidewalk(currentC, nextC, _mastVs, _mastCs);
         //println("next sidewalk vert: "+ nextC.id);
         vertex(nextCVert.pos.x, nextCVert.pos.y, nextCVert.pos.z);
+        println("made vert at " + nextCVert.pos.x + ", " + nextCVert.pos.y + ", " +nextCVert.pos.z);
         currentC = nextC;
     } while (currentC.id != startC.id && currentC.next != -1);
     endShape();
