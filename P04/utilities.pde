@@ -454,76 +454,16 @@ public void CalculateSidewalkGeo() {
         connectPos++;
     } while (currentC.id != startC.id && currentC.next != -1);
 
-    //if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
+    if(i+1 < masterFs.size()) connectVert = determineNearestVert(i+1, _geoVs, 0);
   }
-
-  // connectVert = 0;
-  // println("_geoVs.size() when starting extrusion: "+_geoVs.size());
-  // //create top faces and add them to the end of the previous ones
-  // for (int i = 0; i < masterFs.size(); i++) {
-  //   Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
-  //   Corner currentC = startC;
-  //   //get position of start corner
-  //   PVector cPos = startC.GetDisplayPosition(masterVs, masterCs, false);
-  //   //assign startC to a new vertex
-  //   println("drawing extruded point");
-  //   vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _geoVs, _geoCs, _geoFs);
-  //   connectVert ++;
-
-  //   startSize = _geoCs.size()-1;
-  //   int connectPos = _geoVs.size()-1;
-  //   connectPosDebug = connectPos;
-  //   currentCDebug = currentC;
-
-  //   for(int m = startSize; m < _geoCs.size(); m++) {
-  //     Corner tmp = GetCornerFromID(m, _geoCs);
-  //     println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
-  //   }
-  //   println("-----------------------");
-
-  //   do {
-  //     //DEBUG
-  //       println("with corners ");
-  //       for(int m = startSize; m < _geoCs.size(); m++) {
-  //         Corner tmp = GetCornerFromID(m, _geoCs);
-  //         println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
-  //       }
-  //       println("-----------------------");
-
-  //       Corner nextC = GetCornerFromID(currentC.next, masterCs);
-  //       PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs, false);
-  //       println("cNextPos: "+cNextPos);
-  //       vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _geoVs, _geoCs, _geoFs);
-  //       //assign each next to a new vertex
-  //       currentC = nextC;
-  //       connectPos++;
-  //       //connectVert++;
-  //   } while (currentC.id != startC.id && currentC.next != -1);
-
-  //   if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
-  // }
 
   //assign our determined arrays to the faces3D Array
   geo3DObject.geoCs = _geoCs;
   geo3DObject.geoVs = _geoVs;
   geo3DObject.geoFs = _geoFs;
 
-  /*for(Corner c : geo3DObject.geoCs) {
-    println("id: " + c.id + " has prev, next, swing: "+ c.prev +", " + c.next + ", " + c.swing);
-  }*/
-
- //add the top object geo to the same object as the bottom one
 
   faces3D.add(geo3DObject);
-  //faces3D.add(geo3DTopObject);
-
- // ConnectBottomToTop();
-  DetermineProperSwings();
-
-  //ConnectAllSidewalks();
-  //recalculate faces
-
-  //handle drawing of these in p04
 }
 
 void TmpDebugIterator(){
@@ -588,10 +528,11 @@ void PerformExtrusion(){
         //connectVert++;
     } while (currentC.id != startC.id && currentC.next != -1);
 
-    if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, geoToExtrude.geoVs, extrusionHeight);
+    if(i+1 < masterFs.size()) connectVert = determineNearestVert(i+1, geoToExtrude.geoVs, extrusionHeight);
   }
 
   ConnectBottomToTop();
+  DetermineProperSwings();
 }
 
 void DetermineProperSwings() {
@@ -626,8 +567,9 @@ void DetermineProperSwings() {
 int determineNearestVert(int i, ArrayList<Vertex> geoVs, int zHeight) {
   int nearestVertIndex = 0;
 
-  //take the first vert of the next sidewal/geo set
+  //take the first vert of the next sidewalk/geo set
   Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
+  println("startC.id: "+startC.id);
   PVector cPos = startC.GetDisplayPosition(masterVs, masterCs, false);
   cPos.z = zHeight;
 
@@ -636,8 +578,10 @@ int determineNearestVert(int i, ArrayList<Vertex> geoVs, int zHeight) {
   for (int j = 0; j < geoVs.size(); j++){
     Vertex v = (Vertex)geoVs.get(j);
     PVector vPos = new PVector(v.pos.x, v.pos.y, v.pos.z);
+    //println("v.pos.z - zHeight: "+(v.pos.z - zHeight));
     if(v.pos.z - zHeight < 0.01f) { //if on the same plane
       float distFromNextPt = PVector.dist (cPos, vPos);
+      println("distFromNextPt: "+distFromNextPt + " for point " + j);
       if(distFromNextPt < shortestDist) {
         shortestDist = distFromNextPt;
         nearestVertIndex = j;
