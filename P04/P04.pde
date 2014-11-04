@@ -79,7 +79,7 @@ void setup() {               // executed once at the begining
   vertexHandler.AddVertex(250, 400, 0, 1, masterVs, masterCs, masterFs);
   vertexHandler.AddVertex(250, 200, 0, 2, masterVs, masterCs, masterFs);
   vertexHandler.AddVertex(250, 200, 0, 0, masterVs, masterCs, masterFs);
-//  vertexHandler.AddVertex(50, 400, 0, 3, masterVs, masterCs, masterFs);
+  vertexHandler.AddVertex(50, 400, 0, 3, masterVs, masterCs, masterFs);
 
 }
 
@@ -119,7 +119,7 @@ void draw() {      // executed at each frame
       if (c.geoFs.size() > 1) {
         int faceToDraw = MouseIsWithinFace(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
         if (faceToDraw != -1) {
-         // DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
+          //DrawFaceSidewalks(faceToDraw, c.geoVs, c.geoCs, c.geoFs);
         } else {
           //DrawFaceSidewalks(c.outerFace, c.geoVs, c.geoCs, c.geoFs);
           //println("finished drawing face sidewalks");

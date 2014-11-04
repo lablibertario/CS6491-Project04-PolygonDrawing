@@ -206,10 +206,10 @@ public class VertexHandler {
 
 			println("succesful reassignment");
 
-			println("corner 10 farUnSwing" + farUnSwing.id + "with prev/next/swing: " + farUnSwing.prev + "/ " +farUnSwing.next + "/ " + farUnSwing.swing);
-			println("corner 16 addedCorner" + addedCorner.id + "with prev/next/swing: " + addedCorner.prev + "/ " +addedCorner.next + "/ " + addedCorner.swing);
-			println("corner 17 newCorner" + newCorner.id + "with prev/next/swing: " + newCorner.prev + "/ " +newCorner.next + "/ " + newCorner.swing);
-			println("corner 12 newFixNext" + newFixNext.id + "with prev/next/swing: " + newFixNext.prev + "/ " +newFixNext.next + "/ " + newFixNext.swing);
+			// println("corner 10 farUnSwing" + farUnSwing.id + "with prev/next/swing: " + farUnSwing.prev + "/ " +farUnSwing.next + "/ " + farUnSwing.swing);
+			// println("corner 16 addedCorner" + addedCorner.id + "with prev/next/swing: " + addedCorner.prev + "/ " +addedCorner.next + "/ " + addedCorner.swing);
+			// println("corner 17 newCorner" + newCorner.id + "with prev/next/swing: " + newCorner.prev + "/ " +newCorner.next + "/ " + newCorner.swing);
+			// println("corner 12 newFixNext" + newFixNext.id + "with prev/next/swing: " + newFixNext.prev + "/ " +newFixNext.next + "/ " + newFixNext.swing);
 			for(int m = 0; m < _mastCs.size(); m++) {
 		      Corner tmp = GetCornerFromID(m, _mastCs);
 		      println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);

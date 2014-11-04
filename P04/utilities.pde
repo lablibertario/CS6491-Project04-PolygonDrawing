@@ -50,6 +50,7 @@ int extrusionHeight = 100;
 Corner currentCDebug;
 int connectPosDebug;
 int startSize;
+boolean extruded = false;
 
 // ************************************************************************ GRAPHICS 
 void pen(color c, float w) {
@@ -387,6 +388,7 @@ public PVector GetClosestPointOnEdge(PVector c, PVector a, PVector b) {
 }
 
 public void CalculateSidewalkGeo() {
+  extruded = false;
   //cycle through each face and generate the geometry that goes with it
   faces3D = new ArrayList<Geo3D>();
   println("------------------------------: ");
@@ -421,7 +423,7 @@ public void CalculateSidewalkGeo() {
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs, false);
        // println("cNextPos: "+cNextPos);
         //check angle between next and prev to determine if smoothing needed
-        //SMOOTHING PROGRESS BELOW
+        //CORNER ROUNDING PROGRESS BELOW
         PVector correctedPosition = new PVector(0,0,0);
         boolean useCorrectedPos = false;
         PVector cPrevPos = GetCornerFromID(nextC.prev, masterCs).GetDisplayPosition(masterVs, masterCs, false);
@@ -484,6 +486,7 @@ void TmpDebugIterator(){
 }
 
 void PerformExtrusion(){
+  extruded = true;
   Geo3D geoToExtrude = faces3D.get(0);
   int connectVert = 0;
   println("_geoVs.size() when starting extrusion: "+geoToExtrude.geoVs.size());
@@ -601,7 +604,7 @@ void showWalls(){
 
  // println("topBottom.geoFs: "+topBottom.geoFs);
  //the middle face draws the proper face
-  for(int i = 1; i < topBottom.geoFs.size(); i +=2) {
+  for(int i = 1; i < topBottom.geoFs.size(); i ++) {
     Integer face = topBottom.geoFs.get(i);
     if(debuggingWalls)println("drawing face that starts at corner " + face);
     beginShape();
@@ -621,26 +624,6 @@ void showWalls(){
         if(debuggingWalls)println("made vert at " + nextCVert.pos.x + ", " + nextCVert.pos.y + ", " +nextCVert.pos.z);
         currentC = nextC;
     } while (currentC.id != startC.id && currentC.next != -1);
-
-    //create inner boundary
-    /*beginContour();
-    face = topBottom.geoFs.get(i--);
-    startC = GetCornerFromID(face, topBottom.geoCs);
-    startCVert = GetVertexFromCornerID(startC.id, topBottom.geoVs, topBottom.geoCs);
-    vertex(startCVert.pos.x, startCVert.pos.y, startCVert.pos.z);
-    currentC = startC;
-
-    do {
-        Corner nextC = GetCornerFromID(currentC.next, topBottom.geoCs);
-        Vertex nextCVert = GetVertexFromCornerID(nextC.id, topBottom.geoVs, topBottom.geoCs);
-        //DrawSidewalk(currentC, nextC, _mastVs, _mastCs);
-        //if(debuggingWalls)println("next sidewalk vert: "+ nextC.id);
-        vertex(nextCVert.pos.x, nextCVert.pos.y, nextCVert.pos.z);
-        if(debuggingWalls)println("made vert at " + nextCVert.pos.x + ", " + nextCVert.pos.y + ", " +nextCVert.pos.z);
-        currentC = nextC;
-    } while (currentC.id != startC.id && currentC.next != -1);
-
-    endContour();*/
     endShape();
   }
 }
