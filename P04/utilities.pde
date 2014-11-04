@@ -100,6 +100,22 @@ public float GetAngle(PVector tempa, PVector tempb) {
   return alpha;
 }
 
+public float Get3DAngle(PVector tempa, PVector tempb) {
+  // returns clockwise angle from a to b
+  PVector a = new PVector(tempa.x, tempa.y, tempa.z);
+  PVector b = new PVector(tempb.x, tempb.y, tempb.z);
+
+  float det = det3D(a, b);
+  float dot = a.dot(b);
+  float alpha = atan2(det, dot);
+
+  if (alpha < 0) {
+    alpha += 2*PI;
+  }
+
+  return alpha;
+}
+
 public float GetPosAngle(PVector a) {
   float heading = a.heading();// + PI;
   if (heading < 0)
@@ -404,8 +420,8 @@ public void CalculateSidewalkGeo() {
         println("cNextPos: "+cNextPos);
         //check angle between next and prev to determine if smoothing needed
         //SMOOTHING PROGRESS BELOW
-        PVector cPrevPos = GetCornerFromID(nextC.prev, masterCs).GetDisplayPosition(masterVs, masterCs);
-        PVector cNextNextPos = GetCornerFromID(nextC.next, masterCs).GetDisplayPosition(masterVs, masterCs);
+        PVector cPrevPos = GetCornerFromID(nextC.prev, masterCs).GetDisplayPosition(masterVs, masterCs, false);
+        PVector cNextNextPos = GetCornerFromID(nextC.next, masterCs).GetDisplayPosition(masterVs, masterCs, false);
         PVector prevVector = new PVector(cPrevPos.x - cNextPos.x, cPrevPos.y - cNextPos.y, cPrevPos.z - cNextPos.z);
         PVector nextVector = new PVector(cNextNextPos.z - cNextPos.z, cNextNextPos.y - cNextPos.y, cNextNextPos.z - cNextPos.z);
         println("prevVector: "+prevVector);
