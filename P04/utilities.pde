@@ -409,17 +409,17 @@ public void CalculateSidewalkGeo() {
     int connectPos = _geoVs.size()-1;
 
     do {
-      //TO DO: if the angle between the previous corner and next corner is < 90, do some smoothing stuff
       //smoothingStuff() adds an additional vert at a certain position that rounds out the shape
       //along a sphere...moving along the circumference and placing points every so often..
       //have to move positioning of sphere to of defined radius so it'll fit between the two lines
-      //radius is 1/2 dist between the starting points of these lines
       //move the points to be at that distance from each other, then add x connections around the circle
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs, false);
         println("cNextPos: "+cNextPos);
         //check angle between next and prev to determine if smoothing needed
         //SMOOTHING PROGRESS BELOW
+        PVector correctedPosition = new PVector(0,0,0);
+        boolean useCorrectedPos = false;
         PVector cPrevPos = GetCornerFromID(nextC.prev, masterCs).GetDisplayPosition(masterVs, masterCs, false);
         PVector cNextNextPos = GetCornerFromID(nextC.next, masterCs).GetDisplayPosition(masterVs, masterCs, false);
         PVector prevVector = new PVector(cPrevPos.x - cNextPos.x, cPrevPos.y - cNextPos.y, cPrevPos.z - cNextPos.z);
@@ -428,12 +428,22 @@ public void CalculateSidewalkGeo() {
         println("nextVector: "+nextVector);
         //GET ANGLE USES DET
         println("angle between prev, next: " + GetAngle(prevVector, nextVector));
-        if(GetAngle(prevVector, nextVector) < 1.5) {
+        if(GetAngle(prevVector, nextVector) > 1.5f) {
           println("less than 90, insert smoothing verts");
+          //determine radius of smoothing circle (1/2 dist of starting points of two lines)
+          float smoothRadius = cPrevPos.dist(cNextNextPos);
+          println("smoothRadius: "+smoothRadius);
+          //useCorrectedPos = true;
+
+
         }
 
         //assign startC to a new vertex
-        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, 0, connectPos, _geoVs, _geoCs, _geoFs);
+        if(useCorrectedPos) {
+
+        } else {
+          vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, 0, connectPos, _geoVs, _geoCs, _geoFs);
+        }
        // vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _topVs, _topCs, _topFs);
         //assign each next to a new vertex
         currentC = nextC;
@@ -476,9 +486,9 @@ public void CalculateSidewalkGeo() {
   geo3DObject.geoVs = _geoVs;
   geo3DObject.geoFs = _geoFs;
 
-  for(Corner c : geo3DObject.geoCs) {
+  /*for(Corner c : geo3DObject.geoCs) {
     println("id: " + c.id + " has prev, next, swing: "+ c.prev +", " + c.next + ", " + c.swing);
-  }
+  }*/
 
  //add the top object geo to the same object as the bottom one
 
@@ -550,6 +560,7 @@ int determineNearestVert(int i, ArrayList<Vertex> geoVs, int zHeight) {
   return nearestVertIndex;
 }
 
+boolean debuggingWalls = false;
 void showWalls(){
   Geo3D topBottom = (Geo3D)faces3D.get(0);
   int half = topBottom.geoVs.size()/2;
@@ -558,22 +569,22 @@ void showWalls(){
  //the middle face draws the proper face
   for(int i = 1; i < topBottom.geoFs.size(); i +=2) {
     Integer face = topBottom.geoFs.get(i);
-    println("drawing face that starts at corner " + face);
+    if(debuggingWalls)println("drawing face that starts at corner " + face);
     beginShape();
     fill(color(70, 70, 200));
-    //println("face: "+face);
+    //if(debuggingWalls)println("face: "+face);
     Corner startC = GetCornerFromID(face, topBottom.geoCs);
     Vertex startCVert = GetVertexFromCornerID(startC.id, topBottom.geoVs, topBottom.geoCs);
     vertex(startCVert.pos.x, startCVert.pos.y, startCVert.pos.z);
     Corner currentC = startC;
-    //println("startC.id sidewalk vert: "+startC.id);
+    //if(debuggingWalls)println("startC.id sidewalk vert: "+startC.id);
     do {
         Corner nextC = GetCornerFromID(currentC.next, topBottom.geoCs);
         Vertex nextCVert = GetVertexFromCornerID(nextC.id, topBottom.geoVs, topBottom.geoCs);
         //DrawSidewalk(currentC, nextC, _mastVs, _mastCs);
-        //println("next sidewalk vert: "+ nextC.id);
+        //if(debuggingWalls)println("next sidewalk vert: "+ nextC.id);
         vertex(nextCVert.pos.x, nextCVert.pos.y, nextCVert.pos.z);
-        println("made vert at " + nextCVert.pos.x + ", " + nextCVert.pos.y + ", " +nextCVert.pos.z);
+        if(debuggingWalls)println("made vert at " + nextCVert.pos.x + ", " + nextCVert.pos.y + ", " +nextCVert.pos.z);
         currentC = nextC;
     } while (currentC.id != startC.id && currentC.next != -1);
 
@@ -589,9 +600,9 @@ void showWalls(){
         Corner nextC = GetCornerFromID(currentC.next, topBottom.geoCs);
         Vertex nextCVert = GetVertexFromCornerID(nextC.id, topBottom.geoVs, topBottom.geoCs);
         //DrawSidewalk(currentC, nextC, _mastVs, _mastCs);
-        //println("next sidewalk vert: "+ nextC.id);
+        //if(debuggingWalls)println("next sidewalk vert: "+ nextC.id);
         vertex(nextCVert.pos.x, nextCVert.pos.y, nextCVert.pos.z);
-        println("made vert at " + nextCVert.pos.x + ", " + nextCVert.pos.y + ", " +nextCVert.pos.z);
+        if(debuggingWalls)println("made vert at " + nextCVert.pos.x + ", " + nextCVert.pos.y + ", " +nextCVert.pos.z);
         currentC = nextC;
     } while (currentC.id != startC.id && currentC.next != -1);
 
