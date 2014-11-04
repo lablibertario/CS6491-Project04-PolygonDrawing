@@ -316,6 +316,10 @@ void keyReleased() { // executed each time a key is released
   if(key == 'e'){
     removeVert = false;
   }
+
+  if(key == 'a') {
+    TmpDebugIterator();
+  }
 }
 
 void mouseDragged() { // executed when mouse is pressed and moved

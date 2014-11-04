@@ -47,6 +47,10 @@ color areaColor = blue;
 
 int extrusionHeight = 100;
 
+Corner currentCDebug;
+int connectPosDebug;
+int startSize;
+
 // ************************************************************************ GRAPHICS 
 void pen(color c, float w) {
   stroke(c); 
@@ -466,9 +470,11 @@ public void CalculateSidewalkGeo() {
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _geoVs, _geoCs, _geoFs);
     connectVert ++;
 
-    int startSize = _geoCs.size()-1;
+    startSize = _geoCs.size()-1;
     int connectPos = _geoVs.size()-1;
-    do {
+    connectPosDebug = connectPos;
+    currentCDebug = currentC;
+    /*do {
       //DEBUG
         println("with corners ");
         for(int m = startSize; m < _geoCs.size(); m++) {
@@ -485,7 +491,7 @@ public void CalculateSidewalkGeo() {
         currentC = nextC;
         connectPos++;
         //connectVert++;
-    } while (currentC.id != startC.id && currentC.next != -1);
+    } while (currentC.id != startC.id && currentC.next != -1);*/
 
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
   }
@@ -511,6 +517,24 @@ public void CalculateSidewalkGeo() {
   //recalculate faces
 
   //handle drawing of these in p04
+}
+
+void TmpDebugIterator(){
+  Geo3D debugObj = (Geo3D)faces3D.get(0);
+  println("with corners ");
+        for(int m = startSize; m < debugObj.geoCs.size(); m++) {
+          Corner tmp = GetCornerFromID(m, debugObj.geoCs);
+          println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
+        }
+        println("-----------------------");
+
+        Corner nextC = GetCornerFromID(currentCDebug.next, masterCs);
+        PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs, false);
+        println("cNextPos: "+cNextPos);
+        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPosDebug, debugObj.geoVs, debugObj.geoCs, debugObj.geoFs);
+        //assign each next to a new vertex
+        currentCDebug = nextC;
+        connectPosDebug++;
 }
 
 void DetermineProperSwings() {
