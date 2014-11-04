@@ -556,7 +556,8 @@ void showWalls(){
   int half = topBottom.geoVs.size()/2;
 
  // println("topBottom.geoFs: "+topBottom.geoFs);
-  for(int i = 0; i <topBottom.geoFs.size(); i += 2) {
+ //the middle face draws the proper face
+  for(int i = 1; i < topBottom.geoFs.size(); i +=2) {
     Integer face = topBottom.geoFs.get(i);
     println("drawing face that starts at corner " + face);
     beginShape();
@@ -578,7 +579,8 @@ void showWalls(){
     } while (currentC.id != startC.id && currentC.next != -1);
 
     //create inner boundary
-    /*face = topBottom.geoFs.get(i++);
+    /*beginContour();
+    face = topBottom.geoFs.get(i--);
     startC = GetCornerFromID(face, topBottom.geoCs);
     startCVert = GetVertexFromCornerID(startC.id, topBottom.geoVs, topBottom.geoCs);
     vertex(startCVert.pos.x, startCVert.pos.y, startCVert.pos.z);
@@ -592,9 +594,9 @@ void showWalls(){
         vertex(nextCVert.pos.x, nextCVert.pos.y, nextCVert.pos.z);
         println("made vert at " + nextCVert.pos.x + ", " + nextCVert.pos.y + ", " +nextCVert.pos.z);
         currentC = nextC;
-    } while (currentC.id != startC.id && currentC.next != -1);*/
+    } while (currentC.id != startC.id && currentC.next != -1);
 
-
+    endContour();*/
     endShape();
   }
 }
