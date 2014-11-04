@@ -457,51 +457,51 @@ public void CalculateSidewalkGeo() {
     //if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
   }
 
-  connectVert = 0;
-  println("_geoVs.size() when starting extrusion: "+_geoVs.size());
-  //create top faces and add them to the end of the previous ones
-  for (int i = 0; i < masterFs.size(); i++) {
-    Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
-    Corner currentC = startC;
-    //get position of start corner
-    PVector cPos = startC.GetDisplayPosition(masterVs, masterCs, false);
-    //assign startC to a new vertex
-    println("drawing extruded point");
-    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _geoVs, _geoCs, _geoFs);
-    connectVert ++;
+  // connectVert = 0;
+  // println("_geoVs.size() when starting extrusion: "+_geoVs.size());
+  // //create top faces and add them to the end of the previous ones
+  // for (int i = 0; i < masterFs.size(); i++) {
+  //   Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
+  //   Corner currentC = startC;
+  //   //get position of start corner
+  //   PVector cPos = startC.GetDisplayPosition(masterVs, masterCs, false);
+  //   //assign startC to a new vertex
+  //   println("drawing extruded point");
+  //   vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _geoVs, _geoCs, _geoFs);
+  //   connectVert ++;
 
-    startSize = _geoCs.size()-1;
-    int connectPos = _geoVs.size()-1;
-    connectPosDebug = connectPos;
-    currentCDebug = currentC;
+  //   startSize = _geoCs.size()-1;
+  //   int connectPos = _geoVs.size()-1;
+  //   connectPosDebug = connectPos;
+  //   currentCDebug = currentC;
 
-    for(int m = startSize; m < _geoCs.size(); m++) {
-      Corner tmp = GetCornerFromID(m, _geoCs);
-      println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
-    }
-    println("-----------------------");
+  //   for(int m = startSize; m < _geoCs.size(); m++) {
+  //     Corner tmp = GetCornerFromID(m, _geoCs);
+  //     println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
+  //   }
+  //   println("-----------------------");
 
-    do {
-      //DEBUG
-        println("with corners ");
-        for(int m = startSize; m < _geoCs.size(); m++) {
-          Corner tmp = GetCornerFromID(m, _geoCs);
-          println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
-        }
-        println("-----------------------");
+  //   do {
+  //     //DEBUG
+  //       println("with corners ");
+  //       for(int m = startSize; m < _geoCs.size(); m++) {
+  //         Corner tmp = GetCornerFromID(m, _geoCs);
+  //         println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
+  //       }
+  //       println("-----------------------");
 
-        Corner nextC = GetCornerFromID(currentC.next, masterCs);
-        PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs, false);
-        println("cNextPos: "+cNextPos);
-        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _geoVs, _geoCs, _geoFs);
-        //assign each next to a new vertex
-        currentC = nextC;
-        connectPos++;
-        //connectVert++;
-    } while (currentC.id != startC.id && currentC.next != -1);
+  //       Corner nextC = GetCornerFromID(currentC.next, masterCs);
+  //       PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs, false);
+  //       println("cNextPos: "+cNextPos);
+  //       vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, _geoVs, _geoCs, _geoFs);
+  //       //assign each next to a new vertex
+  //       currentC = nextC;
+  //       connectPos++;
+  //       //connectVert++;
+  //   } while (currentC.id != startC.id && currentC.next != -1);
 
-    if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
-  }
+  //   if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
+  // }
 
   //assign our determined arrays to the faces3D Array
   geo3DObject.geoCs = _geoCs;
@@ -517,7 +517,7 @@ public void CalculateSidewalkGeo() {
   faces3D.add(geo3DObject);
   //faces3D.add(geo3DTopObject);
 
-  ConnectBottomToTop();
+ // ConnectBottomToTop();
   DetermineProperSwings();
 
   //ConnectAllSidewalks();
@@ -541,6 +541,57 @@ void TmpDebugIterator(){
           println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
         }
         println("-----------------------");
+}
+
+void PerformExtrusion(){
+  Geo3D geoToExtrude = faces3D.get(0);
+  int connectVert = 0;
+  println("_geoVs.size() when starting extrusion: "+geoToExtrude.geoVs.size());
+  //create top faces and add them to the end of the previous ones
+  for (int i = 0; i < masterFs.size(); i++) {
+    Corner startC = GetCornerFromFaceID(i, masterCs, masterFs);
+    Corner currentC = startC;
+    //get position of start corner
+    PVector cPos = startC.GetDisplayPosition(masterVs, masterCs, false);
+    //assign startC to a new vertex
+    println("drawing extruded point");
+    vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, geoToExtrude.geoVs, geoToExtrude.geoCs, geoToExtrude.geoFs);
+    connectVert ++;
+
+    startSize = geoToExtrude.geoCs.size()-1;
+    int connectPos = geoToExtrude.geoVs.size()-1;
+    connectPosDebug = connectPos;
+    currentCDebug = currentC;
+
+    for(int m = startSize; m < geoToExtrude.geoCs.size(); m++) {
+      Corner tmp = GetCornerFromID(m, geoToExtrude.geoCs);
+      println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
+    }
+    println("-----------------------");
+
+    do {
+      //DEBUG
+        println("with corners ");
+        for(int m = startSize; m < geoToExtrude.geoCs.size(); m++) {
+          Corner tmp = GetCornerFromID(m, geoToExtrude.geoCs);
+          println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
+        }
+        println("-----------------------");
+
+        Corner nextC = GetCornerFromID(currentC.next, masterCs);
+        PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs, false);
+        println("cNextPos: "+cNextPos);
+        vertexHandler.AddVertex((int)cNextPos.x, (int)cNextPos.y, extrusionHeight, connectPos, geoToExtrude.geoVs, geoToExtrude.geoCs, geoToExtrude.geoFs);
+        //assign each next to a new vertex
+        currentC = nextC;
+        connectPos++;
+        //connectVert++;
+    } while (currentC.id != startC.id && currentC.next != -1);
+
+    if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, geoToExtrude.geoVs, extrusionHeight);
+  }
+
+  ConnectBottomToTop();
 }
 
 void DetermineProperSwings() {

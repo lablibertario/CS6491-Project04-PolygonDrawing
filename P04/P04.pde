@@ -320,6 +320,10 @@ void keyReleased() { // executed each time a key is released
   if(key == 'a') {
     //TmpDebugIterator();
   }
+
+  if(key == 'o') {
+    PerformExtrusion();
+  }
 }
 
 void mouseDragged() { // executed when mouse is pressed and moved
@@ -438,7 +442,7 @@ void CheckForVertexHover(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, A
     Corner corner = GetCornerFromID(i, _mastCs);
     if (corner.exists()) {
       boolean interact = corner.isInteracted(_mastVs, _mastCs);
-      if(corner.id == 15) interact = true; //DEBUG
+      //if(corner.id == 15) interact = true; //DEBUG
       if(interact) {
         interactCorner = corner;
         newInteract = true;
