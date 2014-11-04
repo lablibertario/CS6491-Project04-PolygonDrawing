@@ -415,7 +415,7 @@ public void CalculateSidewalkGeo() {
       //move the points to be at that distance from each other, then add x connections around the circle
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs, false);
-        println("cNextPos: "+cNextPos);
+       // println("cNextPos: "+cNextPos);
         //check angle between next and prev to determine if smoothing needed
         //SMOOTHING PROGRESS BELOW
         PVector correctedPosition = new PVector(0,0,0);
@@ -424,15 +424,15 @@ public void CalculateSidewalkGeo() {
         PVector cNextNextPos = GetCornerFromID(nextC.next, masterCs).GetDisplayPosition(masterVs, masterCs, false);
         PVector prevVector = new PVector(cPrevPos.x - cNextPos.x, cPrevPos.y - cNextPos.y, cPrevPos.z - cNextPos.z);
         PVector nextVector = new PVector(cNextNextPos.z - cNextPos.z, cNextNextPos.y - cNextPos.y, cNextNextPos.z - cNextPos.z);
-        println("prevVector: "+prevVector);
-        println("nextVector: "+nextVector);
+       // println("prevVector: "+prevVector);
+       // println("nextVector: "+nextVector);
         //GET ANGLE USES DET
-        println("angle between prev, next: " + GetAngle(prevVector, nextVector));
+       // println("angle between prev, next: " + GetAngle(prevVector, nextVector));
         if(GetAngle(prevVector, nextVector) > 1.5f) {
-          println("less than 90, insert smoothing verts");
+          //println("less than 90, insert smoothing verts");
           //determine radius of smoothing circle (1/2 dist of starting points of two lines)
           float smoothRadius = cPrevPos.dist(cNextNextPos);
-          println("smoothRadius: "+smoothRadius);
+          //println("smoothRadius: "+smoothRadius);
           //useCorrectedPos = true;
 
 
@@ -466,8 +466,17 @@ public void CalculateSidewalkGeo() {
     vertexHandler.AddVertex((int)cPos.x, (int)cPos.y, extrusionHeight, connectVert, _geoVs, _geoCs, _geoFs);
     connectVert ++;
 
+    int startSize = _geoCs.size()-1;
     int connectPos = _geoVs.size()-1;
     do {
+      //DEBUG
+        println("with corners ");
+        for(int m = startSize; m < _geoCs.size(); m++) {
+          Corner tmp = GetCornerFromID(m, _geoCs);
+          println("corner " + tmp.id + "with prev/next/swing: " + tmp.prev + "/ " +tmp.next + "/ " + tmp.swing);
+        }
+        println("-----------------------");
+
         Corner nextC = GetCornerFromID(currentC.next, masterCs);
         PVector cNextPos = nextC.GetDisplayPosition(masterVs, masterCs, false);
         println("cNextPos: "+cNextPos);
@@ -495,8 +504,8 @@ public void CalculateSidewalkGeo() {
   faces3D.add(geo3DObject);
   //faces3D.add(geo3DTopObject);
 
-  ConnectBottomToTop();
-  DetermineProperSwings();
+  //ConnectBottomToTop();
+  //DetermineProperSwings();
 
   //ConnectAllSidewalks();
   //recalculate faces
@@ -572,7 +581,7 @@ void showWalls(){
     if(debuggingWalls)println("drawing face that starts at corner " + face);
     beginShape();
     fill(color(70, 70, 200));
-    //if(debuggingWalls)println("face: "+face);
+    //if(debuggingWalls)"println(""face: "+face);
     Corner startC = GetCornerFromID(face, topBottom.geoCs);
     Vertex startCVert = GetVertexFromCornerID(startC.id, topBottom.geoVs, topBottom.geoCs);
     vertex(startCVert.pos.x, startCVert.pos.y, startCVert.pos.z);
@@ -627,7 +636,7 @@ void ConnectBottomToTop(){
 
     if(startV.pos.z != endV.pos.z)
     vertexHandler.AddVertex((int)endV.pos.x, (int)endV.pos.y, (int)endV.pos.z, startV.id, topObject.geoVs, topObject.geoCs, topObject.geoFs);
-    println("finished adding extruded vert");
+    //println("finished adding extruded vert");
   }
 }
 

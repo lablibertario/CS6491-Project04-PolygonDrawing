@@ -9,7 +9,8 @@ public class VertexHandler {
 	private float zDiffRot = 9000f;
 
 	public boolean AddVertex(int _x, int _y, int _z, int connectIndex, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, ArrayList<Integer> _mastFs) {
-
+		println("-----------------------");
+		println("adding new vert num " + _mastVs.size() +"to index " + connectIndex);
 		PVector insertionEdge, comparisonEdge;
 		newVertex = new Vertex(_x, _y, _z, _mastVs.size());
 		////println(_mastVs.size());
@@ -39,7 +40,7 @@ public class VertexHandler {
 		}
 
 		if(inserting) {
-			//println("start v: " + connectIndex);
+			println("start v: " + connectIndex);
 			connectVertex = GetVertexFromID(connectIndex, _mastVs);
 			//Corner splitCorner = FindEdgesBetween(connectVertex, newVertex);
 			//ConnectExistingVerts(connectVertex, newVertex.id);
@@ -47,25 +48,25 @@ public class VertexHandler {
 			InsertVertOnEdge(connectVertex, insertionFarVert, _mastVs, _mastCs);
 		} else {
 			if(idOfExistingConnection != -1){
-				//println("idOfExistingConnection: "+idOfExistingConnection);
+				println("idOfExistingConnection: "+idOfExistingConnection);
 				//connecting two existing verts
 				connectVertex = GetVertexFromID(connectIndex, _mastVs);
-				//println("connecting two existing");
+				println("connecting two existing");
 				ConnectExistingVerts(connectVertex, idOfExistingConnection, _mastVs, _mastCs);
 			} else {
 				if (_mastVs.size() == 0 || connectIndex == -1) {
-					//println("insert start vert ");
+					println("insert start vert ");
 				} else if (NumCorners(connectIndex, _mastVs) < 1) {
-					//println("insert second vert");
+					println("insert second vert");
 					InsertSecondVertex(_x, _y, _mastVs, _mastCs);
 				} else if (NumCorners(connectIndex, _mastVs) == 1) {
-					//println("adding to end of vert");
+					println("adding to end of vert");
 					connectVertex = GetVertexFromID(connectIndex, _mastVs);
 					AppendToEndOfVertex(connectVertex, _mastVs, _mastCs);
 
 				} else {
 					//adding edge between two existing edges
-					//println("squeezing between verts");
+					println("squeezing between verts");
 					connectVertex = GetVertexFromID(connectIndex, _mastVs);
 					Corner splitCorner = FindEdgesBetween(connectVertex, newVertex, _mastVs, _mastCs);
 					Vertex splitVert = GetVertexFromCornerID(splitCorner.id, _mastVs, _mastCs);
@@ -73,7 +74,7 @@ public class VertexHandler {
 						println("getting to extrusion split");
 						ExtrusionSplit(splitCorner, _mastVs, _mastCs);
 					} else {*/
-						println("getting to corner split");
+					//	println("getting to corner split");
 						CornerSplit(splitCorner, _mastVs, _mastCs);
 					//}
 				}
@@ -299,7 +300,7 @@ public class VertexHandler {
 	}
 
 	private void CornerSplit(Corner splitCorner, ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs){
-		println("corner split");
+		//println("corner split");
 		//println("insert at " + splitCorner.id);
 		if(splitCorner.id == -1) {
 			println("corner split id -1 ");

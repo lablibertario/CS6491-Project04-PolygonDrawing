@@ -434,6 +434,7 @@ void CheckForVertexHover(ArrayList<Vertex> _mastVs, ArrayList<Corner> _mastCs, A
     Corner corner = GetCornerFromID(i, _mastCs);
     if (corner.exists()) {
       boolean interact = corner.isInteracted(_mastVs, _mastCs);
+      if(corner.id == 15) interact = true; //DEBUG
       if(interact) {
         interactCorner = corner;
         newInteract = true;
