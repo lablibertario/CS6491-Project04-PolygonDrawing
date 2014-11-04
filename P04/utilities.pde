@@ -453,7 +453,7 @@ public void CalculateSidewalkGeo() {
     //if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, 0);
   }
 
-  /*connectVert = 0;
+  connectVert = 0;
   println("_geoVs.size() when starting extrusion: "+_geoVs.size());
   //create top faces and add them to the end of the previous ones
   for (int i = 0; i < masterFs.size(); i++) {
@@ -479,7 +479,7 @@ public void CalculateSidewalkGeo() {
     } while (currentC.id != startC.id && currentC.next != -1);
 
     if(i+1 < masterFs.size()) connectVert = determineNearestVert(i, _geoVs, extrusionHeight);
-  }*/
+  }
 
   //assign our determined arrays to the faces3D Array
   geo3DObject.geoCs = _geoCs;
