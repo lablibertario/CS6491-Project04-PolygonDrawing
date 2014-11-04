@@ -517,13 +517,14 @@ void showWalls(){
   Geo3D topBottom = (Geo3D)faces3D.get(0);
   int half = topBottom.geoVs.size()/2;
 
-  //println("topBottom.geoFs: "+topBottom.geoFs);
-  for(Integer face : topBottom.geoFs) {
+ // println("topBottom.geoFs: "+topBottom.geoFs);
+  //for(Integer face : topBottom.geoFs) {
     beginShape();
     fill(color(70, 70, 200));
     //println("face: "+face);
     Corner startC = GetCornerFromID(0, topBottom.geoCs);
     Vertex startCVert = GetVertexFromCornerID(startC.id, topBottom.geoVs, topBottom.geoCs);
+    vertex(startCVert.pos.x, startCVert.pos.y, startCVert.pos.z);
     Corner currentC = startC;
     //println("startC.id sidewalk vert: "+startC.id);
     do {
@@ -535,7 +536,7 @@ void showWalls(){
         currentC = nextC;
     } while (currentC.id != startC.id && currentC.next != -1);
     endShape();
-  }
+  //}
 }
 
 void ConnectBottomToTop(){

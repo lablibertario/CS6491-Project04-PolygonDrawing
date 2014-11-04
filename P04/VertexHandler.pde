@@ -50,22 +50,22 @@ public class VertexHandler {
 				//println("idOfExistingConnection: "+idOfExistingConnection);
 				//connecting two existing verts
 				connectVertex = GetVertexFromID(connectIndex, _mastVs);
-				println("connecting two existing");
+				//println("connecting two existing");
 				ConnectExistingVerts(connectVertex, idOfExistingConnection, _mastVs, _mastCs);
 			} else {
 				if (_mastVs.size() == 0 || connectIndex == -1) {
-					println("insert start vert ");
+					//println("insert start vert ");
 				} else if (NumCorners(connectIndex, _mastVs) < 1) {
-					println("insert second vert");
+					//println("insert second vert");
 					InsertSecondVertex(_x, _y, _mastVs, _mastCs);
 				} else if (NumCorners(connectIndex, _mastVs) == 1) {
-					println("adding to end of vert");
+					//println("adding to end of vert");
 					connectVertex = GetVertexFromID(connectIndex, _mastVs);
 					AppendToEndOfVertex(connectVertex, _mastVs, _mastCs);
 
 				} else {
 					//adding edge between two existing edges
-					println("squeezing between verts");
+					//println("squeezing between verts");
 					connectVertex = GetVertexFromID(connectIndex, _mastVs);
 					Corner splitCorner = FindEdgesBetween(connectVertex, newVertex, _mastVs, _mastCs);
 					Vertex splitVert = GetVertexFromCornerID(splitCorner.id, _mastVs, _mastCs);
