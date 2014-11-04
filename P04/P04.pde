@@ -59,6 +59,8 @@ int selectedVertexID = -1;
 
 pt F = P(0,0,0); 
 
+boolean displayWalls = true;
+
 //**************************** initialization ****************************
 void setup() {               // executed once at the begining
   //size(600, 600);            // window size 
@@ -140,7 +142,9 @@ void draw() {      // executed at each frame
     text(areaText, center.x, center.y+10);
     textAlign(LEFT);
 
-    showWalls();
+    if(displayWalls) {
+      showWalls();
+    }
     //interactive corner drawing
 
     //need to handle interactivity differently here since cycling through multiple faces
@@ -323,6 +327,10 @@ void keyReleased() { // executed each time a key is released
 
   if(key == 'o') {
     PerformExtrusion();
+  }
+
+  if(key == 'l') {
+    displayWalls = !displayWalls;
   }
 }
 
